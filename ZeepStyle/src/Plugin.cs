@@ -19,8 +19,9 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll();
         Logger.LogInfo($"Plugin {"andme123.zeepstyle"} is loaded!");
         gameObject.AddComponent<Style_TrickManager>();
-        gameObject.AddComponent<Style_ZoverXZPlane>();
-        gameObject.AddComponent<Style_ZoverZYPlane>();
+        gameObject.AddComponent<Style_Yaw>();
+        gameObject.AddComponent<Style_Pitch>();
+        gameObject.AddComponent<Style_Roll>();
         gameObject.AddComponent<Style_GizmoVisualization>();
     }
 }

@@ -13,16 +13,24 @@ public class Style_TrickManager : MonoBehaviour
 
     // Rigidbody
     private Rigidbody rb;
+    private Vector3 currentRight;
+    private Vector3 currentForward;
+    private Vector3 currentUp;
 
     // Quaternions
     private Quaternion initialRotation;
+
+    // Initial vector references
+    private Vector3 initialRight; // Reference X-axis direction
+    private Vector3 initialForward; // Z-axis (forward) direction at takeoff
+    private Vector3 initialUp; // Y-axis (up) direction at takeoff
 
     // Debuging with gizmo visualization
     Style_GizmoVisualization gizmoVisualization;
 
     // Type of rotation
-    Style_ZoverXZPlane zoverXZPlane;
-    Style_ZoverZYPlane zoverZYPlane;
+    Style_Yaw yaw;
+    Style_Pitch pitch;
 
     void Start()
     {
@@ -32,8 +40,8 @@ public class Style_TrickManager : MonoBehaviour
         RacingApi.Crashed += OnCrashed;
         RacingApi.CrossedFinishLine += OnCrossedFinishLine;
 
-        zoverXZPlane = FindObjectOfType<Style_ZoverXZPlane>();
-        zoverZYPlane = FindObjectOfType<Style_ZoverZYPlane>();
+        yaw = FindObjectOfType<Style_Yaw>();
+        pitch = FindObjectOfType<Style_Pitch>();
 
         gizmoVisualization = FindObjectOfType<Style_GizmoVisualization>();
     }
@@ -79,8 +87,8 @@ public class Style_TrickManager : MonoBehaviour
         isInAir = false;  // Reset state when landing
         wasInAir = false; 
 
-        zoverXZPlane.ClearVars();
-        zoverZYPlane.ClearVars();
+        yaw.ClearVars();
+        pitch.ClearVars();
         
 
         gizmoVisualization.CleanupAxisVisuals();
@@ -92,9 +100,12 @@ public class Style_TrickManager : MonoBehaviour
     {
         isInAir = true;
         initialRotation = rb.rotation;
-        
-        zoverXZPlane.OnLeaveGround(rb);
-        zoverZYPlane.OnLeaveGround(rb);
+        initialUp = Vector3.up;
+        initialForward = Vector3.ProjectOnPlane(rb.transform.forward, initialUp);
+        initialRight = Vector3.Cross(initialUp, initialForward).normalized;
+
+        yaw.OnLeaveGround(initialUp,initialForward,initialRight);
+        pitch.OnLeaveGround(initialUp,initialForward,initialRight);
 
         gizmoVisualization.CreateAxisVisuals(rb);
         gizmoVisualization.CreateReferencePlanes(initialRotation, rb);
@@ -109,6 +120,10 @@ public class Style_TrickManager : MonoBehaviour
             if (isInAir)
             {
                 rb = PatchGetRB.Rb;
+                currentRight = rb.transform.right;
+                currentForward = rb.transform.forward;
+                currentUp = rb.transform.up;
+
                 if (!wasInAir)
                 {
                     OnLeaveGround();
@@ -116,8 +131,8 @@ public class Style_TrickManager : MonoBehaviour
                 }
 
                 // Tricks
-                zoverXZPlane.DetectSpinTrick(rb);
-                zoverZYPlane.DetectFlipTrick(rb);
+                yaw.DetectSpinTrick(currentForward,currentUp);
+                pitch.DetectFlipTrick(currentForward, currentRight);
 
                 gizmoVisualization.UpdateAllAxisVisuals(rb);
                 gizmoVisualization.UpdatePlanePositions(rb);
