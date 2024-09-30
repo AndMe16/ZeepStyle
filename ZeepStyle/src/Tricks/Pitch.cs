@@ -1,11 +1,10 @@
 using UnityEngine;
 using ZeepStyle;
 
-
-public class Style_ZoverZYPlane : MonoBehaviour
+public class Style_Pitch : MonoBehaviour
 {
     // Flip (Pitch)
-    private Vector3 initialRightDirection; // Reference X-axis direction
+    private Vector3 initialRight; // Reference X-axis direction
     private Vector3 initialForward; // Z-axis (forward) direction at takeoff
     private Vector3 initialUp; // Y-axis (up) direction at takeoff
     private float accumulatedPitch = 0; // Accumulated pitch angle
@@ -23,35 +22,35 @@ public class Style_ZoverZYPlane : MonoBehaviour
         lastPitchDelta = 0;
     }
 
-    public void OnLeaveGround(Rigidbody rb)
+    public void OnLeaveGround(UnityEngine.Vector3 initialUp_,UnityEngine.Vector3 initialForward_, UnityEngine.Vector3 initialRight_)
     {
-        initialRightDirection = rb.transform.right; // Capture the reference X-axis direction
-        // Capture initial forward (Z-axis) and up (Y-axis) directions
-        initialForward = rb.transform.forward;
-        initialUp = rb.transform.up;
+        initialUp = initialUp_;
+        initialForward = initialForward_;
+        initialRight = initialRight_;
+        
         previousPitch = 0;
         accumulatedPitch = 0;
         flipCount = 0;
         lastPitchDelta = 0;
     }
 
-    public void DetectFlipTrick(Rigidbody rb)
+    public void DetectFlipTrick(Vector3 currentForward_, Vector3 currentRight_)
     {
         // Get the current forward direction (Z-axis)
-        Vector3 currentForward = rb.transform.forward;
+        Vector3 currentForward = currentForward_;
 
         // Project current forward direction onto the initial Z-Y plane
         Vector3 forwardInZYPlane = Vector3.ProjectOnPlane(currentForward, Vector3.Cross(initialForward, initialUp));
 
         // Compute the angle between the projected forward direction and the initial forward direction
-        float currentPitch = Vector3.SignedAngle(initialForward, forwardInZYPlane, initialRightDirection);
+        float currentPitch = Vector3.SignedAngle(initialForward, forwardInZYPlane, initialRight);
 
         if (currentPitch<0)
         {
             currentPitch = 360 + currentPitch;
         }
 
-        int alignmentState = CheckFlipAlignment(rb);
+        int alignmentState = CheckFlipAlignment(currentRight_);
 
         float pitchDelta = Mathf.DeltaAngle(previousPitch,currentPitch);
 
@@ -107,13 +106,13 @@ public class Style_ZoverZYPlane : MonoBehaviour
         lastPitchDelta = pitchDelta; // Store current pitch delta to detect direction change
     }
 
-    private int CheckFlipAlignment(Rigidbody rb)
+    private int CheckFlipAlignment(Vector3 currentRight_)
     {
         // Check if the player is sufficiently tilted relative to the initial reference
-        Vector3 currentRightDirection = rb.transform.right; // Current X-axis direction of the rigidbody
+        Vector3 currentRight = currentRight_; // Current X-axis direction of the rigidbody
 
         // Compute the dot product between the current and reference X-axis directions
-        float alignment = Vector3.Dot(currentRightDirection, initialRightDirection);
+        float alignment = Vector3.Dot(currentRight, initialRight);
 
         if (Mathf.Abs(alignment) < flipAlignmentThreshold)
         {

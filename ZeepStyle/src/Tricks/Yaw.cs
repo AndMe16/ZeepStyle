@@ -1,10 +1,12 @@
 using UnityEngine;
 using ZeepStyle;
 
-public class Style_ZoverXZPlane : MonoBehaviour
+public class Style_Yaw : MonoBehaviour
 {
     // Spin (Yaw)
-    private Vector3 initialUpDirection; // Reference Y-axis direction
+    private Vector3 initialRight; // Reference X-axis direction
+    private Vector3 initialForward; // Z-axis (forward) direction at takeoff
+    private Vector3 initialUp; // Y-axis (up) direction at takeoff
     private float previousYaw; // To track the Y-axis (yaw) rotation
     private float accumulatedYaw; // To accumulate yaw rotation
     private readonly float spinThreshold = 90.0f; // Detect each 90º spin
@@ -16,27 +18,40 @@ public class Style_ZoverXZPlane : MonoBehaviour
     {
         accumulatedYaw = 0;
         spinCount = 0;
-
         lastYawDelta = 0;
     }
 
 
-    public void OnLeaveGround(Rigidbody rb)
+    public void OnLeaveGround(Vector3 initialUp_,Vector3 initialForward_, Vector3 initialRight_)
     {
-        initialUpDirection = Vector3.up;
-        previousYaw = rb.transform.localEulerAngles.y; // Capture the initial yaw (Y-axis) rotation
+        initialUp = initialUp_;
+        initialForward = initialForward_;
+        initialRight = initialRight_;
+
+        previousYaw = 0; // Capture the initial yaw (Y-axis) rotation
         accumulatedYaw = 0;
         spinCount = 0;
         lastYawDelta = 0; // Initialize the yaw delta
     }
 
-    public void DetectSpinTrick(Rigidbody rb)
+    public void DetectSpinTrick(Vector3 currentForward_, Vector3 currentUp_)
     {
-        // Get current yaw (Y-axis rotation)
-        float currentYaw = rb.transform.localEulerAngles.y;
+        // Get the current forward direction (Z-axis)
+        Vector3 currentForward = currentForward_;
+
+        // Project current forward direction onto the initial X-Z plane
+        Vector3 forwardInXZPlane = Vector3.ProjectOnPlane(currentForward, Vector3.Cross(initialRight, initialForward)); 
         
-        int alignmentState = CheckSpinAlignment(rb);
-        // Calculate the yaw difference since the last frame
+        // Compute the angle between the projected forward direction and the initial forward direction
+        float currentYaw = Vector3.SignedAngle(initialForward, forwardInXZPlane, initialUp);
+
+        if (currentYaw<0)
+        {
+            currentYaw = 360 + currentYaw;
+        }
+        
+        int alignmentState = CheckSpinAlignment(currentUp_);
+        
         float yawDelta = Mathf.DeltaAngle(previousYaw, currentYaw);
         if(alignmentState == 0 || alignmentState == 1)
         {
@@ -77,13 +92,13 @@ public class Style_ZoverXZPlane : MonoBehaviour
         lastYawDelta = yawDelta; // Store current yaw delta to detect direction change
     }
 
-    private int CheckSpinAlignment(Rigidbody rb)
+    private int CheckSpinAlignment(Vector3 currentUp_)
     {
         // Check if the player is sufficiently tilted relative to the initial reference
-        Vector3 currentUpDirection = rb.transform.up; // Current Y-axis direction of the rigidbody
+        Vector3 currentUpDirection = currentUp_; // Current Y-axis direction of the rigidbody
 
         // Compute the dot product between the current and reference Y-axis directions
-        float alignment = Vector3.Dot(currentUpDirection, initialUpDirection);
+        float alignment = Vector3.Dot(currentUpDirection, initialUp);
 
         if (Mathf.Abs(alignment) < spinAlignmentThreshold)
         {
