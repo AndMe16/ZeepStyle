@@ -23,9 +23,8 @@ public class Style_ZoverXZPlane : MonoBehaviour
 
     public void OnLeaveGround(Rigidbody rb)
     {
-        //initialUpDirection = rb.transform.up; // Capture the reference Y-axis direction
         initialUpDirection = Vector3.up;
-        previousYaw = rb.rotation.eulerAngles.y; // Capture the initial yaw (Y-axis) rotation
+        previousYaw = rb.transform.localEulerAngles.y; // Capture the initial yaw (Y-axis) rotation
         accumulatedYaw = 0;
         spinCount = 0;
         lastYawDelta = 0; // Initialize the yaw delta
@@ -34,7 +33,7 @@ public class Style_ZoverXZPlane : MonoBehaviour
     public void DetectSpinTrick(Rigidbody rb)
     {
         // Get current yaw (Y-axis rotation)
-        float currentYaw = rb.rotation.eulerAngles.y;
+        float currentYaw = rb.transform.localEulerAngles.y;
         
         int alignmentState = CheckSpinAlignment(rb);
         // Calculate the yaw difference since the last frame

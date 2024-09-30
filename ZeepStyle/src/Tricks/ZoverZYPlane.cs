@@ -1,86 +1,110 @@
 using UnityEngine;
 using ZeepStyle;
 
+
 public class Style_ZoverZYPlane : MonoBehaviour
 {
     // Flip (Pitch)
     private Vector3 initialRightDirection; // Reference X-axis direction
-    private Quaternion initialRotation; // Store the initial rotation as a quaternion
-    private float accumulatedFlipAngle; // To accumulate the rotation angle around the X-axis
+    private Vector3 initialForward; // Z-axis (forward) direction at takeoff
+    private Vector3 initialUp; // Y-axis (up) direction at takeoff
+    private float accumulatedPitch = 0; // Accumulated pitch angle
+    private float previousPitch = 0;
     private readonly float flipThreshold = 90.0f; // Detect each 90º flip
     private readonly float flipAlignmentThreshold = 0.6f; // Threshold for X-axis alignment (dot product close to 1 = straight)
     private int flipCount = 0;
-    private float lastFlipAngleDelta; // To track the direction of the previous flip angle delta
+    private float lastPitchDelta; // To track the direction of the previous pitch delta
+
 
     public void ClearVars()
     {
-        accumulatedFlipAngle = 0;
+        accumulatedPitch = 0;
         flipCount = 0;
-        lastFlipAngleDelta = 0;
+        lastPitchDelta = 0;
     }
 
     public void OnLeaveGround(Rigidbody rb)
     {
         initialRightDirection = rb.transform.right; // Capture the reference X-axis direction
-        initialRotation = rb.transform.localRotation; // Capture the initial rotation as a quaternion
-        accumulatedFlipAngle = 0;
+        // Capture initial forward (Z-axis) and up (Y-axis) directions
+        initialForward = rb.transform.forward;
+        initialUp = rb.transform.up;
+        previousPitch = 0;
+        accumulatedPitch = 0;
         flipCount = 0;
-        lastFlipAngleDelta = 0; // Initialize the flip angle delta
+        lastPitchDelta = 0;
     }
 
     public void DetectFlipTrick(Rigidbody rb)
     {
-        // Get the delta quaternion between current and initial rotation
-        Quaternion deltaRotation = rb.transform.localRotation * Quaternion.Inverse(initialRotation);
+        // Get the current forward direction (Z-axis)
+        Vector3 currentForward = rb.transform.forward;
 
-        // Extract the pitch angle around the X-axis from the delta quaternion
-        // This will give the rotation angle in degrees around the local X-axis
-        //float flipAngle = Quaternion.Angle(Quaternion.identity, deltaRotation);
-        float flipAngle = GetPitchDeltaFromQuaternion(deltaRotation);
+        // Project current forward direction onto the initial Z-Y plane
+        Vector3 forwardInZYPlane = Vector3.ProjectOnPlane(currentForward, Vector3.Cross(initialForward, initialUp));
+
+        // Compute the angle between the projected forward direction and the initial forward direction
+        float currentPitch = Vector3.SignedAngle(initialForward, forwardInZYPlane, initialRightDirection);
+
+        if (currentPitch<0)
+        {
+            currentPitch = 360 + currentPitch;
+        }
 
         int alignmentState = CheckFlipAlignment(rb);
 
+        float pitchDelta = Mathf.DeltaAngle(previousPitch,currentPitch);
+
         if(alignmentState == 0 || alignmentState == 1)
         {
-            Plugin.Logger.LogInfo($"Current flip angle: {flipAngle}");
+            // Check if the spin direction has changed
+            if (Mathf.Sign(pitchDelta) != Mathf.Sign(lastPitchDelta) && Mathf.Abs(lastPitchDelta) > 0)
+            {
+                // Direction changed, reset flip counter
+                Plugin.Logger.LogInfo("Flip direction changed! Resetting flip counter.");
+                accumulatedPitch = 0;
+                flipCount = 0;
+            }
 
-            // // Check if the flip direction has changed
-            // if (Mathf.Sign(flipAngle) != Mathf.Sign(lastFlipAngleDelta) && Mathf.Abs(lastFlipAngleDelta) > 0)
-            // {
-            //     // Direction changed, reset flip counter
-            //     Plugin.Logger.LogInfo("Flip direction changed! Resetting flip counter.");
-            //     accumulatedFlipAngle = 0;
-            //     flipCount = 0;
-            // }
-
-            // Accumulate the flip rotation
-            accumulatedFlipAngle += flipAngle - lastFlipAngleDelta; // Add the change in flip angle
+            // Accumulate the pitch rotation
+            accumulatedPitch += pitchDelta;
 
             // Check if we have completed a 90º increment of flip
-            if (Mathf.Abs(accumulatedFlipAngle) >= flipThreshold)
+            if (Mathf.Abs(accumulatedPitch) >= flipThreshold)
             {
                 flipCount++;
-                accumulatedFlipAngle = 0; // Reset accumulated pitch for the next 90º increment
-
-                if (alignmentState == 0)
-                {
-                    Plugin.Logger.LogInfo("Completed a 90º Flip! Total Flips: " + flipCount);
+                accumulatedPitch = 0; // Reset accumulated pitch for the next 90º increment
+                if (alignmentState ==0){
+                    // Trigger the flip detection (you can add points, log it, etc.)
+                    if (pitchDelta>0)
+                    {
+                        Plugin.Logger.LogInfo("Completed a 90º Front Flip! Total Flips: " + flipCount);
+                    }
+                    else
+                    {
+                        Plugin.Logger.LogInfo("Completed a 90º Back Flip! Total Flips: " + flipCount);
+                    }
                 }
-                else
-                {
-                    Plugin.Logger.LogInfo("Completed an inverse 90º Flip! Total Flips: " + flipCount);
-                }
+                else{
+                    if (pitchDelta>0)
+                    {
+                        Plugin.Logger.LogInfo("Completed a 90º reverse BackFlip! Total Flips: " + flipCount);
+                    }
+                    else
+                    {
+                        Plugin.Logger.LogInfo("Completed a 90º reverse Front Flip! Total Flips: " + flipCount);
+                    }
+                }  
             }
         }
-        else
-        {
-            accumulatedFlipAngle = 0;
+        else{
+            accumulatedPitch = 0;
             flipCount = 0;
         }
-    
 
-        // Store the flip angle delta for the next frame
-        lastFlipAngleDelta = flipAngle;
+        // Update the previous pitch and last pitch delta for the next frame
+        previousPitch = currentPitch;
+        lastPitchDelta = pitchDelta; // Store current pitch delta to detect direction change
     }
 
     private int CheckFlipAlignment(Rigidbody rb)
@@ -100,13 +124,5 @@ public class Style_ZoverZYPlane : MonoBehaviour
             return 1; // Flipping backwards
         }
         return 0; // Spinning normally
-    }
-    private float GetPitchDeltaFromQuaternion(Quaternion deltaRotation)
-    {
-        // Extract the pitch (X-axis rotation) delta directly from quaternion
-        float angle;  
-        angle = deltaRotation.eulerAngles.x;
-        Plugin.Logger.LogInfo($"Angle:{angle}");
-        return angle; // Multiply by sign to track the direction
     }
 }
