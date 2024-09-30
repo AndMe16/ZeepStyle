@@ -31,6 +31,7 @@ public class Style_TrickManager : MonoBehaviour
     // Type of rotation
     Style_Yaw yaw;
     Style_Pitch pitch;
+    Style_Roll roll;
 
     void Start()
     {
@@ -42,6 +43,7 @@ public class Style_TrickManager : MonoBehaviour
 
         yaw = FindObjectOfType<Style_Yaw>();
         pitch = FindObjectOfType<Style_Pitch>();
+        roll = FindObjectOfType<Style_Roll>();
 
         gizmoVisualization = FindObjectOfType<Style_GizmoVisualization>();
     }
@@ -89,6 +91,7 @@ public class Style_TrickManager : MonoBehaviour
 
         yaw.ClearVars();
         pitch.ClearVars();
+        roll.ClearVars();
         
 
         gizmoVisualization.CleanupAxisVisuals();
@@ -106,6 +109,7 @@ public class Style_TrickManager : MonoBehaviour
 
         yaw.OnLeaveGround(initialUp,initialForward,initialRight);
         pitch.OnLeaveGround(initialUp,initialForward,initialRight);
+        roll.OnLeaveGround(initialUp,initialForward,initialRight);
 
         gizmoVisualization.CreateAxisVisuals(rb);
         gizmoVisualization.CreateReferencePlanes(initialRotation, rb);
@@ -133,6 +137,7 @@ public class Style_TrickManager : MonoBehaviour
                 // Tricks
                 yaw.DetectSpinTrick(currentForward,currentUp);
                 pitch.DetectFlipTrick(currentForward, currentRight);
+                roll.DetectRollTrick(currentUp,currentForward);
 
                 gizmoVisualization.UpdateAllAxisVisuals(rb);
                 gizmoVisualization.UpdatePlanePositions(rb);
