@@ -9,8 +9,8 @@ public class Style_Pitch : MonoBehaviour
     private Vector3 initialUp; // Y-axis (up) direction at takeoff
     private float accumulatedPitch = 0; // Accumulated pitch angle
     private float previousPitch = 0;
-    private readonly float flipThreshold = 90.0f; // Detect each 90º flip
-    private readonly float flipAlignmentThreshold = 0.6f; // Threshold for X-axis alignment (dot product close to 1 = straight)
+    private readonly float flipThreshold = 80.0f; // Detect each 90º flip
+    private readonly float flipAlignmentThreshold = 0.5f; // Threshold for X-axis alignment (dot product close to 1 = straight)
     private int flipCount = 0;
     private float lastPitchDelta; // To track the direction of the previous pitch delta
 
@@ -60,7 +60,7 @@ public class Style_Pitch : MonoBehaviour
             if (Mathf.Sign(pitchDelta) != Mathf.Sign(lastPitchDelta) && Mathf.Abs(lastPitchDelta) > 0)
             {
                 // Direction changed, reset flip counter
-                Plugin.Logger.LogInfo("Flip direction changed! Resetting flip counter.");
+                //Plugin.Logger.LogInfo("Flip direction changed! Resetting flip counter.");
                 accumulatedPitch = 0;
                 flipCount = 0;
             }
@@ -73,27 +73,27 @@ public class Style_Pitch : MonoBehaviour
             {
                 flipCount++;
                 accumulatedPitch = 0; // Reset accumulated pitch for the next 90º increment
-                if (alignmentState ==0){
-                    // Trigger the flip detection (you can add points, log it, etc.)
-                    if (pitchDelta>0)
-                    {
-                        Plugin.Logger.LogInfo("Completed a 90º Front Flip! Total Flips: " + flipCount);
-                    }
-                    else
-                    {
-                        Plugin.Logger.LogInfo("Completed a 90º Back Flip! Total Flips: " + flipCount);
-                    }
-                }
-                else{
-                    if (pitchDelta>0)
-                    {
-                        Plugin.Logger.LogInfo("Completed a 90º reverse BackFlip! Total Flips: " + flipCount);
-                    }
-                    else
-                    {
-                        Plugin.Logger.LogInfo("Completed a 90º reverse Front Flip! Total Flips: " + flipCount);
-                    }
-                }  
+                // if (alignmentState ==0){
+                //     // Trigger the flip detection (you can add points, log it, etc.)
+                //     if (pitchDelta>0)
+                //     {
+                //         Plugin.Logger.LogInfo("Completed a 90º Front Flip! Total Flips: " + flipCount);
+                //     }
+                //     else
+                //     {
+                //         Plugin.Logger.LogInfo("Completed a 90º Back Flip! Total Flips: " + flipCount);
+                //     }
+                // }
+                // else{
+                //     if (pitchDelta>0)
+                //     {
+                //         Plugin.Logger.LogInfo("Completed a 90º reverse BackFlip! Total Flips: " + flipCount);
+                //     }
+                //     else
+                //     {
+                //         Plugin.Logger.LogInfo("Completed a 90º reverse Front Flip! Total Flips: " + flipCount);
+                //     }
+                // }  
             }
         }
         else{
@@ -112,7 +112,7 @@ public class Style_Pitch : MonoBehaviour
             if (alignmentState ==0){
                 if (pitchDelta>0)
                 {
-                    trickName = $"Fronflip x{flipCount/4}";
+                    trickName = $"Frontflip x{flipCount/4}";
                 }
                 else
                 {
@@ -122,7 +122,7 @@ public class Style_Pitch : MonoBehaviour
             else{
                 if (pitchDelta<0)
                 {
-                    trickName = $"Inverse Fronflip x{flipCount/4}";
+                    trickName = $"Inverse Frontflip x{flipCount/4}";
                 }
                 else
                 {

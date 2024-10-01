@@ -9,8 +9,8 @@ public class Style_Yaw : MonoBehaviour
     private Vector3 initialUp; // Y-axis (up) direction at takeoff
     private float previousYaw; // To track the Y-axis (yaw) rotation
     private float accumulatedYaw; // To accumulate yaw rotation
-    private readonly float spinThreshold = 90.0f; // Detect each 90º spin
-    private readonly float spinAlignmentThreshold = 0.6f; // Threshold for Y-axis alignment (dot product close to 1 = upright)
+    private readonly float spinThreshold = 80.0f; // Detect each 90º spin
+    private readonly float spinAlignmentThreshold = 0.5f; // Threshold for Y-axis alignment (dot product close to 1 = upright)
     private int spinCount = 0;
     private float lastYawDelta; // To track the direction of the previous yaw delta
 
@@ -59,7 +59,7 @@ public class Style_Yaw : MonoBehaviour
             if (Mathf.Sign(yawDelta) != Mathf.Sign(lastYawDelta) && Mathf.Abs(lastYawDelta) > 0)
             {
                 // Direction changed, reset spin counter
-                Plugin.Logger.LogInfo("Spin direction changed! Resetting spin counter.");
+                // Plugin.Logger.LogInfo("Spin direction changed! Resetting spin counter.");
                 accumulatedYaw = 0;
                 spinCount = 0;
             }
@@ -72,14 +72,14 @@ public class Style_Yaw : MonoBehaviour
             {
                 spinCount++;
                 accumulatedYaw = 0; // Reset accumulated yaw for the next 90º increment
-                if (alignmentState ==0){
-                    // Trigger the spin detection (you can add points, log it, etc.)
-                    Plugin.Logger.LogInfo("Completed a 90º Spin! Total Spins: " + spinCount);
-                }
-                else{
-                    // Trigger the spin detection (you can add points, log it, etc.)
-                    Plugin.Logger.LogInfo("Completed an inverse 90º Spin! Total Spins: " + spinCount);
-                }  
+                // if (alignmentState ==0){
+                //     // Trigger the spin detection (you can add points, log it, etc.)
+                //     Plugin.Logger.LogInfo("Completed a 90º Spin! Total Spins: " + spinCount);
+                // }
+                // else{
+                //     // Trigger the spin detection (you can add points, log it, etc.)
+                //     Plugin.Logger.LogInfo("Completed an inverse 90º Spin! Total Spins: " + spinCount);
+                // }  
             }
         }
         else{
@@ -96,10 +96,10 @@ public class Style_Yaw : MonoBehaviour
         {
             string trickName;
             if (alignmentState ==0){
-                trickName = $"{spinCount*90}";
+                trickName = $"{spinCount*90} Spin";
             }
             else{
-                trickName = $"Inverse {spinCount*90}";
+                trickName = $"Inverse {spinCount*90} Spin";
             }
             
             FindObjectOfType<Style_TrickDisplay>().DisplayTrick(trickName);

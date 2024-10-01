@@ -1,7 +1,9 @@
 using System.Collections;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ZeepStyle;
 
 public class Style_TrickDisplay : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public class Style_TrickDisplay : MonoBehaviour
         canvasObject = new GameObject("TrickCanvas");
         Canvas canvas = canvasObject.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 0;  // Higher values render above others
+
 
         // Optionally, add a CanvasScaler to handle different resolutions
         CanvasScaler canvasScaler = canvasObject.AddComponent<CanvasScaler>();
@@ -29,25 +33,36 @@ public class Style_TrickDisplay : MonoBehaviour
         trickText = textObject.AddComponent<TextMeshProUGUI>();
 
         // Set text properties
-        trickText.fontSize = 60;
+        trickText.fontSize = 50;
         trickText.alignment = TextAlignmentOptions.Center;
         trickText.color = Color.white;
 
-        // Load and assign the custom font
-        TMP_FontAsset customFont = Resources.Load<TMP_FontAsset>("Bangers SDF"); // Change path to your font asset
-        if (customFont != null)
+        // Try to assign one of the available fonts
+        TMP_FontAsset font = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f => f.name == "Code New Roman b SDF");
+
+        if (font != null)
         {
-            trickText.font = customFont;
+            trickText.font = font;
+            trickText.fontMaterial = new Material(trickText.fontMaterial);
         }
         else
         {
-            Debug.LogWarning("Custom font not found, using default font.");
+            Plugin.Logger.LogError("Font not found in loaded resources!");
         }
+
+        trickText.fontSharedMaterial.EnableKeyword("OUTLINE_ON");
+        trickText.fontMaterial.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.05f); // Set outline width
+        trickText.fontMaterial.SetColor(ShaderUtilities.ID_OutlineColor, Color.black); // Set outline color
+
+        trickText.fontSharedMaterial.EnableKeyword("UNDERLAY_ON");
+        trickText.fontMaterial.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, 0.7f);
+        trickText.fontMaterial.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -0.3f);
+        trickText.fontMaterial.SetColor(ShaderUtilities.ID_UnderlayColor, Color.black); // Shadow color
 
         // Set the position and size of the text object
         RectTransform textRectTransform = trickText.GetComponent<RectTransform>();
-        textRectTransform.sizeDelta = new Vector2(600, 100);
-        textRectTransform.anchoredPosition = new Vector2(0, 100); // Position near the bottom of the screen
+        textRectTransform.sizeDelta = new Vector2(600, 200);
+        textRectTransform.anchoredPosition = new Vector2(0, 300); // Position near the bottom of the screen
     }
 
     // Method to update the displayed trick name

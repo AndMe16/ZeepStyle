@@ -9,8 +9,8 @@ public class Style_Roll : MonoBehaviour
     private Vector3 initialUp; // Y-axis (up) direction at takeoff
     private float accumulatedRoll = 0; // Accumulated roll angle
     private float previousRoll = 0;
-    private readonly float rollThreshold = 90.0f; // Detect each 90º roll
-    private readonly float rollAlignmentThreshold = 0.6f; // Threshold for X-axis alignment (dot product close to 1 = straight)
+    private readonly float rollThreshold = 80.0f; // Detect each 90º roll
+    private readonly float rollAlignmentThreshold = 0.5f; // Threshold for X-axis alignment (dot product close to 1 = straight)
     private int rollCount = 0;
     private float lastRollDelta; // To track the direction of the previous roll delta
 
@@ -60,7 +60,7 @@ public class Style_Roll : MonoBehaviour
             if (Mathf.Sign(rollDelta) != Mathf.Sign(lastRollDelta) && Mathf.Abs(lastRollDelta) > 0)
             {
                 // Direction changed, reset roll counter
-                Plugin.Logger.LogInfo("Roll direction changed! Resetting roll counter.");
+                //Plugin.Logger.LogInfo("Roll direction changed! Resetting roll counter.");
                 accumulatedRoll = 0;
                 rollCount = 0;
             }
@@ -73,14 +73,14 @@ public class Style_Roll : MonoBehaviour
             {
                 rollCount++;
                 accumulatedRoll = 0; // Reset accumulated roll for the next 90º increment
-                if (alignmentState ==0){
-                    // Trigger the roll detection (you can add points, log it, etc.)
-                    Plugin.Logger.LogInfo("Completed a 90º roll! Total rolls: " + rollCount);
+                // if (alignmentState ==0){
+                //     // Trigger the roll detection (you can add points, log it, etc.)
+                //     Plugin.Logger.LogInfo("Completed a 90º roll! Total rolls: " + rollCount);
                     
-                }
-                else{
-                    Plugin.Logger.LogInfo("Completed a 90º roll! Total rolls: " + rollCount);
-                }  
+                // }
+                // else{
+                //     Plugin.Logger.LogInfo("Completed a 90º roll! Total rolls: " + rollCount);
+                // }  
             }
         }
         else{
