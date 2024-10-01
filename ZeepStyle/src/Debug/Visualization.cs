@@ -46,7 +46,7 @@ public class Style_GizmoVisualization : MonoBehaviour
         if (zAxisVisual != null) Destroy(zAxisVisual);
     }
 
-    public void UpdateAxisVisual(GameObject axisVisual, Vector3 axisDirection, Rigidbody rb)
+    private void UpdateAxisVisual(GameObject axisVisual, Vector3 axisDirection, Rigidbody rb)
     {
         if (axisVisual != null)
         {

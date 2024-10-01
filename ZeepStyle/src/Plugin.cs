@@ -22,6 +22,13 @@ public class Plugin : BaseUnityPlugin
         gameObject.AddComponent<Style_Yaw>();
         gameObject.AddComponent<Style_Pitch>();
         gameObject.AddComponent<Style_Roll>();
-        gameObject.AddComponent<Style_GizmoVisualization>();
+        //gameObject.AddComponent<Style_GizmoVisualization>();
+        gameObject.AddComponent<Style_TrickDisplay>();
+    }
+
+    private void OnDestroy()
+    {
+        harmony?.UnpatchSelf();
+        harmony = null;
     }
 }
