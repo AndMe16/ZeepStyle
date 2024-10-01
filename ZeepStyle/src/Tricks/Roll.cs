@@ -91,6 +91,20 @@ public class Style_Roll : MonoBehaviour
         // Update the previous roll and last roll delta for the next frame
         previousRoll = currentRoll;
         lastRollDelta = rollDelta; // Store current roll delta to detect direction change
+
+        // Display Trick Names
+        if (((rollCount % 2) == 0) && rollCount!=0)
+        {
+            string trickName;
+            if (alignmentState ==0){
+                trickName = $"{rollCount*90} Roll";
+            }
+            else{
+                trickName = $"Inverse {rollCount*90} Roll";
+            }
+            
+            FindObjectOfType<Style_TrickDisplay>().DisplayTrick(trickName);
+        }
     }
 
     private int CheckrollAlignment(Vector3 currentForward_)

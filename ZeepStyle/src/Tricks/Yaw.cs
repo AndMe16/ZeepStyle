@@ -90,6 +90,20 @@ public class Style_Yaw : MonoBehaviour
         // Update the previous yaw and last yaw delta for the next frame
         previousYaw = currentYaw;
         lastYawDelta = yawDelta; // Store current yaw delta to detect direction change
+
+        // Display Trick Names
+        if (((spinCount % 2) == 0) && spinCount!=0)
+        {
+            string trickName;
+            if (alignmentState ==0){
+                trickName = $"{spinCount*90}";
+            }
+            else{
+                trickName = $"Inverse {spinCount*90}";
+            }
+            
+            FindObjectOfType<Style_TrickDisplay>().DisplayTrick(trickName);
+        }
     }
 
     private int CheckSpinAlignment(Vector3 currentUp_)

@@ -104,6 +104,34 @@ public class Style_Pitch : MonoBehaviour
         // Update the previous pitch and last pitch delta for the next frame
         previousPitch = currentPitch;
         lastPitchDelta = pitchDelta; // Store current pitch delta to detect direction change
+
+        // Display Trick Names
+        if (((flipCount % 4) == 0) && flipCount !=0)
+        {
+            string trickName;
+            if (alignmentState ==0){
+                if (pitchDelta>0)
+                {
+                    trickName = $"Fronflip x{flipCount/4}";
+                }
+                else
+                {
+                    trickName = $"Backflip x{flipCount/4}";
+                }
+            }
+            else{
+                if (pitchDelta<0)
+                {
+                    trickName = $"Inverse Fronflip x{flipCount/4}";
+                }
+                else
+                {
+                    trickName = $"Inverse Backflip x{flipCount/4}";
+                }
+            }
+            
+            FindObjectOfType<Style_TrickDisplay>().DisplayTrick(trickName);
+        }
     }
 
     private int CheckFlipAlignment(Vector3 currentRight_)

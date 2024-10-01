@@ -28,6 +28,9 @@ public class Style_TrickManager : MonoBehaviour
     // Debuging with gizmo visualization
     Style_GizmoVisualization gizmoVisualization;
 
+    // Trick Display
+    Style_TrickDisplay trickDisplay;
+
     // Type of rotation
     Style_Yaw yaw;
     Style_Pitch pitch;
@@ -45,6 +48,8 @@ public class Style_TrickManager : MonoBehaviour
         pitch = FindObjectOfType<Style_Pitch>();
         roll = FindObjectOfType<Style_Roll>();
 
+        trickDisplay = FindObjectOfType<Style_TrickDisplay>();
+
         gizmoVisualization = FindObjectOfType<Style_GizmoVisualization>();
     }
 
@@ -52,18 +57,21 @@ public class Style_TrickManager : MonoBehaviour
     {
         isDead = true;
         OnLand();
+        trickDisplay.DestroyComponent();
     }
 
     private void OnCrashed(CrashReason reason)
     {
         isDead = true;
         OnLand();
+        trickDisplay.DestroyComponent();
     }
 
     private void OnQuickReset()
     {
         isPlayerSpawned = false;
         OnLand();
+        trickDisplay.DestroyComponent();
         Plugin.Logger.LogInfo("Player quick reset");
     }
 
@@ -71,6 +79,7 @@ public class Style_TrickManager : MonoBehaviour
     {
         isPlayerSpawned = false;
         OnLand();
+        trickDisplay.DestroyComponent();
         Plugin.Logger.LogInfo("Player quited");
     }
 
@@ -80,6 +89,7 @@ public class Style_TrickManager : MonoBehaviour
         OnLand();
         isDead = false;
         rb = PatchGetRB.Rb;
+        trickDisplay.CreateDisplay();
         Plugin.Logger.LogInfo("Player spawned");
     }
 
@@ -94,8 +104,8 @@ public class Style_TrickManager : MonoBehaviour
         roll.ClearVars();
         
 
-        gizmoVisualization.CleanupAxisVisuals();
-        gizmoVisualization.CleanupReferencePlanes();
+        // gizmoVisualization.CleanupAxisVisuals();
+        // gizmoVisualization.CleanupReferencePlanes();
     }
 
     // Method to detect if the rigidbody has left the ground
@@ -111,8 +121,8 @@ public class Style_TrickManager : MonoBehaviour
         pitch.OnLeaveGround(initialUp,initialForward,initialRight);
         roll.OnLeaveGround(initialUp,initialForward,initialRight);
 
-        gizmoVisualization.CreateAxisVisuals(rb);
-        gizmoVisualization.CreateReferencePlanes(initialRotation, rb);
+        // gizmoVisualization.CreateAxisVisuals(rb);
+        // gizmoVisualization.CreateReferencePlanes(initialRotation, rb);
     }
 
     void Update()
@@ -139,8 +149,8 @@ public class Style_TrickManager : MonoBehaviour
                 pitch.DetectFlipTrick(currentForward, currentRight);
                 roll.DetectRollTrick(currentUp,currentForward);
 
-                gizmoVisualization.UpdateAllAxisVisuals(rb);
-                gizmoVisualization.UpdatePlanePositions(rb);
+                // gizmoVisualization.UpdateAllAxisVisuals(rb);
+                // gizmoVisualization.UpdatePlanePositions(rb);
             }
             else if(wasInAir){
                 OnLand();
