@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using ZeepSDK.Multiplayer;
 using ZeepSDK.Racing;
 using ZeepStyle;
 
@@ -43,6 +45,8 @@ public class Style_TrickManager : MonoBehaviour
         RacingApi.QuickReset += OnQuickReset;
         RacingApi.Crashed += OnCrashed;
         RacingApi.CrossedFinishLine += OnCrossedFinishLine;
+        MultiplayerApi.DisconnectedFromGame += OnDisconnectedFromGame;
+        RacingApi.RoundEnded += OnRoundEnded;
 
         yaw = FindObjectOfType<Style_Yaw>();
         pitch = FindObjectOfType<Style_Pitch>();
@@ -51,6 +55,20 @@ public class Style_TrickManager : MonoBehaviour
         trickDisplay = FindObjectOfType<Style_TrickDisplay>();
 
         gizmoVisualization = FindObjectOfType<Style_GizmoVisualization>();
+    }
+
+    private void OnRoundEnded()
+    {
+        isPlayerSpawned = false;
+        OnLand();
+        trickDisplay.DestroyComponent();
+    }
+
+    private void OnDisconnectedFromGame()
+    {
+        isPlayerSpawned = false;
+        OnLand();
+        trickDisplay.DestroyComponent();
     }
 
     private void OnCrossedFinishLine(float time)
@@ -93,6 +111,7 @@ public class Style_TrickManager : MonoBehaviour
         Plugin.Logger.LogInfo("Player spawned");
     }
 
+
     // Method to detect if the rigidbody has landed back on the ground
     void OnLand()
     {
@@ -103,7 +122,7 @@ public class Style_TrickManager : MonoBehaviour
         pitch.ClearVars();
         roll.ClearVars();
         
-
+        StartCoroutine(trickDisplay.HideTextAfterSeconds(2));
         // gizmoVisualization.CleanupAxisVisuals();
         // gizmoVisualization.CleanupReferencePlanes();
     }
