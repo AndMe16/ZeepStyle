@@ -11,13 +11,20 @@ public class Style_TrickDisplay : MonoBehaviour
     private GameObject canvasObject;
     private GameObject textObject;
 
+    Style_TrickManager trickManager;
+
+    void Start()
+    {
+        trickManager = FindObjectOfType<Style_TrickManager>();
+    }
+
     public void CreateDisplay()
     {
         // Create a Canvas to hold the TextMeshPro element
         canvasObject = new GameObject("TrickCanvas");
         Canvas canvas = canvasObject.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 0;  // Higher values render above others
+        canvas.sortingOrder = -1;  // Higher values render above others
 
 
         // Optionally, add a CanvasScaler to handle different resolutions
@@ -69,7 +76,11 @@ public class Style_TrickDisplay : MonoBehaviour
     public void DisplayTrick(string trickName)
     {
         trickText.text = $"{trickName}";
-        //StartCoroutine(HideTextAfterSeconds(5));
+        if (trickManager.hideTextOnAirCoroutine != null)
+        {
+            StopCoroutine(trickManager.hideTextOnAirCoroutine);
+        }
+        trickManager.hideTextOnAirCoroutine = StartCoroutine(HideTextAfterSeconds(4));
     }
 
     // Optional: Method to hide text after a delay
@@ -84,4 +95,21 @@ public class Style_TrickDisplay : MonoBehaviour
         Destroy(canvasObject);
         Destroy(textObject);
     }
+
+    public void HideText()
+    {
+        trickText.enabled = false;  // Disable the text to hide it
+    }
+
+    public void ShowText()
+    {
+        trickText.enabled = true;  // Enable the text to show it again
+    }
+
+    public void ResetText()
+    {
+        trickText.text = "";
+    }
+
+
 }
