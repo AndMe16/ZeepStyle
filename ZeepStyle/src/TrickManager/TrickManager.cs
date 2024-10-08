@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using ZeepSDK.Multiplayer;
+using ZeepSDK.PhotoMode;
 using ZeepSDK.Racing;
 using ZeepStyle;
 
@@ -32,6 +33,8 @@ public class Style_TrickManager : MonoBehaviour
 
     // Trick Display
     Style_TrickDisplay trickDisplay;
+    Coroutine hideTextOnLandCoroutine;
+    public Coroutine hideTextOnAirCoroutine;
 
     // Type of rotation
     Style_Yaw yaw;
@@ -47,6 +50,8 @@ public class Style_TrickManager : MonoBehaviour
         RacingApi.CrossedFinishLine += OnCrossedFinishLine;
         MultiplayerApi.DisconnectedFromGame += OnDisconnectedFromGame;
         RacingApi.RoundEnded += OnRoundEnded;
+        PhotoModeApi.PhotoModeEntered += OnPhotomodeEntered;
+        PhotoModeApi.PhotoModeExited += OnPhotomodeExited;
 
         yaw = FindObjectOfType<Style_Yaw>();
         pitch = FindObjectOfType<Style_Pitch>();
@@ -62,6 +67,7 @@ public class Style_TrickManager : MonoBehaviour
         isPlayerSpawned = false;
         OnLand();
         trickDisplay.DestroyComponent();
+        StopAllCoroutines();
     }
 
     private void OnDisconnectedFromGame()
@@ -69,6 +75,7 @@ public class Style_TrickManager : MonoBehaviour
         isPlayerSpawned = false;
         OnLand();
         trickDisplay.DestroyComponent();
+        StopAllCoroutines();
     }
 
     private void OnCrossedFinishLine(float time)
@@ -76,6 +83,7 @@ public class Style_TrickManager : MonoBehaviour
         isDead = true;
         OnLand();
         trickDisplay.DestroyComponent();
+        StopAllCoroutines();
     }
 
     private void OnCrashed(CrashReason reason)
@@ -83,6 +91,7 @@ public class Style_TrickManager : MonoBehaviour
         isDead = true;
         OnLand();
         trickDisplay.DestroyComponent();
+        StopAllCoroutines();
     }
 
     private void OnQuickReset()
@@ -91,6 +100,7 @@ public class Style_TrickManager : MonoBehaviour
         OnLand();
         trickDisplay.DestroyComponent();
         Plugin.Logger.LogInfo("Player quick reset");
+        StopAllCoroutines();
     }
 
     private void OnQuit()
@@ -99,6 +109,7 @@ public class Style_TrickManager : MonoBehaviour
         OnLand();
         trickDisplay.DestroyComponent();
         Plugin.Logger.LogInfo("Player quited");
+        StopAllCoroutines();
     }
 
     private void OnPlayerSpawned()
@@ -111,6 +122,15 @@ public class Style_TrickManager : MonoBehaviour
         Plugin.Logger.LogInfo("Player spawned");
     }
 
+    private void OnPhotomodeExited()
+    {
+        trickDisplay.ShowText();
+    }
+
+    private void OnPhotomodeEntered()
+    {
+        trickDisplay.HideText();
+    }
 
     // Method to detect if the rigidbody has landed back on the ground
     void OnLand()
@@ -122,7 +142,16 @@ public class Style_TrickManager : MonoBehaviour
         pitch.ClearVars();
         roll.ClearVars();
         
-        StartCoroutine(trickDisplay.HideTextAfterSeconds(2));
+        if (hideTextOnAirCoroutine != null)
+        {
+            StopCoroutine(hideTextOnAirCoroutine);
+        }
+        if (hideTextOnLandCoroutine != null)
+        {
+            StopCoroutine(hideTextOnLandCoroutine);
+        }
+        hideTextOnLandCoroutine = StartCoroutine(trickDisplay.HideTextAfterSeconds(2));
+
         // gizmoVisualization.CleanupAxisVisuals();
         // gizmoVisualization.CleanupReferencePlanes();
     }
@@ -139,6 +168,13 @@ public class Style_TrickManager : MonoBehaviour
         yaw.OnLeaveGround(initialUp,initialForward,initialRight);
         pitch.OnLeaveGround(initialUp,initialForward,initialRight);
         roll.OnLeaveGround(initialUp,initialForward,initialRight);
+
+        trickDisplay.ResetText();
+        
+        if (hideTextOnLandCoroutine != null)
+        {
+            StopCoroutine(hideTextOnLandCoroutine);
+        }
 
         // gizmoVisualization.CreateAxisVisuals(rb);
         // gizmoVisualization.CreateReferencePlanes(initialRotation, rb);
@@ -178,5 +214,4 @@ public class Style_TrickManager : MonoBehaviour
             wasInAir = isInAir; 
         } 
     }
-    
 }
