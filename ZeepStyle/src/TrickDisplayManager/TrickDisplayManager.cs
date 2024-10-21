@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.EnterpriseServices;
 using System.Linq;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -91,21 +92,21 @@ public class Style_TrickDisplay : MonoBehaviour
         trickList.isPositiveDelta = isPositiveDelta;
 
         string displayText;
-        if ((trickName == "Frontflip")||(trickName == "Backflip")){
-            displayText = trickName+rotation;
+        if ((trickName == "Frontflip") || (trickName == "Backflip")) {
+            displayText = trickName + rotation;
         }
         else
         {
             if (!isInverse)
             {
-                displayText = rotation + " "+ trickName;
+                displayText = rotation + " " + trickName;
             }
-            else{
+            else {
                 displayText = "Inverse" + " " + rotation + " " + trickName;
             }
         }
         // Check if the tricksList is not empty before accessing the last element
-        if (tricksList.Count == 0 || (tricksList[^1].trickName != trickName) || (tricksList[^1].isInverse != isInverse) || (tricksList[^1].isPositiveDelta != isInverse))
+        if (tricksList.Count == 0 || (tricksList[^1].trickName != trickName) || (tricksList[^1].isInverse != isInverse) || (tricksList[^1].isPositiveDelta != isPositiveDelta))
         {
             // Add only if the previous trick was different or the list is empty
             tricksList.Add(trickList);
@@ -128,10 +129,40 @@ public class Style_TrickDisplay : MonoBehaviour
     // Method to update the trick display
     private void UpdateTrickDisplay()
     {
-        Plugin.Logger.LogInfo($"Displaying tricks: {string.Join("\n", displayTextList)}");
-        trickText.text = string.Join("\n", displayTextList);  // Display tricks separated by new lines
+        // Start building the formatted text
+        StringBuilder formattedText = new StringBuilder();
+
+        // Loop through the displayTextList to format each line
+        for (int i = 0; i < displayTextList.Count; i++)
+        {
+            string line = displayTextList[i];
+
+            int i_inv = (displayTextList.Count - 1) - i;
+
+            int alpha = 255 - (i_inv * 25);  // Adjust the decrement based on your needs
+            alpha = alpha < 25 ? 25 : alpha;
+            alpha = Mathf.Clamp(alpha, 0, 255);  // Ensure alpha is within valid range
+
+            // Convert alpha to hexadecimal format
+            string alphaHex = alpha.ToString("X2");
+
+            // Apply the alpha value to a base color (e.g., white = FFFFFF, with varying alpha)
+            string colorWithAlpha = $"#FFFFFF{alphaHex}";  // White color with varying transparency
+
+            // Modify size based on the index
+            int size = 50 - i_inv * 4;  // Decrease size for each subsequent line
+            size = size < 10 ? 10 : size;
+            // Apply TextMeshPro rich text tags
+            formattedText.AppendLine($"<color={colorWithAlpha}><size={size}>{line}</size></color>");
+        }
+
+        Plugin.Logger.LogInfo($"Displaying tricks: {formattedText.ToString()}");
+
+        // Update the TextMeshPro text with the formatted text
+        trickText.text = formattedText.ToString();
     }
-    
+
+
     //Method to hide text after a delay
     public IEnumerator HideTextAfterSeconds(float seconds)
     {
