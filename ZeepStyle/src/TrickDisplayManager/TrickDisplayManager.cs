@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.EnterpriseServices;
 using System.Linq;
 using System.Text;
 using TMPro;
@@ -15,9 +14,6 @@ public class Style_TrickDisplay : MonoBehaviour
     private GameObject textObject;
 
     Style_TrickManager trickManager;
-
-    // List to store the tricks
-    public List<Tricks> tricksList = new List<Tricks>();
 
     // List to store the tricks text
     public List<string> displayTextList = new List<string>();
@@ -106,16 +102,16 @@ public class Style_TrickDisplay : MonoBehaviour
             }
         }
         // Check if the tricksList is not empty before accessing the last element
-        if (tricksList.Count == 0 || (tricksList[^1].trickName != trickName) || (tricksList[^1].isInverse != isInverse) || (tricksList[^1].isPositiveDelta != isPositiveDelta))
+        if (trickManager.tricksList.Count == 0 || (trickManager.tricksList[^1].trickName != trickName) || (trickManager.tricksList[^1].isInverse != isInverse) || (trickManager.tricksList[^1].isPositiveDelta != isPositiveDelta))
         {
             // Add only if the previous trick was different or the list is empty
-            tricksList.Add(trickList);
+            trickManager.tricksList.Add(trickList);
             displayTextList.Add(displayText);
         }
         else
         {
             // Modify the last trick if it's the same
-            tricksList[^1] = trickList;
+            trickManager.tricksList[^1] = trickList;
             displayTextList[^1] = (displayText);
         }
         UpdateTrickDisplay();
@@ -190,7 +186,7 @@ public class Style_TrickDisplay : MonoBehaviour
     public void ResetText()
     {
         trickText.text = "";
-        tricksList.Clear();   // Clear the list of tricks
+        trickManager.tricksList.Clear();   // Clear the list of tricks
         displayTextList.Clear();
     }
 
