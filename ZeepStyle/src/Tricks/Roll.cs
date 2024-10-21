@@ -14,6 +14,12 @@ public class Style_Roll : MonoBehaviour
     private int rollCount = 0;
     private float lastRollDelta; // To track the direction of the previous roll delta
 
+    Style_TrickDisplay trickDisplay;
+
+    void Start()
+    {
+        trickDisplay = FindObjectOfType<Style_TrickDisplay>();
+    }
 
     public void ClearVars()
     {
@@ -73,14 +79,32 @@ public class Style_Roll : MonoBehaviour
             {
                 rollCount++;
                 accumulatedRoll = 0; // Reset accumulated roll for the next 90º increment
-                // if (alignmentState ==0){
-                //     // Trigger the roll detection (you can add points, log it, etc.)
-                //     Plugin.Logger.LogInfo("Completed a 90º roll! Total rolls: " + rollCount);
-                    
-                // }
-                // else{
-                //     Plugin.Logger.LogInfo("Completed a 90º roll! Total rolls: " + rollCount);
-                // }  
+                                     
+                if (((rollCount % 2) == 0) && (rollCount != 0))
+                {
+                    string trickName;
+                    bool isInverse;
+                    bool isPositiveDelta;
+                    if (alignmentState == 0)
+                    {
+                        isInverse = false;
+                    }
+                    else
+                    {
+                        isInverse = true;
+                    }
+                    if (rollDelta > 0)
+                    {
+                        isPositiveDelta = true;
+                    }
+                    else
+                    {
+                        isPositiveDelta = false;
+                    }
+                    trickName = "Roll";
+                    string rotations_str = $"{rollCount * 90}";
+                    trickDisplay.DisplayTrick(trickName, rotations_str, isInverse, isPositiveDelta);
+                }
             }
         }
         else{
@@ -91,20 +115,6 @@ public class Style_Roll : MonoBehaviour
         // Update the previous roll and last roll delta for the next frame
         previousRoll = currentRoll;
         lastRollDelta = rollDelta; // Store current roll delta to detect direction change
-
-        // Display Trick Names
-        if (((rollCount % 2) == 0) && rollCount!=0)
-        {
-            string trickName;
-            if (alignmentState ==0){
-                trickName = $"{rollCount*90} Roll";
-            }
-            else{
-                trickName = $"Inverse {rollCount*90} Roll";
-            }
-            
-            FindObjectOfType<Style_TrickDisplay>().DisplayTrick(trickName);
-        }
     }
 
     private int CheckrollAlignment(Vector3 currentForward_)
