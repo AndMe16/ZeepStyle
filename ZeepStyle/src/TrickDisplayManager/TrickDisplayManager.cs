@@ -15,6 +15,8 @@ public class Style_TrickDisplay : MonoBehaviour
 
     Style_TrickManager trickManager;
 
+    private readonly int baseTextSize = 30;
+
     // List to store the tricks text
     public List<string> displayTextList = new List<string>();
 
@@ -45,7 +47,7 @@ public class Style_TrickDisplay : MonoBehaviour
         trickText = textObject.AddComponent<TextMeshProUGUI>();
 
         // Set text properties
-        trickText.fontSize = 50;
+        trickText.fontSize = baseTextSize;
         trickText.alignment = TextAlignmentOptions.Center;
         trickText.color = Color.white;
 
@@ -144,7 +146,7 @@ public class Style_TrickDisplay : MonoBehaviour
             string colorWithAlpha = $"#FFFFFF{alphaHex}";  // White color with varying transparency
 
             // Modify size based on the index
-            int size = 50 - i_inv * 4;  // Decrease size for each subsequent line
+            int size = baseTextSize - i_inv * 4;  // Decrease size for each subsequent line
             size = size < 10 ? 10 : size;
             // Apply TextMeshPro rich text tags
             formattedText.AppendLine($"<color={colorWithAlpha}><size={size}>{line}</size></color>");

@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "D:\\.NET_Proj\\ZeepStyle\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|d:\\.net_proj\\zeepstyle\\zeepstyle\\src\\pointsmanager\\trickpointsmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|solutionrelative:zeepstyle\\src\\pointsmanager\\trickpointsmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|d:\\.net_proj\\zeepstyle\\zeepstyle\\src\\trickdisplaymanager\\trickdisplaymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|solutionrelative:zeepstyle\\src\\trickdisplaymanager\\trickdisplaymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|d:\\.net_proj\\zeepstyle\\zeepstyle\\src\\tricks\\yaw.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|solutionrelative:zeepstyle\\src\\tricks\\yaw.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|d:\\.net_proj\\zeepstyle\\zeepstyle\\src\\pointsmanager\\trickpointsmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|solutionrelative:zeepstyle\\src\\pointsmanager\\trickpointsmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|d:\\.net_proj\\zeepstyle\\zeepstyle\\src\\tricks\\pitch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -17,10 +21,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|d:\\.net_proj\\zeepstyle\\zeepstyle\\src\\tricks\\roll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|solutionrelative:zeepstyle\\src\\tricks\\roll.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|d:\\.net_proj\\zeepstyle\\zeepstyle\\src\\tricks\\yaw.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|solutionrelative:zeepstyle\\src\\tricks\\yaw.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D62C1918-B7EA-4AF9-B488-72C3D19F16D6}|ZeepStyle\\ZeepStyle.csproj|d:\\.net_proj\\zeepstyle\\zeepstyle\\src\\trickmanager\\trickmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -34,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -46,13 +46,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "TrickPointsManager.cs",
               "DocumentMoniker": "D:\\.NET_Proj\\ZeepStyle\\ZeepStyle\\src\\PointsManager\\TrickPointsManager.cs",
               "RelativeDocumentMoniker": "ZeepStyle\\src\\PointsManager\\TrickPointsManager.cs",
-              "ToolTip": "D:\\.NET_Proj\\ZeepStyle\\ZeepStyle\\src\\PointsManager\\TrickPointsManager.cs*",
-              "RelativeToolTip": "ZeepStyle\\src\\PointsManager\\TrickPointsManager.cs*",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAAwBwAAAANAAAAAAAAAA==",
+              "ToolTip": "D:\\.NET_Proj\\ZeepStyle\\ZeepStyle\\src\\PointsManager\\TrickPointsManager.cs",
+              "RelativeToolTip": "ZeepStyle\\src\\PointsManager\\TrickPointsManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-21T19:50:34.633Z",
               "EditorCaption": ""
@@ -72,20 +72,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "Yaw.cs",
               "DocumentMoniker": "D:\\.NET_Proj\\ZeepStyle\\ZeepStyle\\src\\Tricks\\Yaw.cs",
               "RelativeDocumentMoniker": "ZeepStyle\\src\\Tricks\\Yaw.cs",
               "ToolTip": "D:\\.NET_Proj\\ZeepStyle\\ZeepStyle\\src\\Tricks\\Yaw.cs",
               "RelativeToolTip": "ZeepStyle\\src\\Tricks\\Yaw.cs",
-              "ViewState": "AgIAAF4AAAAAAAAAAAAkwG0AAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-21T15:22:32.215Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Roll.cs",
               "DocumentMoniker": "D:\\.NET_Proj\\ZeepStyle\\ZeepStyle\\src\\Tricks\\Roll.cs",
               "RelativeDocumentMoniker": "ZeepStyle\\src\\Tricks\\Roll.cs",
@@ -98,7 +98,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Pitch.cs",
               "DocumentMoniker": "D:\\.NET_Proj\\ZeepStyle\\ZeepStyle\\src\\Tricks\\Pitch.cs",
               "RelativeDocumentMoniker": "ZeepStyle\\src\\Tricks\\Pitch.cs",
@@ -111,13 +111,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "TrickDisplayManager.cs",
               "DocumentMoniker": "D:\\.NET_Proj\\ZeepStyle\\ZeepStyle\\src\\TrickDisplayManager\\TrickDisplayManager.cs",
               "RelativeDocumentMoniker": "ZeepStyle\\src\\TrickDisplayManager\\TrickDisplayManager.cs",
               "ToolTip": "D:\\.NET_Proj\\ZeepStyle\\ZeepStyle\\src\\TrickDisplayManager\\TrickDisplayManager.cs",
               "RelativeToolTip": "ZeepStyle\\src\\TrickDisplayManager\\TrickDisplayManager.cs",
-              "ViewState": "AgIAAFAAAAAAAAAAAAAIwGEAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAwBYAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-21T15:11:01.918Z",
               "EditorCaption": ""
