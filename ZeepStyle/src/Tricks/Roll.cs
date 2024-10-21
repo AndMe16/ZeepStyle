@@ -15,10 +15,12 @@ public class Style_Roll : MonoBehaviour
     private float lastRollDelta; // To track the direction of the previous roll delta
 
     Style_TrickDisplay trickDisplay;
+    Style_TrickPointsManager trickPointsManager;
 
     void Start()
     {
         trickDisplay = FindObjectOfType<Style_TrickDisplay>();
+        trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
     }
 
     public void ClearVars()
@@ -103,7 +105,15 @@ public class Style_Roll : MonoBehaviour
                     }
                     trickName = "Roll";
                     string rotations_str = $"{rollCount * 90}";
-                    trickDisplay.DisplayTrick(trickName, rotations_str, isInverse, isPositiveDelta);
+                    Trick trick = new()
+                    {
+                        trickName = trickName,
+                        rotation = rotations_str,
+                        isInverse = isInverse,
+                        isPositiveDelta = isPositiveDelta
+                    };
+                    int points = trickPointsManager.CalculatePoints(trick);
+                    trickDisplay.DisplayTrick(trick, points);
                 }
             }
         }

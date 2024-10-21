@@ -43,7 +43,7 @@ public class Style_TrickManager : MonoBehaviour
     Style_Roll roll;
 
     // Trick list
-    public List<Tricks> tricksList = new List<Tricks>();
+    public List<Trick> tricksList = new List<Trick>();
 
     void Start()
     {
@@ -155,7 +155,7 @@ public class Style_TrickManager : MonoBehaviour
             StopCoroutine(hideTextOnLandCoroutine);
         }
         hideTextOnLandCoroutine = StartCoroutine(trickDisplay.HideTextAfterSeconds(2));
-        trickDisplay.tricksList.Clear();   // Clear the list of tricks
+        tricksList.Clear();   // Clear the list of tricks
         trickDisplay.displayTextList.Clear();
 
         // gizmoVisualization.CleanupAxisVisuals();
@@ -220,4 +220,11 @@ public class Style_TrickManager : MonoBehaviour
             wasInAir = isInAir; 
         } 
     }
+}
+public class Trick
+{
+    public string trickName;
+    public string rotation;
+    public bool isInverse;
+    public bool isPositiveDelta;
 }

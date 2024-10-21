@@ -15,10 +15,12 @@ public class Style_Yaw : MonoBehaviour
     private float lastYawDelta; // To track the direction of the previous yaw delta
 
     Style_TrickDisplay trickDisplay;
+    Style_TrickPointsManager trickPointsManager;
 
     void Start()
     {
         trickDisplay = FindObjectOfType<Style_TrickDisplay>();
+        trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
     }
 
     public void ClearVars()
@@ -105,7 +107,15 @@ public class Style_Yaw : MonoBehaviour
 
                     trickName = "Spin";
                     string rotations_str = $"{spinCount * 90}";
-                    trickDisplay.DisplayTrick(trickName, rotations_str, isInverse, isPositiveDelta);
+                    Trick trick = new()
+                    {
+                        trickName = trickName,
+                        rotation = rotations_str,
+                        isInverse = isInverse,
+                        isPositiveDelta = isPositiveDelta
+                    };
+                    int points = trickPointsManager.CalculatePoints(trick);
+                    trickDisplay.DisplayTrick(trick, points);
                 }
             }
         }
