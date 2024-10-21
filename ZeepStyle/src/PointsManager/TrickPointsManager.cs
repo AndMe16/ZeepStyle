@@ -48,6 +48,16 @@ public class Style_TrickPointsManager : MonoBehaviour
         return 0;
     }
 
+    public int CalculateTotalPoints(List<Trick> tricksList)
+    {
+        int totalPoints = 0;
+        foreach (Trick trick in tricksList)
+        {
+            totalPoints += CalculatePoints(trick);
+        }
+        return totalPoints;
+    }
+
 }
 
 

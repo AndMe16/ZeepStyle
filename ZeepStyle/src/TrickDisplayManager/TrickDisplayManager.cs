@@ -14,6 +14,7 @@ public class Style_TrickDisplay : MonoBehaviour
     private GameObject textObject;
 
     Style_TrickManager trickManager;
+    Style_TrickPointsManager trickPointsManager;
 
     private readonly int baseTextSize = 30;
 
@@ -23,6 +24,7 @@ public class Style_TrickDisplay : MonoBehaviour
     void Start()
     {
         trickManager = FindObjectOfType<Style_TrickManager>();
+        trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
     }
 
     public void CreateDisplay()
@@ -82,7 +84,7 @@ public class Style_TrickDisplay : MonoBehaviour
     // Method to update the displayed trick name
     public void DisplayTrick(Trick trick, int points)
     {
-        Plugin.Logger.LogInfo($"Displaying tricks {trick.trickName}, {trick.rotation}, {trick.isInverse}");
+        //Plugin.Logger.LogInfo($"Displaying tricks {trick.trickName}, {trick.rotation}, {trick.isInverse}");
         Trick _trick = trick;
 
         string displayText;
@@ -152,12 +154,21 @@ public class Style_TrickDisplay : MonoBehaviour
             formattedText.AppendLine($"<color={colorWithAlpha}><size={size}>{line}</size></color>");
         }
 
-        Plugin.Logger.LogInfo($"Displaying tricks: {formattedText.ToString()}");
+        //Plugin.Logger.LogInfo($"Displaying tricks: {formattedText.ToString()}");
 
         // Update the TextMeshPro text with the formatted text
         trickText.text = formattedText.ToString();
     }
 
+    public void LandingDisplay()
+    {
+        if (trickManager.tricksList != null && trickManager.tricksList.Count >0)
+        {
+            UpdateTrickDisplay();
+            int totalPoints = trickPointsManager.CalculateTotalPoints(trickManager.tricksList);
+            trickText.text = trickText.text + $"<color=#f7e520><b>+{totalPoints}</b>";
+        }
+    }
 
     //Method to hide text after a delay
     public IEnumerator HideTextAfterSeconds(float seconds)
