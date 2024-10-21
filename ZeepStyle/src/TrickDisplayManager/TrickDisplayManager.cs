@@ -160,14 +160,10 @@ public class Style_TrickDisplay : MonoBehaviour
         trickText.text = formattedText.ToString();
     }
 
-    public void LandingDisplay()
+    public void LandingDisplay(int totalPoints)
     {
-        if (trickManager.tricksList != null && trickManager.tricksList.Count >0)
-        {
-            UpdateTrickDisplay();
-            int totalPoints = trickPointsManager.CalculateTotalPoints(trickManager.tricksList);
-            trickText.text = trickText.text + $"<color=#f7e520><b>+{totalPoints}</b>";
-        }
+        UpdateTrickDisplay();
+        trickText.text = trickText.text + $"<color=#f7e520><b>+{totalPoints}</b>";
     }
 
     //Method to hide text after a delay

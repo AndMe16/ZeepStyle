@@ -32,6 +32,9 @@ public class Style_TrickManager : MonoBehaviour
     // Debuging with gizmo visualization
     Style_GizmoVisualization gizmoVisualization;
 
+    // Trick Points
+    Style_TrickPointsManager trickPointsManager;
+
     // Trick Display
     Style_TrickDisplay trickDisplay;
     Coroutine hideTextOnLandCoroutine;
@@ -60,6 +63,8 @@ public class Style_TrickManager : MonoBehaviour
         yaw = FindObjectOfType<Style_Yaw>();
         pitch = FindObjectOfType<Style_Pitch>();
         roll = FindObjectOfType<Style_Roll>();
+
+        trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
 
         trickDisplay = FindObjectOfType<Style_TrickDisplay>();
 
@@ -155,7 +160,12 @@ public class Style_TrickManager : MonoBehaviour
             StopCoroutine(hideTextOnLandCoroutine);
         }
         hideTextOnLandCoroutine = StartCoroutine(trickDisplay.HideTextAfterSeconds(2));
-        trickDisplay.LandingDisplay();
+        if (tricksList != null && tricksList.Count > 0)
+        {
+            int totalPoints = trickPointsManager.CalculateTotalJumpPoints(tricksList);
+            trickPointsManager.AddToTotalRunPoints(totalPoints);
+            trickDisplay.LandingDisplay(totalPoints);
+        }
         tricksList.Clear();   // Clear the list of tricks
         trickDisplay.displayTextList.Clear();
 
