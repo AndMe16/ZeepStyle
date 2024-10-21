@@ -13,6 +13,8 @@ public class Style_TrickPointsManager : MonoBehaviour
         { "Roll", 200 }
     };
 
+    public int totalRunPoints = 0;
+
     // Method to calculate points for each trick
     public int CalculatePoints(Trick trick)
     {
@@ -48,7 +50,7 @@ public class Style_TrickPointsManager : MonoBehaviour
         return 0;
     }
 
-    public int CalculateTotalPoints(List<Trick> tricksList)
+    public int CalculateTotalJumpPoints(List<Trick> tricksList)
     {
         int totalPoints = 0;
         foreach (Trick trick in tricksList)
@@ -56,6 +58,12 @@ public class Style_TrickPointsManager : MonoBehaviour
             totalPoints += CalculatePoints(trick);
         }
         return totalPoints;
+    }
+
+    public void AddToTotalRunPoints(int extraPoints)
+    {
+        totalRunPoints += extraPoints;
+        Plugin.Logger.LogInfo($"Adding total run points: {totalRunPoints}  (+{extraPoints}) ");
     }
 
 }
