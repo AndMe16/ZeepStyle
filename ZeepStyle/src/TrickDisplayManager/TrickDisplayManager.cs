@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.EnterpriseServices;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -12,6 +14,12 @@ public class Style_TrickDisplay : MonoBehaviour
     private GameObject textObject;
 
     Style_TrickManager trickManager;
+
+    // List to store the tricks
+    public List<Tricks> tricksList = new List<Tricks>();
+
+    // List to store the tricks text
+    public List<string> displayTextList = new List<string>();
 
     void Start()
     {
@@ -73,9 +81,43 @@ public class Style_TrickDisplay : MonoBehaviour
     }
 
     // Method to update the displayed trick name
-    public void DisplayTrick(string trickName)
+    public void DisplayTrick(string trickName, string rotation, bool isInverse, bool isPositiveDelta)
     {
-        trickText.text = $"{trickName}";
+        Plugin.Logger.LogInfo($"Displaying tricks {trickName}, {rotation}, {isInverse}");
+        Tricks trickList = new();
+        trickList.trickName = trickName;
+        trickList.rotation = rotation;
+        trickList.isInverse = isInverse;
+        trickList.isPositiveDelta = isPositiveDelta;
+
+        string displayText;
+        if ((trickName == "Frontflip")||(trickName == "Backflip")){
+            displayText = trickName+rotation;
+        }
+        else
+        {
+            if (!isInverse)
+            {
+                displayText = rotation + " "+ trickName;
+            }
+            else{
+                displayText = "Inverse" + " " + rotation + " " + trickName;
+            }
+        }
+        // Check if the tricksList is not empty before accessing the last element
+        if (tricksList.Count == 0 || (tricksList[^1].trickName != trickName) || (tricksList[^1].isInverse != isInverse) || (tricksList[^1].isPositiveDelta != isInverse))
+        {
+            // Add only if the previous trick was different or the list is empty
+            tricksList.Add(trickList);
+            displayTextList.Add(displayText);
+        }
+        else
+        {
+            // Modify the last trick if it's the same
+            tricksList[^1] = trickList;
+            displayTextList[^1] = (displayText);
+        }
+        UpdateTrickDisplay();
         if (trickManager.hideTextOnAirCoroutine != null)
         {
             StopCoroutine(trickManager.hideTextOnAirCoroutine);
@@ -83,11 +125,19 @@ public class Style_TrickDisplay : MonoBehaviour
         trickManager.hideTextOnAirCoroutine = StartCoroutine(HideTextAfterSeconds(4));
     }
 
-    // Optional: Method to hide text after a delay
+    // Method to update the trick display
+    private void UpdateTrickDisplay()
+    {
+        Plugin.Logger.LogInfo($"Displaying tricks: {string.Join("\n", displayTextList)}");
+        trickText.text = string.Join("\n", displayTextList);  // Display tricks separated by new lines
+    }
+    
+    //Method to hide text after a delay
     public IEnumerator HideTextAfterSeconds(float seconds)
     {
         yield return new WaitForSeconds(seconds);
         trickText.text = "";
+        displayTextList.Clear();
     }
 
     public void DestroyComponent()
@@ -109,7 +159,16 @@ public class Style_TrickDisplay : MonoBehaviour
     public void ResetText()
     {
         trickText.text = "";
+        tricksList.Clear();   // Clear the list of tricks
+        displayTextList.Clear();
     }
 
+}
 
+public class Tricks
+{
+    public string trickName;
+    public string rotation;
+    public bool isInverse;
+    public bool isPositiveDelta;
 }

@@ -14,6 +14,12 @@ public class Style_Pitch : MonoBehaviour
     private int flipCount = 0;
     private float lastPitchDelta; // To track the direction of the previous pitch delta
 
+    Style_TrickDisplay trickDisplay;
+
+    void Start()
+    {
+        trickDisplay = FindObjectOfType<Style_TrickDisplay>();
+    }
 
     public void ClearVars()
     {
@@ -73,27 +79,33 @@ public class Style_Pitch : MonoBehaviour
             {
                 flipCount++;
                 accumulatedPitch = 0; // Reset accumulated pitch for the next 90º increment
-                // if (alignmentState ==0){
-                //     // Trigger the flip detection (you can add points, log it, etc.)
-                //     if (pitchDelta>0)
-                //     {
-                //         Plugin.Logger.LogInfo("Completed a 90º Front Flip! Total Flips: " + flipCount);
-                //     }
-                //     else
-                //     {
-                //         Plugin.Logger.LogInfo("Completed a 90º Back Flip! Total Flips: " + flipCount);
-                //     }
-                // }
-                // else{
-                //     if (pitchDelta>0)
-                //     {
-                //         Plugin.Logger.LogInfo("Completed a 90º reverse BackFlip! Total Flips: " + flipCount);
-                //     }
-                //     else
-                //     {
-                //         Plugin.Logger.LogInfo("Completed a 90º reverse Front Flip! Total Flips: " + flipCount);
-                //     }
-                // }  
+
+                if (((flipCount % 4) == 0) && (flipCount != 0))
+                {
+                    string trickName;
+                    bool isInverse;
+                    bool isPositiveDelta;
+                    if (alignmentState == 0)
+                    {
+                        isInverse = false;
+                    }
+                    else
+                    {
+                        isInverse = true;
+                    }
+                    if (pitchDelta > 0)
+                    {
+                        isPositiveDelta = true;
+                        trickName = "Frontflip";
+                    }
+                    else
+                    {
+                        isPositiveDelta = false;
+                        trickName = $"Backflip";
+                    }
+                    string rotations_str = $"x{flipCount / 4}";
+                    trickDisplay.DisplayTrick(trickName, rotations_str, isInverse, isPositiveDelta);
+                }
             }
         }
         else{
@@ -104,34 +116,6 @@ public class Style_Pitch : MonoBehaviour
         // Update the previous pitch and last pitch delta for the next frame
         previousPitch = currentPitch;
         lastPitchDelta = pitchDelta; // Store current pitch delta to detect direction change
-
-        // Display Trick Names
-        if (((flipCount % 4) == 0) && flipCount !=0)
-        {
-            string trickName;
-            if (alignmentState ==0){
-                if (pitchDelta>0)
-                {
-                    trickName = $"Frontflip x{flipCount/4}";
-                }
-                else
-                {
-                    trickName = $"Backflip x{flipCount/4}";
-                }
-            }
-            else{
-                if (pitchDelta<0)
-                {
-                    trickName = $"Inverse Frontflip x{flipCount/4}";
-                }
-                else
-                {
-                    trickName = $"Inverse Backflip x{flipCount/4}";
-                }
-            }
-            
-            FindObjectOfType<Style_TrickDisplay>().DisplayTrick(trickName);
-        }
     }
 
     private int CheckFlipAlignment(Vector3 currentRight_)

@@ -151,6 +151,8 @@ public class Style_TrickManager : MonoBehaviour
             StopCoroutine(hideTextOnLandCoroutine);
         }
         hideTextOnLandCoroutine = StartCoroutine(trickDisplay.HideTextAfterSeconds(2));
+        trickDisplay.tricksList.Clear();   // Clear the list of tricks
+        trickDisplay.displayTextList.Clear();
 
         // gizmoVisualization.CleanupAxisVisuals();
         // gizmoVisualization.CleanupReferencePlanes();
