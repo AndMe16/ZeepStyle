@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using ZeepSDK.Multiplayer;
 using ZeepSDK.PhotoMode;
@@ -40,6 +41,9 @@ public class Style_TrickManager : MonoBehaviour
     Style_Yaw yaw;
     Style_Pitch pitch;
     Style_Roll roll;
+
+    // Trick list
+    public List<Tricks> tricksList = new List<Tricks>();
 
     void Start()
     {
