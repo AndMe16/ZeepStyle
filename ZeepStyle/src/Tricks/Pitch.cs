@@ -15,10 +15,12 @@ public class Style_Pitch : MonoBehaviour
     private float lastPitchDelta; // To track the direction of the previous pitch delta
 
     Style_TrickDisplay trickDisplay;
+    Style_TrickPointsManager trickPointsManager;
 
     void Start()
     {
         trickDisplay = FindObjectOfType<Style_TrickDisplay>();
+        trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
     }
 
     public void ClearVars()
@@ -103,8 +105,16 @@ public class Style_Pitch : MonoBehaviour
                         isPositiveDelta = false;
                         trickName = $"Backflip";
                     }
-                    string rotations_str = $"x{flipCount / 4}";
-                    trickDisplay.DisplayTrick(trickName, rotations_str, isInverse, isPositiveDelta);
+                    string rotations_str = $"{flipCount / 4}";
+                    Trick trick = new()
+                    {
+                        trickName = trickName,
+                        rotation = rotations_str,
+                        isInverse = isInverse,
+                        isPositiveDelta = isPositiveDelta
+                    };
+                    int points = trickPointsManager.CalculatePoints(trick);
+                    trickDisplay.DisplayTrick(trick, points);
                 }
             }
         }

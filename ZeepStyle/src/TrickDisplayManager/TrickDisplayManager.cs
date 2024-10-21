@@ -78,40 +78,38 @@ public class Style_TrickDisplay : MonoBehaviour
     }
 
     // Method to update the displayed trick name
-    public void DisplayTrick(string trickName, string rotation, bool isInverse, bool isPositiveDelta)
+    public void DisplayTrick(Trick trick, int points)
     {
-        Plugin.Logger.LogInfo($"Displaying tricks {trickName}, {rotation}, {isInverse}");
-        Tricks trickList = new();
-        trickList.trickName = trickName;
-        trickList.rotation = rotation;
-        trickList.isInverse = isInverse;
-        trickList.isPositiveDelta = isPositiveDelta;
+        Plugin.Logger.LogInfo($"Displaying tricks {trick.trickName}, {trick.rotation}, {trick.isInverse}");
+        Trick _trick = trick;
 
         string displayText;
-        if ((trickName == "Frontflip") || (trickName == "Backflip")) {
-            displayText = trickName + rotation;
+        if ((_trick.trickName == "Frontflip") || (_trick.trickName == "Backflip")) {
+            displayText = _trick.trickName + $" x{_trick.rotation}";
         }
         else
         {
-            if (!isInverse)
-            {
-                displayText = rotation + " " + trickName;
-            }
-            else {
-                displayText = "Inverse" + " " + rotation + " " + trickName;
-            }
+            displayText = _trick.rotation + " " + _trick.trickName;  
         }
+
+        if (_trick.isInverse)
+        {
+            displayText = "Inverse" + " " + displayText;
+        }
+
+        displayText = displayText + $" (+{points})";
+
         // Check if the tricksList is not empty before accessing the last element
-        if (trickManager.tricksList.Count == 0 || (trickManager.tricksList[^1].trickName != trickName) || (trickManager.tricksList[^1].isInverse != isInverse) || (trickManager.tricksList[^1].isPositiveDelta != isPositiveDelta))
+        if (trickManager.tricksList.Count == 0 || (trickManager.tricksList[^1].trickName != _trick.trickName) || (trickManager.tricksList[^1].isInverse != _trick.isInverse) || (trickManager.tricksList[^1].isPositiveDelta != _trick.isPositiveDelta))
         {
             // Add only if the previous trick was different or the list is empty
-            trickManager.tricksList.Add(trickList);
+            trickManager.tricksList.Add(_trick);
             displayTextList.Add(displayText);
         }
         else
         {
             // Modify the last trick if it's the same
-            trickManager.tricksList[^1] = trickList;
+            trickManager.tricksList[^1] = _trick;
             displayTextList[^1] = (displayText);
         }
         UpdateTrickDisplay();
@@ -190,12 +188,4 @@ public class Style_TrickDisplay : MonoBehaviour
         displayTextList.Clear();
     }
 
-}
-
-public class Tricks
-{
-    public string trickName;
-    public string rotation;
-    public bool isInverse;
-    public bool isPositiveDelta;
 }
