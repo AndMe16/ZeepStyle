@@ -16,6 +16,7 @@ public class Plugin : BaseUnityPlugin
     private void Awake()
     {
         // Plugin startup logic
+        Instance = this; // Assign the static instance
         Logger = base.Logger;
         harmony = new Harmony("andme123.zeepstyle");
         harmony.PatchAll();
