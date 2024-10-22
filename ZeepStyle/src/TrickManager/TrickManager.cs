@@ -6,6 +6,7 @@ using ZeepSDK.PhotoMode;
 using ZeepSDK.Racing;
 using ZeepSDK.Level;
 using ZeepStyle;
+using ZeepkistClient;
 
 
 public class Style_TrickManager : MonoBehaviour
@@ -64,6 +65,8 @@ public class Style_TrickManager : MonoBehaviour
         PhotoModeApi.PhotoModeEntered += OnPhotomodeEntered;
         PhotoModeApi.PhotoModeExited += OnPhotomodeExited;
         RacingApi.LevelLoaded += OnLevelLoaded;
+        Patch_GetResults2.OnGetResults2Entered += HandleResults;
+
 
         yaw = FindObjectOfType<Style_Yaw>();
         pitch = FindObjectOfType<Style_Pitch>();
@@ -219,6 +222,29 @@ public class Style_TrickManager : MonoBehaviour
         trickPointsManager.currentHash = LevelApi.CurrentHash;
         Plugin.Logger.LogInfo($"Current Level Hash: {trickPointsManager.currentHash}");
         trickPointsManager.LoadLevelPB(trickPointsManager.currentHash);
+        trickPointsManager.ResetCurrentSessionPoints();
+    }
+
+    private void HandleResults(bool racePointsMatch)
+    {
+        Plugin.Logger.LogInfo("Player crossed the finish line");
+        if (racePointsMatch)
+        {
+            // Update current session PB if the current run is better
+            if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbCurrentSession)
+            {
+                trickPointsManager.bestPbCurrentSession = trickPointsManager.totalRunPoints;
+                pointsUIManager.bestPbCurrentSessionText.text = $"Best PB (Current Session): {trickPointsManager.bestPbCurrentSession}";
+            }
+
+            // Update all-time PB if necessary
+            if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbAllTime)
+            {
+                trickPointsManager.bestPbAllTime = trickPointsManager.totalRunPoints;
+                pointsUIManager.bestPbAllTimeText.text = $"Best PB (All Sessions): {trickPointsManager.bestPbAllTime}";
+                trickPointsManager.SaveLevelPB(trickPointsManager.currentHash);
+            }
+        }
     }
 
     void Update()

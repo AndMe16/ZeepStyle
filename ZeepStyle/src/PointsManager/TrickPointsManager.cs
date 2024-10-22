@@ -87,30 +87,19 @@ public class Style_TrickPointsManager : MonoBehaviour
         totalRunPoints = 0;
     }
 
+    public void ResetCurrentSessionPoints()
+    {
+        bestPbCurrentSession = 0;
+    }
+
     // Call this method to update the current run points
     public void UpdateCurrentRunPoints(int points)
     {
         totalRunPoints = points;
-
-        pointsUIManager.currentRunPointsText.text = $"Current Run Points: {totalRunPoints}";
-
-        // Update current session PB if the current run is better
-        if (totalRunPoints > bestPbCurrentSession)
-        {
-            bestPbCurrentSession = totalRunPoints;
-            pointsUIManager.bestPbCurrentSessionText.text = $"Best PB (Current Session): {bestPbCurrentSession}";
-        }
-
-        // Update all-time PB if necessary
-        if (totalRunPoints > bestPbAllTime)
-        {
-            bestPbAllTime = totalRunPoints;
-            pointsUIManager.bestPbAllTimeText.text = $"Best PB (All Sessions): {bestPbAllTime}";
-            SaveLevelPB(currentHash);
-        }
+        pointsUIManager.currentRunPointsText.text = $"Current Run Points: {totalRunPoints}";              
     }
 
-    private void SaveLevelPB(string levelHash)
+    public void SaveLevelPB(string levelHash)
     {
         if (levelHash == null)
         {
