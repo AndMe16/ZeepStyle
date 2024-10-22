@@ -10,7 +10,9 @@ public class Plugin : BaseUnityPlugin
 {
     private Harmony harmony;
     internal static new ManualLogSource Logger;
-        
+
+    public static Plugin Instance { get; private set; }
+
     private void Awake()
     {
         // Plugin startup logic

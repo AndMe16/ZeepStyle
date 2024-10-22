@@ -60,7 +60,7 @@ public class Style_PointsUIManager : MonoBehaviour
 
         TextMeshProUGUI textMesh = textObject.AddComponent<TextMeshProUGUI>();
         textMesh.text = textContent;
-        textMesh.fontSize = 20;
+        textMesh.fontSize = 15;
         textMesh.alignment = TextAlignmentOptions.Center;
 
         // Try to assign one of the available fonts

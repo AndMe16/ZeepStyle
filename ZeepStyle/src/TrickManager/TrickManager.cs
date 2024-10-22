@@ -216,8 +216,9 @@ public class Style_TrickManager : MonoBehaviour
 
     private void OnLevelLoaded()
     {
-        string currentHash = LevelApi.CurrentHash;
-        Plugin.Logger.LogInfo($"Current Level Hash: {currentHash}");
+        trickPointsManager.currentHash = LevelApi.CurrentHash;
+        Plugin.Logger.LogInfo($"Current Level Hash: {trickPointsManager.currentHash}");
+        trickPointsManager.LoadLevelPB(trickPointsManager.currentHash);
     }
 
     void Update()
