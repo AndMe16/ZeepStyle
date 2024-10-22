@@ -25,6 +25,7 @@ public class Plugin : BaseUnityPlugin
         //gameObject.AddComponent<Style_GizmoVisualization>();
         gameObject.AddComponent<Style_TrickDisplay>();
         gameObject.AddComponent<Style_TrickPointsManager>();
+        gameObject.AddComponent<Style_PointsUIManager>();
     }
 
     private void OnDestroy()

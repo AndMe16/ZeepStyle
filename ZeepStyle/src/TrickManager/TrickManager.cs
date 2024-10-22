@@ -48,6 +48,9 @@ public class Style_TrickManager : MonoBehaviour
     // Trick list
     public List<Trick> tricksList = new List<Trick>();
 
+    // PB Points UI
+    Style_PointsUIManager pointsUIManager;
+
     void Start()
     {
         RacingApi.PlayerSpawned += OnPlayerSpawned;
@@ -68,6 +71,8 @@ public class Style_TrickManager : MonoBehaviour
 
         trickDisplay = FindObjectOfType<Style_TrickDisplay>();
 
+        pointsUIManager = FindObjectOfType<Style_PointsUIManager>();
+
         gizmoVisualization = FindObjectOfType<Style_GizmoVisualization>();
     }
 
@@ -76,6 +81,7 @@ public class Style_TrickManager : MonoBehaviour
         isPlayerSpawned = false;
         OnLand();
         trickDisplay.DestroyComponent();
+        pointsUIManager.DestroyComponent();
         StopAllCoroutines();
     }
 
@@ -84,6 +90,7 @@ public class Style_TrickManager : MonoBehaviour
         isPlayerSpawned = false;
         OnLand();
         trickDisplay.DestroyComponent();
+        pointsUIManager.DestroyComponent();
         StopAllCoroutines();
     }
 
@@ -92,6 +99,7 @@ public class Style_TrickManager : MonoBehaviour
         isDead = true;
         OnLand();
         trickDisplay.DestroyComponent();
+        pointsUIManager.DestroyComponent();
         StopAllCoroutines();
     }
 
@@ -100,6 +108,7 @@ public class Style_TrickManager : MonoBehaviour
         isDead = true;
         OnLand();
         trickDisplay.DestroyComponent();
+        pointsUIManager.DestroyComponent();
         StopAllCoroutines();
     }
 
@@ -108,6 +117,7 @@ public class Style_TrickManager : MonoBehaviour
         isPlayerSpawned = false;
         OnLand();
         trickDisplay.DestroyComponent();
+        pointsUIManager.DestroyComponent();
         Plugin.Logger.LogInfo("Player quick reset");
         StopAllCoroutines();
     }
@@ -117,6 +127,7 @@ public class Style_TrickManager : MonoBehaviour
         isPlayerSpawned = false;
         OnLand();
         trickDisplay.DestroyComponent();
+        pointsUIManager.DestroyComponent();
         Plugin.Logger.LogInfo("Player quited");
         StopAllCoroutines();
     }
@@ -127,7 +138,10 @@ public class Style_TrickManager : MonoBehaviour
         OnLand();
         isDead = false;
         rb = PatchGetRB.Rb;
+        trickPointsManager.ResetTotalRunPoints();
         trickDisplay.CreateDisplay();
+        pointsUIManager.CreateUI();
+        pointsUIManager.UpdateCurrentRunPoints(0);
         Plugin.Logger.LogInfo("Player spawned");
     }
 
@@ -163,8 +177,9 @@ public class Style_TrickManager : MonoBehaviour
         if (tricksList != null && tricksList.Count > 0)
         {
             int totalPoints = trickPointsManager.CalculateTotalJumpPoints(tricksList);
-            trickPointsManager.AddToTotalRunPoints(totalPoints);
+            int totalRunPoints = trickPointsManager.AddToTotalRunPoints(totalPoints);
             trickDisplay.LandingDisplay(totalPoints);
+            pointsUIManager.UpdateCurrentRunPoints(totalRunPoints);
         }
         tricksList.Clear();   // Clear the list of tricks
         trickDisplay.displayTextList.Clear();
@@ -213,7 +228,7 @@ public class Style_TrickManager : MonoBehaviour
                 if (!wasInAir)
                 {
                     OnLeaveGround();
-                    Plugin.Logger.LogInfo("Player is Airborne!");
+                    //Plugin.Logger.LogInfo("Player is Airborne!");
                 }
 
                 // Tricks
@@ -226,7 +241,7 @@ public class Style_TrickManager : MonoBehaviour
             }
             else if(wasInAir){
                 OnLand();
-                Plugin.Logger.LogInfo("Player is no longer Airborne!");
+                //Plugin.Logger.LogInfo("Player is no longer Airborne!");
             }
             wasInAir = isInAir; 
         } 
