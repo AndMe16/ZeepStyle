@@ -60,10 +60,16 @@ public class Style_TrickPointsManager : MonoBehaviour
         return totalPoints;
     }
 
-    public void AddToTotalRunPoints(int extraPoints)
+    public int AddToTotalRunPoints(int extraPoints)
     {
         totalRunPoints += extraPoints;
         Plugin.Logger.LogInfo($"Adding total run points: {totalRunPoints}  (+{extraPoints}) ");
+        return totalRunPoints;
+    }
+
+    public void ResetTotalRunPoints()
+    {
+        totalRunPoints = 0;
     }
 
 }

@@ -30,7 +30,7 @@ public class Style_TrickDisplay : MonoBehaviour
     public void CreateDisplay()
     {
         // Create a Canvas to hold the TextMeshPro element
-        canvasObject = new GameObject("TrickCanvas");
+        canvasObject = new GameObject("Style_TrickCanvas");
         Canvas canvas = canvasObject.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = -1;  // Higher values render above others
@@ -78,7 +78,7 @@ public class Style_TrickDisplay : MonoBehaviour
         // Set the position and size of the text object
         RectTransform textRectTransform = trickText.GetComponent<RectTransform>();
         textRectTransform.sizeDelta = new Vector2(600, 200);
-        textRectTransform.anchoredPosition = new Vector2(0, 300); // Position near the bottom of the screen
+        textRectTransform.anchoredPosition = new Vector2(0, 300); // Position near the middle-top of the screen
     }
 
     // Method to update the displayed trick name
