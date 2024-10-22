@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using ZeepSDK.Storage;
 using ZeepStyle;
 
 public class Style_TrickPointsManager : MonoBehaviour
@@ -17,11 +18,16 @@ public class Style_TrickPointsManager : MonoBehaviour
     public int bestPbAllTime = 0;
     public int bestPbCurrentSession = 0;
 
+    public string currentHash = string.Empty;
+
     Style_PointsUIManager pointsUIManager;
+
+    IModStorage pointsPBsStorage;
 
     void Start()
     {
         pointsUIManager = FindObjectOfType<Style_PointsUIManager>();
+        pointsPBsStorage = StorageApi.CreateModStorage(Plugin.Instance);
     }
 
     // Method to calculate points for each trick
@@ -100,6 +106,35 @@ public class Style_TrickPointsManager : MonoBehaviour
         {
             bestPbAllTime = totalRunPoints;
             pointsUIManager.bestPbAllTimeText.text = $"Best PB (All Sessions): {bestPbAllTime}";
+            SaveLevelPB(currentHash);
+        }
+    }
+
+    private void SaveLevelPB(string levelHash)
+    {
+        if (levelHash == null)
+        {
+            Plugin.Logger.LogError("SaveLevelPB: Current level hash is null");
+            return;
+        }
+        pointsPBsStorage.SaveToJson($"{levelHash}_PB", bestPbAllTime);
+    }
+
+    public void LoadLevelPB(string levelHash)
+    {
+        if (levelHash == null)
+        {
+            Plugin.Logger.LogError("LoadLevelPB: Current level hash is null");
+            return;
+        }
+        if (pointsPBsStorage.JsonFileExists($"{levelHash}_PB"))
+        {
+            bestPbAllTime = pointsPBsStorage.LoadFromJson<int>($"{levelHash}_PB");
+        }
+        else
+        {
+            Plugin.Logger.LogInfo($"{levelHash}_PB was not found, unable to load PB points");
+            bestPbAllTime = 0;
         }
     }
 
