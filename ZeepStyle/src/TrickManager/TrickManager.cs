@@ -4,6 +4,7 @@ using UnityEngine;
 using ZeepSDK.Multiplayer;
 using ZeepSDK.PhotoMode;
 using ZeepSDK.Racing;
+using ZeepSDK.Level;
 using ZeepStyle;
 
 
@@ -62,6 +63,7 @@ public class Style_TrickManager : MonoBehaviour
         RacingApi.RoundEnded += OnRoundEnded;
         PhotoModeApi.PhotoModeEntered += OnPhotomodeEntered;
         PhotoModeApi.PhotoModeExited += OnPhotomodeExited;
+        RacingApi.LevelLoaded += OnLevelLoaded;
 
         yaw = FindObjectOfType<Style_Yaw>();
         pitch = FindObjectOfType<Style_Pitch>();
@@ -141,7 +143,7 @@ public class Style_TrickManager : MonoBehaviour
         trickPointsManager.ResetTotalRunPoints();
         trickDisplay.CreateDisplay();
         pointsUIManager.CreateUI();
-        pointsUIManager.UpdateCurrentRunPoints(0);
+        trickPointsManager.UpdateCurrentRunPoints(0);
         Plugin.Logger.LogInfo("Player spawned");
     }
 
@@ -179,7 +181,7 @@ public class Style_TrickManager : MonoBehaviour
             int totalPoints = trickPointsManager.CalculateTotalJumpPoints(tricksList);
             int totalRunPoints = trickPointsManager.AddToTotalRunPoints(totalPoints);
             trickDisplay.LandingDisplay(totalPoints);
-            pointsUIManager.UpdateCurrentRunPoints(totalRunPoints);
+            trickPointsManager.UpdateCurrentRunPoints(totalRunPoints);
         }
         tricksList.Clear();   // Clear the list of tricks
         trickDisplay.displayTextList.Clear();
@@ -210,6 +212,12 @@ public class Style_TrickManager : MonoBehaviour
 
         // gizmoVisualization.CreateAxisVisuals(rb);
         // gizmoVisualization.CreateReferencePlanes(initialRotation, rb);
+    }
+
+    private void OnLevelLoaded()
+    {
+        string currentHash = LevelApi.CurrentHash;
+        Plugin.Logger.LogInfo($"Current Level Hash: {currentHash}");
     }
 
     void Update()

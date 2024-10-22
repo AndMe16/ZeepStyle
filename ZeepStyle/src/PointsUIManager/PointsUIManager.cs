@@ -8,16 +8,20 @@ using ZeepStyle;
 public class Style_PointsUIManager : MonoBehaviour
 {
     private Canvas canvas;
-    private TextMeshProUGUI bestPbAllTimeText;
-    private TextMeshProUGUI bestPbCurrentSessionText;
-    private TextMeshProUGUI currentRunPointsText;
+    public TextMeshProUGUI bestPbAllTimeText;
+    public TextMeshProUGUI bestPbCurrentSessionText;
+    public TextMeshProUGUI currentRunPointsText;
 
     GameObject canvasObject;
     GameObject textObject;
 
-    private int bestPbAllTime = 0;
-    private int bestPbCurrentSession = 0;
-    private int currentRunPoints = 0;
+    // Trick Points
+    Style_TrickPointsManager trickPointsManager;
+
+    void Start()
+    {
+        trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
+    }
 
     public void CreateUI()
     {
@@ -35,13 +39,13 @@ public class Style_PointsUIManager : MonoBehaviour
         canvasObject.AddComponent<GraphicRaycaster>();
 
         // Create Best PB All Time Text
-        bestPbAllTimeText = CreateTextElement($"Best PB (All Sessions): {bestPbAllTime}", new Vector2(0, 500));
+        bestPbAllTimeText = CreateTextElement($"Best PB (All Sessions): {trickPointsManager.bestPbAllTime}", new Vector2(0, 500));
 
         // Create Best PB Current Session Text
-        bestPbCurrentSessionText = CreateTextElement($"Best PB (Current Session): {bestPbCurrentSession}", new Vector2(0, 480));
+        bestPbCurrentSessionText = CreateTextElement($"Best PB (Current Session): {trickPointsManager.bestPbCurrentSession}", new Vector2(0, 480));
 
         // Create Current Run Points Text
-        currentRunPointsText = CreateTextElement($"Current Run Points: {currentRunPoints}", new Vector2(0, 460));
+        currentRunPointsText = CreateTextElement($"Current Run Points: {trickPointsManager.totalRunPoints}", new Vector2(0, 460));
     }
 
     // Helper method to create TextMeshProUGUI elements
@@ -84,26 +88,6 @@ public class Style_PointsUIManager : MonoBehaviour
         return textMesh;
     }
 
-    // Call this method to update the current run points
-    public void UpdateCurrentRunPoints(int points)
-    {
-        currentRunPoints = points;
-        currentRunPointsText.text = $"Current Run Points: {currentRunPoints}";
-
-        // Update current session PB if the current run is better
-        if (currentRunPoints > bestPbCurrentSession)
-        {
-            bestPbCurrentSession = currentRunPoints;
-            bestPbCurrentSessionText.text = $"Best PB (Current Session): {bestPbCurrentSession}";
-        }
-
-        // Update all-time PB if necessary
-        if (currentRunPoints > bestPbAllTime)
-        {
-            bestPbAllTime = currentRunPoints;
-            bestPbAllTimeText.text = $"Best PB (All Sessions): {bestPbAllTime}";
-        }
-    }
 
     public void DestroyComponent()
     {

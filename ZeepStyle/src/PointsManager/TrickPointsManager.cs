@@ -14,6 +14,15 @@ public class Style_TrickPointsManager : MonoBehaviour
     };
 
     public int totalRunPoints = 0;
+    public int bestPbAllTime = 0;
+    public int bestPbCurrentSession = 0;
+
+    Style_PointsUIManager pointsUIManager;
+
+    void Start()
+    {
+        pointsUIManager = FindObjectOfType<Style_PointsUIManager>();
+    }
 
     // Method to calculate points for each trick
     public int CalculatePoints(Trick trick)
@@ -70,6 +79,28 @@ public class Style_TrickPointsManager : MonoBehaviour
     public void ResetTotalRunPoints()
     {
         totalRunPoints = 0;
+    }
+
+    // Call this method to update the current run points
+    public void UpdateCurrentRunPoints(int points)
+    {
+        totalRunPoints = points;
+
+        pointsUIManager.currentRunPointsText.text = $"Current Run Points: {totalRunPoints}";
+
+        // Update current session PB if the current run is better
+        if (totalRunPoints > bestPbCurrentSession)
+        {
+            bestPbCurrentSession = totalRunPoints;
+            pointsUIManager.bestPbCurrentSessionText.text = $"Best PB (Current Session): {bestPbCurrentSession}";
+        }
+
+        // Update all-time PB if necessary
+        if (totalRunPoints > bestPbAllTime)
+        {
+            bestPbAllTime = totalRunPoints;
+            pointsUIManager.bestPbAllTimeText.text = $"Best PB (All Sessions): {bestPbAllTime}";
+        }
     }
 
 }
