@@ -17,7 +17,7 @@ public class Patch_GetResults2
         // Check if playerResults and racepoints are set correctly
         if (__instance.playerResults != null && __instance.playerResults.Count > 0)
         {
-            bool racePointsMatch = __instance.playerResults[0].racepoints == __instance.racePoints;
+            bool racePointsMatch = (__instance.playerResults[0].racepoints == __instance.racePoints) && (__instance.playerResults[0].time != 0.0);
 
             // Trigger the event, passing whether the race points match
             OnGetResults2Entered?.Invoke(racePointsMatch);
