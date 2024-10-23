@@ -7,6 +7,7 @@ using ZeepSDK.Racing;
 using ZeepSDK.Level;
 using ZeepStyle;
 using ZeepkistClient;
+using System.Linq;
 
 
 public class Style_TrickManager : MonoBehaviour
@@ -65,7 +66,7 @@ public class Style_TrickManager : MonoBehaviour
         PhotoModeApi.PhotoModeEntered += OnPhotomodeEntered;
         PhotoModeApi.PhotoModeExited += OnPhotomodeExited;
         RacingApi.LevelLoaded += OnLevelLoaded;
-        Patch_GetResults2.OnGetResults2Entered += HandleResults;
+        Patch_HeyYouHitATrigger.OnHeyYouHitATrigger += HandleResults;
 
 
         yaw = FindObjectOfType<Style_Yaw>();
@@ -225,10 +226,10 @@ public class Style_TrickManager : MonoBehaviour
         trickPointsManager.ResetCurrentSessionPoints();
     }
 
-    private void HandleResults(bool racePointsMatch)
+    private void HandleResults(bool hasFinished)
     {
         Plugin.Logger.LogInfo("Player crossed the finish line");
-        if (racePointsMatch)
+        if (hasFinished)
         {
             // Update current session PB if the current run is better
             if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbCurrentSession)
