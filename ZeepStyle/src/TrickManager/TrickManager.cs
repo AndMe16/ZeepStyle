@@ -173,13 +173,16 @@ public class Style_TrickManager : MonoBehaviour
         
         if (hideTextOnAirCoroutine != null)
         {
-            StopCoroutine(hideTextOnAirCoroutine);
+            trickDisplay.StopHideTextOnAirCoroutine();
         }
         if (hideTextOnLandCoroutine != null)
         {
+            //Plugin.Logger.LogInfo($"OnLand: Stoping hideTextOnLandCoroutine {hideTextOnLandCoroutine.ToString()}");
             StopCoroutine(hideTextOnLandCoroutine);
         }
+        //Plugin.Logger.LogInfo("OnLand: Starting Coroutine trickDisplay.HideTextAfterSeconds(2)");
         hideTextOnLandCoroutine = StartCoroutine(trickDisplay.HideTextAfterSeconds(2));
+        //Plugin.Logger.LogInfo($"OnLand: Coroutine trickDisplay.HideTextAfterSeconds(2) started: {hideTextOnLandCoroutine.ToString()}");
         if (tricksList != null && tricksList.Count > 0)
         {
             int totalPoints = trickPointsManager.CalculateTotalJumpPoints(tricksList);
@@ -211,6 +214,7 @@ public class Style_TrickManager : MonoBehaviour
         
         if (hideTextOnLandCoroutine != null)
         {
+            //Plugin.Logger.LogInfo($"OnLeaveGround: Stoping hideTextOnLandCoroutine {hideTextOnLandCoroutine.ToString()}");
             StopCoroutine(hideTextOnLandCoroutine);
         }
 

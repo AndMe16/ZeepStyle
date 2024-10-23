@@ -119,9 +119,12 @@ public class Style_TrickDisplay : MonoBehaviour
         UpdateTrickDisplay();
         if (trickManager.hideTextOnAirCoroutine != null)
         {
+            //Plugin.Logger.LogInfo($"DisplayTrick: Stoping trickManager.hideTextOnAirCoroutine {trickManager.hideTextOnAirCoroutine.ToString()}");
             StopCoroutine(trickManager.hideTextOnAirCoroutine);
         }
+        //Plugin.Logger.LogInfo("DisplayTrick: Starting Coroutine HideTextAfterSeconds(4)");
         trickManager.hideTextOnAirCoroutine = StartCoroutine(HideTextAfterSeconds(4));
+        //Plugin.Logger.LogInfo($"DisplayTrick: Coroutine HideTextAfterSeconds(4) started: {trickManager.hideTextOnAirCoroutine.ToString()}");
     }
 
     // Method to update the trick display
@@ -169,6 +172,7 @@ public class Style_TrickDisplay : MonoBehaviour
     //Method to hide text after a delay
     public IEnumerator HideTextAfterSeconds(float seconds)
     {
+        //Plugin.Logger.LogInfo($"Hidding text after {seconds}");
         yield return new WaitForSeconds(seconds);
         trickText.text = "";
         displayTextList.Clear();
@@ -195,6 +199,12 @@ public class Style_TrickDisplay : MonoBehaviour
         trickText.text = "";
         trickManager.tricksList.Clear();   // Clear the list of tricks
         displayTextList.Clear();
+    }
+
+    public void StopHideTextOnAirCoroutine()
+    {
+        Plugin.Logger.LogInfo($"OnLand: Stoping hideTextOnAirCoroutine {trickManager.hideTextOnAirCoroutine.ToString()}");
+        StopCoroutine(trickManager.hideTextOnAirCoroutine);
     }
 
 }
