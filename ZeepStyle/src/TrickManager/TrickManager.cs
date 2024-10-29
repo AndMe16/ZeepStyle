@@ -6,8 +6,6 @@ using ZeepSDK.PhotoMode;
 using ZeepSDK.Racing;
 using ZeepSDK.Level;
 using ZeepStyle;
-using ZeepkistClient;
-using System.Linq;
 
 
 public class Style_TrickManager : MonoBehaviour
@@ -15,7 +13,7 @@ public class Style_TrickManager : MonoBehaviour
     // States
     private bool isInAir = false;
     private bool wasInAir = false;
-    private bool isPlayerSpawned = false;
+    public bool isPlayerSpawned = false;
     private bool isDead = false;
 
     // Rigidbody
@@ -145,6 +143,8 @@ public class Style_TrickManager : MonoBehaviour
         isDead = false;
         rb = PatchGetRB.Rb;
         trickPointsManager.ResetTotalRunPoints();
+        trickDisplay.DestroyComponent();
+        pointsUIManager.DestroyComponent();
         trickDisplay.CreateDisplay();
         pointsUIManager.CreateUI();
         trickPointsManager.UpdateCurrentRunPoints(0);
@@ -239,14 +239,20 @@ public class Style_TrickManager : MonoBehaviour
             if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbCurrentSession)
             {
                 trickPointsManager.bestPbCurrentSession = trickPointsManager.totalRunPoints;
-                pointsUIManager.bestPbCurrentSessionText.text = $"Best PB (Current Session): {trickPointsManager.bestPbCurrentSession}";
+                if (pointsUIManager.bestPbCurrentSessionText.text != null)
+                {
+                    pointsUIManager.bestPbCurrentSessionText.text = $"Best PB (Current Session): {trickPointsManager.bestPbCurrentSession}";
+                }
             }
 
             // Update all-time PB if necessary
             if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbAllTime)
             {
                 trickPointsManager.bestPbAllTime = trickPointsManager.totalRunPoints;
-                pointsUIManager.bestPbAllTimeText.text = $"Best PB (All Sessions): {trickPointsManager.bestPbAllTime}";
+                if(pointsUIManager.bestPbAllTimeText.text != null)
+                {
+                    pointsUIManager.bestPbAllTimeText.text = $"Best PB (All Sessions): {trickPointsManager.bestPbAllTime}";
+                }
                 trickPointsManager.SaveLevelPB(trickPointsManager.currentHash);
             }
         }

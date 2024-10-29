@@ -203,7 +203,7 @@ public class Style_TrickDisplay : MonoBehaviour
 
     public void StopHideTextOnAirCoroutine()
     {
-        Plugin.Logger.LogInfo($"OnLand: Stoping hideTextOnAirCoroutine {trickManager.hideTextOnAirCoroutine.ToString()}");
+        //Plugin.Logger.LogInfo($"OnLand: Stoping hideTextOnAirCoroutine {trickManager.hideTextOnAirCoroutine.ToString()}");
         StopCoroutine(trickManager.hideTextOnAirCoroutine);
     }
 
