@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using ZeepStyle;
+using ZeepStyle.src;
 
 public class Style_PointsUIManager : MonoBehaviour
 {
@@ -17,35 +19,62 @@ public class Style_PointsUIManager : MonoBehaviour
 
     // Trick Points
     Style_TrickPointsManager trickPointsManager;
+    Style_TrickManager trickManager;
 
     void Start()
     {
         trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
+        trickManager = FindObjectOfType<Style_TrickManager>();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(ModConfig.displayPBsBind.Value))
+        {
+            TogglePointsUI();
+        }
+    }
+
+    public void TogglePointsUI()
+    {
+        if (ModConfig.displayPBs.Value)
+        {
+            ModConfig.displayPBs.Value = false;
+            DestroyComponent();
+        }
+        else
+        {
+            ModConfig.displayPBs.Value = true;
+            CreateUI();
+        } 
     }
 
     public void CreateUI()
     {
-        // Create a new Canvas
-        canvasObject = new GameObject("PointsCanvas");
-        canvas = canvasObject.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = -1;  // Higher values render above others
+        if (ModConfig.displayPBs.Value && trickManager.isPlayerSpawned)
+        {
+            // Create a new Canvas
+            canvasObject = new GameObject("PointsCanvas");
+            canvas = canvasObject.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = -1;  // Higher values render above others
 
-        // Create a CanvasScaler and GraphicRaycaster
-        CanvasScaler canvasScaler = canvasObject.AddComponent<CanvasScaler>();
-        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        canvasScaler.referenceResolution = new Vector2(1920, 1080);
+            // Create a CanvasScaler and GraphicRaycaster
+            CanvasScaler canvasScaler = canvasObject.AddComponent<CanvasScaler>();
+            canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            canvasScaler.referenceResolution = new Vector2(1920, 1080);
 
-        canvasObject.AddComponent<GraphicRaycaster>();
+            canvasObject.AddComponent<GraphicRaycaster>();
 
-        // Create Best PB All Time Text
-        bestPbAllTimeText = CreateTextElement($"Best PB (All Sessions): {trickPointsManager.bestPbAllTime}", new Vector2(0, 500));
+            // Create Best PB All Time Text
+            bestPbAllTimeText = CreateTextElement($"Best PB (All Sessions): {trickPointsManager.bestPbAllTime}", new Vector2(0, 500));
 
-        // Create Best PB Current Session Text
-        bestPbCurrentSessionText = CreateTextElement($"Best PB (Current Session): {trickPointsManager.bestPbCurrentSession}", new Vector2(0, 480));
+            // Create Best PB Current Session Text
+            bestPbCurrentSessionText = CreateTextElement($"Best PB (Current Session): {trickPointsManager.bestPbCurrentSession}", new Vector2(0, 480));
 
-        // Create Current Run Points Text
-        currentRunPointsText = CreateTextElement($"Current Run Points: {trickPointsManager.totalRunPoints}", new Vector2(0, 460));
+            // Create Current Run Points Text
+            currentRunPointsText = CreateTextElement($"Current Run Points: {trickPointsManager.totalRunPoints}", new Vector2(0, 460));
+        }
     }
 
     // Helper method to create TextMeshProUGUI elements
