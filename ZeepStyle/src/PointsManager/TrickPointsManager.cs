@@ -96,7 +96,7 @@ public class Style_TrickPointsManager : MonoBehaviour
     public void UpdateCurrentRunPoints(int points)
     {
         totalRunPoints = points;
-        if (pointsUIManager.currentRunPointsText.text != null)
+        if (pointsUIManager.currentRunPointsText != null)
         {
             pointsUIManager.currentRunPointsText.text = $"Current Run Points: {totalRunPoints}";
         }      
