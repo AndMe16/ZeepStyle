@@ -114,7 +114,15 @@ public class Style_TrickDisplay : MonoBehaviour
         {
             // Modify the last trick if it's the same
             trickManager.tricksList[^1] = _trick;
-            displayTextList[^1] = (displayText);
+            if (displayTextList.Count > 0)
+            {
+                displayTextList[^1] = (displayText);
+            }
+            else
+            {
+                displayTextList.Add(displayText);
+            }
+            
         }
         UpdateTrickDisplay();
         if (trickManager.hideTextOnAirCoroutine != null)
