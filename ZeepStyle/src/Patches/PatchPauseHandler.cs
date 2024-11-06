@@ -3,14 +3,29 @@ using HarmonyLib;
 
 namespace ZeepStyle.src.Patches
 {
-    [HarmonyPatch(typeof(PauseHandler), nameof(PauseHandler.Awake))]
-    public class PatchPauseHandler
+    [HarmonyPatch(typeof(PauseHandler), "Pause")]
+    public class PatchPauseHandler_Pause
     {
-        public static event Action<PauseHandler> Awake;
+        public static event Action<PauseHandler> OnPause;
 
-        private static void Postfix(PauseHandler __instance)
+        [HarmonyPostfix]
+        static void Postfix(PauseHandler __instance)
         {
-            Awake?.Invoke(__instance);
+            OnPause?.Invoke(__instance);
+            //Plugin.Logger.LogInfo($"PatchPauseHandler: IsPaused = {__instance.IsPaused}");
+        }
+    }
+
+    [HarmonyPatch(typeof(PauseHandler), "Unpause")]
+    public class PatchPauseHandler_Unpause
+    {
+        public static event Action<PauseHandler> OnUnpause;
+
+        [HarmonyPostfix]
+        static void Postfix(PauseHandler __instance)
+        {
+            OnUnpause?.Invoke(__instance);
+            //Plugin.Logger.LogInfo($"PatchPauseHandler: IsPaused = {__instance.IsPaused}");
         }
     }
 }

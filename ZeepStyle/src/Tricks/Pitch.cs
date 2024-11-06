@@ -49,10 +49,9 @@ namespace ZeepStyle.src.Tricks
         public void DetectFlipTrick(Vector3 currentForward_, Vector3 currentRight_)
         {
             // Get the current forward direction (Z-axis)
-            Vector3 currentForward = currentForward_;
 
             // Project current forward direction onto the initial Z-Y plane
-            Vector3 forwardInZYPlane = Vector3.ProjectOnPlane(currentForward, Vector3.Cross(initialForward, initialUp));
+            Vector3 forwardInZYPlane = Vector3.ProjectOnPlane(currentForward_, Vector3.Cross(initialForward, initialUp));
 
             // Compute the angle between the projected forward direction and the initial forward direction
             float currentPitch = Vector3.SignedAngle(initialForward, forwardInZYPlane, initialRight);

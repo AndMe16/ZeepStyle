@@ -50,10 +50,9 @@ namespace ZeepStyle.src.Tricks
         public void DetectSpinTrick(Vector3 currentForward_, Vector3 currentUp_)
         {
             // Get the current forward direction (Z-axis)
-            Vector3 currentForward = currentForward_;
 
             // Project current forward direction onto the initial X-Z plane
-            Vector3 forwardInXZPlane = Vector3.ProjectOnPlane(currentForward, Vector3.Cross(initialRight, initialForward));
+            Vector3 forwardInXZPlane = Vector3.ProjectOnPlane(currentForward_, Vector3.Cross(initialRight, initialForward));
 
             // Compute the angle between the projected forward direction and the initial forward direction
             float currentYaw = Vector3.SignedAngle(initialForward, forwardInXZPlane, initialUp);

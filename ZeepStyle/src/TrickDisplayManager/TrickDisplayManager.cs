@@ -20,7 +20,7 @@ namespace ZeepStyle.src.TrickDisplayManager
         private readonly int baseTextSize = 30;
 
         // List to store the tricks text
-        public List<string> displayTextList = new List<string>();
+        public List<string> displayTextList = [];
 
         void Start()
         {
@@ -102,7 +102,7 @@ namespace ZeepStyle.src.TrickDisplayManager
                 displayText = "Inverse" + " " + displayText;
             }
 
-            displayText = displayText + $" (+{points})";
+            displayText += $" (+{points})";
 
             // Check if the tricksList is not empty before accessing the last element
             if (trickManager.tricksList.Count == 0 || trickManager.tricksList[^1].trickName != _trick.trickName || trickManager.tricksList[^1].isInverse != _trick.isInverse || trickManager.tricksList[^1].isPositiveDelta != _trick.isPositiveDelta)
@@ -140,7 +140,7 @@ namespace ZeepStyle.src.TrickDisplayManager
         private void UpdateTrickDisplay()
         {
             // Start building the formatted text
-            StringBuilder formattedText = new StringBuilder();
+            StringBuilder formattedText = new();
 
             // Loop through the displayTextList to format each line
             for (int i = 0; i < displayTextList.Count; i++)
@@ -180,7 +180,7 @@ namespace ZeepStyle.src.TrickDisplayManager
             UpdateTrickDisplay();
             if (trickText != null)
             {
-                trickText.text = trickText.text + $"<color=#f7e520><b>+{totalPoints}</b>";
+                trickText.text += $"<color=#f7e520><b>+{totalPoints}</b>";
             }
         }
 

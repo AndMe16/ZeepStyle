@@ -26,8 +26,6 @@ namespace ZeepStyle.src.TrickManager
         private Vector3 currentForward;
         private Vector3 currentUp;
 
-        // Quaternions
-        private Quaternion initialRotation;
 
         // Initial vector references
         private Vector3 initialRight; // Reference X-axis direction
@@ -35,7 +33,7 @@ namespace ZeepStyle.src.TrickManager
         private Vector3 initialUp; // Y-axis (up) direction at takeoff
 
         // Debuging with gizmo visualization
-        Style_GizmoVisualization gizmoVisualization;
+        //Style_GizmoVisualization gizmoVisualization;
 
         // Trick Points
         Style_TrickPointsManager trickPointsManager;
@@ -51,7 +49,7 @@ namespace ZeepStyle.src.TrickManager
         Style_Roll roll;
 
         // Trick list
-        public List<Trick> tricksList = new List<Trick>();
+        public List<Trick> tricksList = [];
 
         // PB Points UI
         Style_PointsUIManager pointsUIManager;
@@ -81,7 +79,7 @@ namespace ZeepStyle.src.TrickManager
 
             pointsUIManager = FindObjectOfType<Style_PointsUIManager>();
 
-            gizmoVisualization = FindObjectOfType<Style_GizmoVisualization>();
+            //gizmoVisualization = FindObjectOfType<Style_GizmoVisualization>();
         }
 
         private void OnRoundEnded()
@@ -205,7 +203,6 @@ namespace ZeepStyle.src.TrickManager
         void OnLeaveGround()
         {
             isInAir = true;
-            initialRotation = rb.rotation;
             initialUp = Vector3.up;
             initialForward = Vector3.ProjectOnPlane(rb.transform.forward, initialUp);
             initialRight = Vector3.Cross(initialUp, initialForward).normalized;
