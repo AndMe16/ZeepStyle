@@ -168,13 +168,19 @@ public class Style_TrickDisplay : MonoBehaviour
         //Plugin.Logger.LogInfo($"Displaying tricks: {formattedText.ToString()}");
 
         // Update the TextMeshPro text with the formatted text
-        trickText.text = formattedText.ToString();
+        if (trickText != null)
+        {
+            trickText.text = formattedText.ToString();
+        }
     }
 
     public void LandingDisplay(int totalPoints)
     {
         UpdateTrickDisplay();
-        trickText.text = trickText.text + $"<color=#f7e520><b>+{totalPoints}</b>";
+        if (trickText != null)
+        {
+            trickText.text = trickText.text + $"<color=#f7e520><b>+{totalPoints}</b>";
+        }
     }
 
     //Method to hide text after a delay
@@ -182,7 +188,10 @@ public class Style_TrickDisplay : MonoBehaviour
     {
         //Plugin.Logger.LogInfo($"Hidding text after {seconds}");
         yield return new WaitForSeconds(seconds);
-        trickText.text = "";
+        if (trickText != null)
+        {
+            trickText.text = "";
+        }
         displayTextList.Clear();
     }
 
@@ -194,17 +203,26 @@ public class Style_TrickDisplay : MonoBehaviour
 
     public void HideText()
     {
-        trickText.enabled = false;  // Disable the text to hide it
+        if (trickText != null)
+        {
+            trickText.enabled = false;  // Disable the text to hide it
+        }
     }
 
     public void ShowText()
     {
-        trickText.enabled = true;  // Enable the text to show it again
+        if (trickText != null)
+        {
+            trickText.enabled = true;  // Enable the text to show it again
+        }
     }
 
     public void ResetText()
     {
-        trickText.text = "";
+        if (trickText != null)
+        {
+            trickText.text = "";
+        }
         trickManager.tricksList.Clear();   // Clear the list of tricks
         displayTextList.Clear();
     }
