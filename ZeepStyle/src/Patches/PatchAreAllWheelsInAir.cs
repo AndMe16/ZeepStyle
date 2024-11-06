@@ -1,7 +1,6 @@
 using HarmonyLib;
-using UnityEngine;
 
-namespace ZeepStyle
+namespace ZeepStyle.src.Patches
 {
     [HarmonyPatch(typeof(New_ControlCar), "AreAllWheelsInAir")]
     public class PatchAreAllWheelsInAir
