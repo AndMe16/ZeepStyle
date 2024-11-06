@@ -239,7 +239,7 @@ public class Style_TrickManager : MonoBehaviour
             if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbCurrentSession)
             {
                 trickPointsManager.bestPbCurrentSession = trickPointsManager.totalRunPoints;
-                if (pointsUIManager.bestPbCurrentSessionText.text != null)
+                if (pointsUIManager.bestPbCurrentSessionText != null)
                 {
                     pointsUIManager.bestPbCurrentSessionText.text = $"Best PB (Current Session): {trickPointsManager.bestPbCurrentSession}";
                 }
@@ -249,7 +249,7 @@ public class Style_TrickManager : MonoBehaviour
             if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbAllTime)
             {
                 trickPointsManager.bestPbAllTime = trickPointsManager.totalRunPoints;
-                if(pointsUIManager.bestPbAllTimeText.text != null)
+                if(pointsUIManager.bestPbAllTimeText != null)
                 {
                     pointsUIManager.bestPbAllTimeText.text = $"Best PB (All Sessions): {trickPointsManager.bestPbAllTime}";
                 }
