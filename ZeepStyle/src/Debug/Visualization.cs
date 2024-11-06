@@ -84,7 +84,7 @@ public class Style_GizmoVisualization : MonoBehaviour
         {
             collider.enabled = false; // Disable the collider
         }
-        
+
         return plane;
     }
 
@@ -146,10 +146,11 @@ public class Style_GizmoVisualization : MonoBehaviour
             Destroy(zxPlane);
     }
 
-    public void UpdateAllAxisVisuals(Rigidbody rb){
+    public void UpdateAllAxisVisuals(Rigidbody rb)
+    {
         // Update the position and orientation of the axis visualizations based on the rigidbody's current rotation
-            UpdateAxisVisual(xAxisVisual, rb.transform.right, rb);
-            UpdateAxisVisual(yAxisVisual, rb.transform.up, rb);
-            UpdateAxisVisual(zAxisVisual, rb.transform.forward, rb);
+        UpdateAxisVisual(xAxisVisual, rb.transform.right, rb);
+        UpdateAxisVisual(yAxisVisual, rb.transform.up, rb);
+        UpdateAxisVisual(zAxisVisual, rb.transform.forward, rb);
     }
 }

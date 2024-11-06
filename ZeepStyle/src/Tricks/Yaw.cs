@@ -1,150 +1,156 @@
 using UnityEngine;
-using ZeepStyle;
+using ZeepStyle.src.PointsManager;
+using ZeepStyle.src.TrickDisplayManager;
+using ZeepStyle.src.TrickManager;
 
-public class Style_Yaw : MonoBehaviour
+namespace ZeepStyle.src.Tricks
 {
-    // Spin (Yaw)
-    private Vector3 initialRight; // Reference X-axis direction
-    private Vector3 initialForward; // Z-axis (forward) direction at takeoff
-    private Vector3 initialUp; // Y-axis (up) direction at takeoff
-    private float previousYaw; // To track the Y-axis (yaw) rotation
-    private float accumulatedYaw; // To accumulate yaw rotation
-    private readonly float spinThreshold = 80.0f; // Detect each 90º spin
-    private readonly float spinAlignmentThreshold = 0.3f; // Threshold for Y-axis alignment (dot product close to 1 = upright)
-    private int spinCount = 0;
-    private float lastYawDelta; // To track the direction of the previous yaw delta
-
-    Style_TrickDisplay trickDisplay;
-    Style_TrickPointsManager trickPointsManager;
-
-    void Start()
+    public class Style_Yaw : MonoBehaviour
     {
-        trickDisplay = FindObjectOfType<Style_TrickDisplay>();
-        trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
-    }
+        // Spin (Yaw)
+        private Vector3 initialRight; // Reference X-axis direction
+        private Vector3 initialForward; // Z-axis (forward) direction at takeoff
+        private Vector3 initialUp; // Y-axis (up) direction at takeoff
+        private float previousYaw; // To track the Y-axis (yaw) rotation
+        private float accumulatedYaw; // To accumulate yaw rotation
+        private readonly float spinThreshold = 80.0f; // Detect each 90º spin
+        private readonly float spinAlignmentThreshold = 0.3f; // Threshold for Y-axis alignment (dot product close to 1 = upright)
+        private int spinCount = 0;
+        private float lastYawDelta; // To track the direction of the previous yaw delta
 
-    public void ClearVars()
-    {
-        accumulatedYaw = 0;
-        spinCount = 0;
-        lastYawDelta = 0;
-    }
+        Style_TrickDisplay trickDisplay;
+        Style_TrickPointsManager trickPointsManager;
 
-
-    public void OnLeaveGround(Vector3 initialUp_,Vector3 initialForward_, Vector3 initialRight_)
-    {
-        initialUp = initialUp_;
-        initialForward = initialForward_;
-        initialRight = initialRight_;
-
-        previousYaw = 0; // Capture the initial yaw (Y-axis) rotation
-        accumulatedYaw = 0;
-        spinCount = 0;
-        lastYawDelta = 0; // Initialize the yaw delta
-    }
-
-    public void DetectSpinTrick(Vector3 currentForward_, Vector3 currentUp_)
-    {
-        // Get the current forward direction (Z-axis)
-        Vector3 currentForward = currentForward_;
-
-        // Project current forward direction onto the initial X-Z plane
-        Vector3 forwardInXZPlane = Vector3.ProjectOnPlane(currentForward, Vector3.Cross(initialRight, initialForward)); 
-        
-        // Compute the angle between the projected forward direction and the initial forward direction
-        float currentYaw = Vector3.SignedAngle(initialForward, forwardInXZPlane, initialUp);
-
-        if (currentYaw<0)
+        void Start()
         {
-            currentYaw = 360 + currentYaw;
+            trickDisplay = FindObjectOfType<Style_TrickDisplay>();
+            trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
         }
-        
-        int alignmentState = CheckSpinAlignment(currentUp_);
-        
-        float yawDelta = Mathf.DeltaAngle(previousYaw, currentYaw);
-        if(alignmentState == 0 || alignmentState == 1)
+
+        public void ClearVars()
         {
-            // Check if the spin direction has changed
-            if (Mathf.Sign(yawDelta) != Mathf.Sign(lastYawDelta) && Mathf.Abs(lastYawDelta) > 0)
+            accumulatedYaw = 0;
+            spinCount = 0;
+            lastYawDelta = 0;
+        }
+
+
+        public void OnLeaveGround(Vector3 initialUp_, Vector3 initialForward_, Vector3 initialRight_)
+        {
+            initialUp = initialUp_;
+            initialForward = initialForward_;
+            initialRight = initialRight_;
+
+            previousYaw = 0; // Capture the initial yaw (Y-axis) rotation
+            accumulatedYaw = 0;
+            spinCount = 0;
+            lastYawDelta = 0; // Initialize the yaw delta
+        }
+
+        public void DetectSpinTrick(Vector3 currentForward_, Vector3 currentUp_)
+        {
+            // Get the current forward direction (Z-axis)
+            Vector3 currentForward = currentForward_;
+
+            // Project current forward direction onto the initial X-Z plane
+            Vector3 forwardInXZPlane = Vector3.ProjectOnPlane(currentForward, Vector3.Cross(initialRight, initialForward));
+
+            // Compute the angle between the projected forward direction and the initial forward direction
+            float currentYaw = Vector3.SignedAngle(initialForward, forwardInXZPlane, initialUp);
+
+            if (currentYaw < 0)
             {
-                // Direction changed, reset spin counter
-                // Plugin.Logger.LogInfo("Spin direction changed! Resetting spin counter.");
+                currentYaw = 360 + currentYaw;
+            }
+
+            int alignmentState = CheckSpinAlignment(currentUp_);
+
+            float yawDelta = Mathf.DeltaAngle(previousYaw, currentYaw);
+            if (alignmentState == 0 || alignmentState == 1)
+            {
+                // Check if the spin direction has changed
+                if (Mathf.Sign(yawDelta) != Mathf.Sign(lastYawDelta) && Mathf.Abs(lastYawDelta) > 0)
+                {
+                    // Direction changed, reset spin counter
+                    // Plugin.Logger.LogInfo("Spin direction changed! Resetting spin counter.");
+                    accumulatedYaw = 0;
+                    spinCount = 0;
+                }
+
+                // Accumulate the yaw rotation
+                accumulatedYaw += yawDelta;
+
+                // Check if we have completed a 90º increment of spin
+                if (Mathf.Abs(accumulatedYaw) >= spinThreshold)
+                {
+                    spinCount++;
+                    accumulatedYaw = 0; // Reset accumulated yaw for the next 90º increment
+                                        // Display Trick Names
+                    if ((spinCount % 2) == 0 && (spinCount != 0))
+                    {
+                        string trickName;
+                        bool isInverse;
+                        bool isPositiveDelta;
+                        if (alignmentState == 0)
+                        {
+                            isInverse = false;
+                        }
+                        else
+                        {
+                            isInverse = true;
+                        }
+
+                        if (yawDelta > 0)
+                        {
+                            isPositiveDelta = true;
+                        }
+                        else
+                        {
+                            isPositiveDelta = false;
+                        }
+
+                        trickName = "Spin";
+                        string rotations_str = $"{spinCount * 90}";
+                        Trick trick = new()
+                        {
+                            trickName = trickName,
+                            rotation = rotations_str,
+                            isInverse = isInverse,
+                            isPositiveDelta = isPositiveDelta
+                        };
+                        int points = trickPointsManager.CalculatePoints(trick);
+                        trickDisplay.DisplayTrick(trick, points);
+                    }
+                }
+            }
+            else
+            {
                 accumulatedYaw = 0;
                 spinCount = 0;
             }
 
-            // Accumulate the yaw rotation
-            accumulatedYaw += yawDelta;
+            // Update the previous yaw and last yaw delta for the next frame
+            previousYaw = currentYaw;
+            lastYawDelta = yawDelta; // Store current yaw delta to detect direction change
+        }
 
-            // Check if we have completed a 90º increment of spin
-            if (Mathf.Abs(accumulatedYaw) >= spinThreshold)
+        private int CheckSpinAlignment(Vector3 currentUp_)
+        {
+            // Check if the player is sufficiently tilted relative to the initial reference
+            Vector3 currentUpDirection = currentUp_; // Current Y-axis direction of the rigidbody
+
+            // Compute the dot product between the current and reference Y-axis directions
+            float alignment = Vector3.Dot(currentUpDirection, initialUp);
+
+            if (Mathf.Abs(alignment) < spinAlignmentThreshold)
             {
-                spinCount++;
-                accumulatedYaw = 0; // Reset accumulated yaw for the next 90º increment
-                                    // Display Trick Names
-                if ((spinCount % 2) == 0 && (spinCount != 0))
-                {
-                    string trickName;
-                    bool isInverse;
-                    bool isPositiveDelta;
-                    if (alignmentState == 0)
-                    {
-                        isInverse = false;
-                    }
-                    else
-                    {
-                        isInverse = true;
-                    }
-
-                    if (yawDelta > 0)
-                    {
-                        isPositiveDelta = true;
-                    }
-                    else
-                    {
-                        isPositiveDelta = false;
-                    }
-
-                    trickName = "Spin";
-                    string rotations_str = $"{spinCount * 90}";
-                    Trick trick = new()
-                    {
-                        trickName = trickName,
-                        rotation = rotations_str,
-                        isInverse = isInverse,
-                        isPositiveDelta = isPositiveDelta
-                    };
-                    int points = trickPointsManager.CalculatePoints(trick);
-                    trickDisplay.DisplayTrick(trick, points);
-                }
+                return 2; // Skip spin detection if the player is not upright
             }
+            if (alignment < 0)
+            {
+                return 1; // Spining upside down
+            }
+            return 0; // Spining normally
         }
-        else{
-            accumulatedYaw = 0;
-            spinCount = 0;
-        }
-
-        // Update the previous yaw and last yaw delta for the next frame
-        previousYaw = currentYaw;
-        lastYawDelta = yawDelta; // Store current yaw delta to detect direction change
-    }
-
-    private int CheckSpinAlignment(Vector3 currentUp_)
-    {
-        // Check if the player is sufficiently tilted relative to the initial reference
-        Vector3 currentUpDirection = currentUp_; // Current Y-axis direction of the rigidbody
-
-        // Compute the dot product between the current and reference Y-axis directions
-        float alignment = Vector3.Dot(currentUpDirection, initialUp);
-
-        if (Mathf.Abs(alignment) < spinAlignmentThreshold)
-        {
-            return 2; // Skip spin detection if the player is not upright
-        }
-        if(alignment < 0)
-        {
-            return 1; // Spining upside down
-        }
-        return 0; // Spining normally
     }
 }
