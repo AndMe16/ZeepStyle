@@ -135,7 +135,6 @@ namespace ZeepStyle.src.Tricks
         private int CheckrollAlignment(Vector3 currentForward_)
         {
             // Check if the player is sufficiently tilted relative to the initial reference
-            Vector3 currentForward = currentForward_; // Current Z-axis direction of the rigidbody
 
             // Compute the dot product between the current and reference X-axis directions
             float alignment = Vector3.Dot(currentForward_, initialForward);

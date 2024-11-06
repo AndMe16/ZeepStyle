@@ -11,6 +11,7 @@ namespace ZeepStyle.src.Patches
         public static event Action<bool> OnHeyYouHitATrigger;
 
         // Harmony Postfix: Executes after the original method
+        [HarmonyPostfix]
         static void Postfix(ReadyToReset __instance, bool isFinish)
         {
             if ((isFinish && __instance.actuallyFinished) && (__instance.master.currentLevelMode.HasThisPlayerFinishedAccountingForRacepoints(PlayerManager.Instance.currentMaster.playerResults.First())))

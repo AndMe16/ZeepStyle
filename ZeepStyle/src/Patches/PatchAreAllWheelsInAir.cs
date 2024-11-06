@@ -7,7 +7,7 @@ namespace ZeepStyle.src.Patches
     {
         public static bool IsInTheAir = false;
         [HarmonyPostfix]
-        static void Postfix(New_ControlCar __instance, ref bool __result)
+        static void Postfix(ref bool __result)
         {
             IsInTheAir = __result;
         }

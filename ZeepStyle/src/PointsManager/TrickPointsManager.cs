@@ -9,7 +9,7 @@ namespace ZeepStyle.src.PointsManager
     public class Style_TrickPointsManager : MonoBehaviour
     {
         // Assign base points for each trick name
-        private Dictionary<string, int> basePointsByTrick = new Dictionary<string, int>()
+        private readonly Dictionary<string, int> basePointsByTrick = new()
     {
         { "Spin", 100 },
         { "Frontflip", 300 },
@@ -36,8 +36,7 @@ namespace ZeepStyle.src.PointsManager
         // Method to calculate points for each trick
         public int CalculatePoints(Trick trick)
         {
-            int basePoints = 0;
-            if (basePointsByTrick.TryGetValue(trick.trickName, out basePoints))
+            if (basePointsByTrick.TryGetValue(trick.trickName, out int basePoints))
             {
                 // Base points based on trick name
                 int points = basePoints;

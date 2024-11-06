@@ -22,31 +22,30 @@ namespace ZeepStyle.src.PointsUIManager
         Style_TrickPointsManager trickPointsManager;
         Style_TrickManager trickManager;
 
-        bool currentlyTyping = false;
         bool isPaused = false;
+
+        void Awake()
+        {
+            //PatchOnlineChatUI_OnOpen.OnOpenChat += PatchOnlineChatUI_OnOpen_OnClose;
+            PatchPauseHandler_Pause.OnPause += PatchPauseHandler_OnPause_OnUnpause;
+            PatchPauseHandler_Unpause.OnUnpause += PatchPauseHandler_OnPause_OnUnpause;
+        }
 
         void Start()
         {
             trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
             trickManager = FindObjectOfType<Style_TrickManager>();
-
-            PatchOnlineChatUI.Awake += PatchOnlineChatUI_Awake;
-            PatchPauseHandler.Awake += PatchPauseHandler_Awake;
         }
 
-        private void PatchPauseHandler_Awake(PauseHandler obj)
+        private void PatchPauseHandler_OnPause_OnUnpause(PauseHandler obj)
         {
             isPaused = obj.IsPaused;
-        }
-
-        private void PatchOnlineChatUI_Awake(OnlineChatUI obj)
-        {
-            currentlyTyping = obj.currentlyTyping;
+            //Plugin.Logger.LogInfo($"isPaused: {isPaused}");
         }
 
         void Update()
         {
-            if (trickManager.isPlayerSpawned && !currentlyTyping && !isPaused)
+            if (trickManager.isPlayerSpawned && !isPaused)
             {
                 if (Input.GetKeyDown(ModConfig.displayPBsBind.Value))
                 {
