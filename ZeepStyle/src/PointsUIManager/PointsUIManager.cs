@@ -47,6 +47,14 @@ namespace ZeepStyle.src.PointsUIManager
         {
             if (trickManager.isPlayerSpawned && !isPaused)
             {
+                if (ModConfig.displayPBs.Value && canvasObject == null)
+                {
+                    CreateUI();
+                }
+                else if (!ModConfig.displayPBs.Value && canvasObject != null)
+                {
+                    DestroyComponent();
+                }
                 if (Input.GetKeyDown(ModConfig.displayPBsBind.Value))
                 {
                     TogglePointsUI();
