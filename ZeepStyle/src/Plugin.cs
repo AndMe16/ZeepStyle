@@ -41,6 +41,7 @@ namespace ZeepStyle.src
             gameObject.AddComponent<Style_TrickDisplay>();
             gameObject.AddComponent<Style_TrickPointsManager>();
             gameObject.AddComponent<Style_PointsUIManager>();
+            gameObject.AddComponent<Style_SoundEffectManager>();
         }
 
         private void OnDestroy()
