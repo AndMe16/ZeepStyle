@@ -27,10 +27,6 @@ namespace ZeepStyle.src
             Logger = base.Logger;
             harmony = new Harmony("andme123.zeepstyle");
             harmony.PatchAll();
-            foreach (MethodBase method in harmony.GetPatchedMethods())
-            {
-                Plugin.Logger.LogInfo(method.Name);
-            }
             Logger.LogInfo($"Plugin {"andme123.zeepstyle"} is loaded!");
             ModConfig.Initialize(Config);
             gameObject.AddComponent<Style_TrickManager>();
