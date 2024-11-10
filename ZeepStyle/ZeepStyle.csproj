@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+    <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>ZeepStyle</AssemblyName>
     <Product>ZeepStyle</Product>
@@ -8,44 +8,47 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RestoreAdditionalProjectSources>
-      https://api.nuget.org/v3/index.json;
-      https://nuget.bepinex.dev/v3/index.json;
-      https://nuget.samboy.dev/v3/index.json
+        https://api.nuget.org/v3/index.json;
+        https://nuget.bepinex.dev/v3/index.json;
+        https://nuget.samboy.dev/v3/index.json
     </RestoreAdditionalProjectSources>
     <RootNamespace>ZeepStyle</RootNamespace>
-  </PropertyGroup>
+    </PropertyGroup>
 
-  <ItemGroup>
+    <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
     <PackageReference Include="UnityEngine.Modules" Version="2021.3.10" IncludeAssets="compile" />
     <PackageReference Include="Zeepkist.GameLibs" Version="*" />
     <PackageReference Include="ZeepSDK" Version="1.*" />
-  </ItemGroup>
+    </ItemGroup>
   
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+    </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <RemoveDir Directories="D:\SteamLibrary\steamapps\common\Zeepkist\BepInEx\plugins\Sideloaded\Plugins\$(ProjectName)" />
-    <MakeDir Directories="D:\SteamLibrary\steamapps\common\Zeepkist\BepInEx\plugins\Sideloaded\Plugins\$(ProjectName)" />
-    <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;D:\SteamLibrary\steamapps\common\Zeepkist\BepInEx\plugins\Sideloaded\Plugins\$(ProjectName)\$(ProjectName)-$(Version).dll&quot;" />
-  </Target>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	    <!-- Define the target directory for the mod files -->
+	    <PropertyGroup>
+		    <ModDirectory>D:\SteamLibrary\steamapps\common\Zeepkist\BepInEx\plugins\Sideloaded\Plugins\$(ProjectName)</ModDirectory>
+	    </PropertyGroup>
+
+	    <!-- Remove existing directory (optional) -->
+	    <RemoveDir Directories="$(ModDirectory)" />
+
+	    <!-- Recreate the mod directory -->
+	    <MakeDir Directories="$(ModDirectory)" />
+
+	    <!-- Copy the DLL file to the mod directory -->
+	    <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(ModDirectory)\$(ProjectName)-$(Version).dll&quot;" />
+
+	    <!-- Copy the Resources folder to the mod directory -->
+	    <ItemGroup>
+		    <ResourceFiles Include="$(ProjectDir)Resources\**\*.*" />
+	    </ItemGroup>
+
+	    <Copy SourceFiles="@(ResourceFiles)" DestinationFolder="$(ModDirectory)\Resources\%(RecursiveDir)" />
+    </Target>
+
 </Project>

@@ -54,6 +54,9 @@ namespace ZeepStyle.src.TrickManager
         // PB Points UI
         Style_PointsUIManager pointsUIManager;
 
+        // Sound Effects
+        Style_SoundEffectManager soundEffectManager;
+
         void Start()
         {
             RacingApi.PlayerSpawned += OnPlayerSpawned;
@@ -78,6 +81,8 @@ namespace ZeepStyle.src.TrickManager
             trickDisplay = FindObjectOfType<Style_TrickDisplay>();
 
             pointsUIManager = FindObjectOfType<Style_PointsUIManager>();
+
+            soundEffectManager = FindObjectOfType<Style_SoundEffectManager>();
 
             //gizmoVisualization = FindObjectOfType<Style_GizmoVisualization>();
         }
@@ -191,6 +196,7 @@ namespace ZeepStyle.src.TrickManager
                 int totalRunPoints = trickPointsManager.AddToTotalRunPoints(totalPoints);
                 trickDisplay.LandingDisplay(totalPoints);
                 trickPointsManager.UpdateCurrentRunPoints(totalRunPoints);
+                soundEffectManager.PlaySound();
             }
             tricksList.Clear();   // Clear the list of tricks
             trickDisplay.displayTextList.Clear();
