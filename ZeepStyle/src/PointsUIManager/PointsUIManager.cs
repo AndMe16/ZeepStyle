@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using HarmonyLib;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -150,6 +151,13 @@ namespace ZeepStyle.src.PointsUIManager
             Destroy(canvasObject);
             Destroy(textObject);
         }
+
+        private void OnDestroy()
+        {
+            PatchPauseHandler_Pause.OnPause -= PatchPauseHandler_OnPause_OnUnpause;
+            PatchPauseHandler_Unpause.OnUnpause -= PatchPauseHandler_OnPause_OnUnpause;
+        }
+
 
     }
 }

@@ -300,6 +300,21 @@ namespace ZeepStyle.src.TrickManager
                 wasInAir = isInAir;
             }
         }
+
+        private void OnDestroy()
+        {
+            RacingApi.PlayerSpawned -= OnPlayerSpawned;
+            RacingApi.Quit -= OnQuit;
+            RacingApi.QuickReset -= OnQuickReset;
+            RacingApi.Crashed -= OnCrashed;
+            RacingApi.CrossedFinishLine -= OnCrossedFinishLine;
+            MultiplayerApi.DisconnectedFromGame -= OnDisconnectedFromGame;
+            RacingApi.RoundEnded -= OnRoundEnded;
+            PhotoModeApi.PhotoModeEntered -= OnPhotomodeEntered;
+            PhotoModeApi.PhotoModeExited -= OnPhotomodeExited;
+            RacingApi.LevelLoaded -= OnLevelLoaded;
+            Patch_HeyYouHitATrigger.OnHeyYouHitATrigger -= HandleResults;
+        }
     }
     public class Trick
     {
