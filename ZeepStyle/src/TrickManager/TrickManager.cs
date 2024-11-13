@@ -209,13 +209,17 @@ namespace ZeepStyle.src.TrickManager
         void OnLeaveGround()
         {
             isInAir = true;
-            initialUp = Vector3.up;
-            initialForward = Vector3.ProjectOnPlane(rb.transform.forward, initialUp);
-            initialRight = Vector3.Cross(initialUp, initialForward).normalized;
 
-            yaw.OnLeaveGround(initialUp, initialForward, initialRight);
-            pitch.OnLeaveGround(initialUp, initialForward, initialRight);
-            roll.OnLeaveGround(initialUp, initialForward, initialRight);
+            if (ModConfig.tricksDetectionOn.Value)
+            {
+                initialUp = Vector3.up;
+                initialForward = Vector3.ProjectOnPlane(rb.transform.forward, initialUp);
+                initialRight = Vector3.Cross(initialUp, initialForward).normalized;
+
+                yaw.OnLeaveGround(initialUp, initialForward, initialRight);
+                pitch.OnLeaveGround(initialUp, initialForward, initialRight);
+                roll.OnLeaveGround(initialUp, initialForward, initialRight);
+            }
 
             trickDisplay.ResetText();
 
@@ -271,7 +275,7 @@ namespace ZeepStyle.src.TrickManager
             {
                 isInAir = PatchAreAllWheelsInAir.IsInTheAir;
 
-                if (isInAir)
+                if (isInAir && ModConfig.tricksDetectionOn.Value)
                 {
                     rb = PatchGetRB.Rb;
                     currentRight = rb.transform.right;
