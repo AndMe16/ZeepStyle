@@ -20,11 +20,13 @@ namespace ZeepStyle.src.Tricks
 
         Style_TrickDisplay trickDisplay;
         Style_TrickPointsManager trickPointsManager;
+        Style_SoundEffectManager soundEffectManager;
 
         void Start()
         {
             trickDisplay = FindObjectOfType<Style_TrickDisplay>();
             trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
+            soundEffectManager = FindObjectOfType<Style_SoundEffectManager>();
         }
 
         public void ClearVars()
@@ -119,6 +121,7 @@ namespace ZeepStyle.src.Tricks
                         };
                         int points = trickPointsManager.CalculatePoints(trick);
                         trickDisplay.DisplayTrick(trick, points);
+                        soundEffectManager.PlaySound("SimpleTrick_1_Sound");
                     }
                 }
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using FMOD;
 using FMODUnity;
@@ -8,11 +9,12 @@ using ZeepStyle.src.Patches;
 
 public class Style_SoundEffectManager : MonoBehaviour
 {
-    private Sound sound;
+    private Dictionary<string, Sound> sounds = [];
     private ChannelGroup customChannelGroup;
     private Channel channel;
     private float globalVolume;
-    private float baseVolume = 0.5f;
+    private readonly float baseVolume = 0.5f;
+    private readonly float specialTrick = 0.1f;
 
     void Start()
     {
@@ -52,27 +54,59 @@ public class Style_SoundEffectManager : MonoBehaviour
 
     private void LoadSounds()
     {
-        // Build the file path relative to the mod's directory
+        // Define the directory where your audio files are stored
         string modDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        string filePath = Path.Combine(modDirectory, "Resources/SpecialTrickSound.ogg");
+        string resourcesFolder = Path.Combine(modDirectory, "Resources");
 
-        // Create a sound instance from a file path
-        FMOD.RESULT result = RuntimeManager.CoreSystem.createStream(filePath, FMOD.MODE.CREATESTREAM, out sound);
-
-        if (result != FMOD.RESULT.OK)
+        if (!Directory.Exists(resourcesFolder))
         {
-            Plugin.Logger.LogError("FMOD failed to load audio file: " + result);
+            Plugin.Logger.LogError("Resources folder not found.");
             return;
+        }
+
+        // Load all audio files in the folder
+        string[] audioFiles = Directory.GetFiles(resourcesFolder, "*.ogg");
+
+        foreach (var filePath in audioFiles)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+
+            // Create a sound instance for each file
+            FMOD.RESULT result = RuntimeManager.CoreSystem.createStream(filePath, FMOD.MODE.CREATESTREAM, out Sound sound);
+
+            if (result == FMOD.RESULT.OK)
+            {
+                sounds[fileName] = sound;
+                Plugin.Logger.LogInfo($"Loaded sound: {fileName}");
+            }
+            else
+            {
+                Plugin.Logger.LogError($"FMOD failed to load audio file {fileName}: " + result);
+            }
         }
     }
 
-    public void PlaySound()
+    public void PlaySound(string soundName)
     {
-        // Play the sound in the custom channel group
-        FMOD.RESULT result = RuntimeManager.CoreSystem.playSound(sound, customChannelGroup, false, out channel);
-        if (result != FMOD.RESULT.OK)
+        if (soundName != "Landing_Sound")
         {
-            Plugin.Logger.LogError("FMOD failed to play sound: " + result);
+            if (UnityEngine.Random.value <= specialTrick)
+            {
+                soundName = "SpecialTrick_Sound";
+            }
+        }
+        if (sounds.TryGetValue(soundName, out Sound sound))
+        {
+            // Play the sound in the custom channel group
+            FMOD.RESULT result = RuntimeManager.CoreSystem.playSound(sound, customChannelGroup, false, out channel);
+            if (result != FMOD.RESULT.OK)
+            {
+                Plugin.Logger.LogError($"FMOD failed to play sound {soundName}: " + result);
+            }
+        }
+        else
+        {
+            Plugin.Logger.LogError($"Sound '{soundName}' not found.");
         }
     }
 
@@ -93,8 +127,14 @@ public class Style_SoundEffectManager : MonoBehaviour
 
     public void Release()
     {
-        // Release the sound and the custom channel group when no longer needed
-        sound.release();
+        // Release each sound in the dictionary
+        foreach (var sound in sounds.Values)
+        {
+            sound.release();
+        }
+
+        // Clear the dictionary and release the channel group
+        sounds.Clear();
         customChannelGroup.release();
     }
 

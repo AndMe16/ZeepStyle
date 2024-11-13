@@ -196,7 +196,7 @@ namespace ZeepStyle.src.TrickManager
                 int totalRunPoints = trickPointsManager.AddToTotalRunPoints(totalPoints);
                 trickDisplay.LandingDisplay(totalPoints);
                 trickPointsManager.UpdateCurrentRunPoints(totalRunPoints);
-                soundEffectManager.PlaySound();
+                soundEffectManager.PlaySound("Landing_Sound");
             }
             tricksList.Clear();   // Clear the list of tricks
             trickDisplay.displayTextList.Clear();
