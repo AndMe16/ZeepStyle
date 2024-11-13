@@ -1,5 +1,4 @@
 ﻿using BepInEx.Configuration;
-using FMOD;
 using UnityEngine;
 
 namespace ZeepStyle.src
@@ -17,7 +16,7 @@ namespace ZeepStyle.src
                                             "Display the points PBs");
             displayPBsBind = config.Bind("UI", "Display PBs key", KeyCode.M, "Key to display the points PBs");
 
-            tricks_SFX_volume = config.Bind("Audio","SFX Volume", 100, new ConfigDescription("SFX volume [0-100]", new AcceptableValueRange<int>(0, 100)));
+            tricks_SFX_volume = config.Bind("Audio", "SFX Volume", 100, new ConfigDescription("SFX volume [0-100]", new AcceptableValueRange<int>(0, 100)));
         }
     }
 }

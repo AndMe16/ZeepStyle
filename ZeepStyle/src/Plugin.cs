@@ -1,8 +1,6 @@
-﻿using System.Reflection;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using ZeepStyle.src.Patches;
 using ZeepStyle.src.PointsManager;
 using ZeepStyle.src.PointsUIManager;
 using ZeepStyle.src.TrickDisplayManager;
