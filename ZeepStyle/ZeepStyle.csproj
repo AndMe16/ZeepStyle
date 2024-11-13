@@ -4,7 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>ZeepStyle</AssemblyName>
     <Product>ZeepStyle</Product>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RestoreAdditionalProjectSources>
@@ -19,9 +19,6 @@
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-    <PackageReference Include="NVorbis" Version="0.10.5" />
-    <PackageReference Include="System.Memory" Version="4.5.5" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="UnityEngine.Modules" Version="2021.3.10" IncludeAssets="compile" />
     <PackageReference Include="Zeepkist.GameLibs" Version="*" />
     <PackageReference Include="ZeepSDK" Version="1.36.11" />
@@ -45,12 +42,6 @@
 
 	    <!-- Copy the DLL file to the mod directory -->
 	    <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(ModDirectory)\$(ProjectName)-$(Version).dll&quot;" />
-		<Exec Command="copy /Y &quot;$(TargetDir)NVorbis.dll&quot; &quot;$(ModDirectory)\NVorbis.dll&quot;" />
-		<Exec Command="copy /Y &quot;$(TargetDir)System.Memory.dll&quot; &quot;$(ModDirectory)\System.Memory.dll&quot;" />
-		<Exec Command="copy /Y &quot;$(TargetDir)System.Buffers.dll&quot; &quot;$(ModDirectory)\System.Buffers.dll&quot;" />
-		<Exec Command="copy /Y &quot;$(TargetDir)System.Numerics.Vectors.dll&quot; &quot;$(ModDirectory)\System.Numerics.Vectors.dll&quot;" />
-		<Exec Command="copy /Y &quot;$(TargetDir)System.Runtime.CompilerServices.Unsafe.dll&quot; &quot;$(ModDirectory)\System.Runtime.CompilerServices.Unsafe.dll&quot;" />
-		<Exec Command="copy /Y &quot;$(TargetDir)System.ValueTuple.dll&quot; &quot;$(ModDirectory)\System.ValueTuple.dll&quot;" />
 		
 
 

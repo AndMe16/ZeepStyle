@@ -45,7 +45,7 @@ public class Style_SoundEffectManager : MonoBehaviour
 
     private void Create_CustomChannel()
     {
-        FMOD.RESULT result = RuntimeManager.CoreSystem.createChannelGroup("CustomSounds", out customChannelGroup);
+        FMOD.RESULT result = RuntimeManager.CoreSystem.createChannelGroup("StylePointsCustomSounds", out customChannelGroup);
         if (result != FMOD.RESULT.OK)
         {
             Plugin.Logger.LogError("FMOD failed to create custom channel group: " + result);
