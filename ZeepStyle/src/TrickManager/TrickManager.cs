@@ -18,7 +18,6 @@ namespace ZeepStyle.src.TrickManager
         private bool isInAir = false;
         private bool wasInAir = false;
         public bool isPlayerSpawned = false;
-        private bool isDead = false;
 
         // Rigidbody
         private Rigidbody rb;
@@ -63,13 +62,12 @@ namespace ZeepStyle.src.TrickManager
             RacingApi.Quit += OnQuit;
             RacingApi.QuickReset += OnQuickReset;
             RacingApi.Crashed += OnCrashed;
-            RacingApi.CrossedFinishLine += OnCrossedFinishLine;
             MultiplayerApi.DisconnectedFromGame += OnDisconnectedFromGame;
             RacingApi.RoundEnded += OnRoundEnded;
             PhotoModeApi.PhotoModeEntered += OnPhotomodeEntered;
             PhotoModeApi.PhotoModeExited += OnPhotomodeExited;
             RacingApi.LevelLoaded += OnLevelLoaded;
-            Patch_HeyYouHitATrigger.OnHeyYouHitATrigger += HandleResults;
+            Patch_HeyYouHitATrigger.OnHeyYouHitATrigger += OnCrossedFinish;
 
 
             yaw = FindObjectOfType<Style_Yaw>();
@@ -90,68 +88,47 @@ namespace ZeepStyle.src.TrickManager
         private void OnRoundEnded()
         {
             isPlayerSpawned = false;
-            OnLand();
-            trickDisplay.DestroyComponent();
-            pointsUIManager.DestroyComponent();
-            StopAllCoroutines();
+
+            ResetVars();
         }
 
         private void OnDisconnectedFromGame()
         {
             isPlayerSpawned = false;
-            OnLand();
-            trickDisplay.DestroyComponent();
-            pointsUIManager.DestroyComponent();
-            StopAllCoroutines();
-        }
 
-        private void OnCrossedFinishLine(float time)
-        {
-            isDead = true;
-            OnLand();
-            trickDisplay.DestroyComponent();
-            pointsUIManager.DestroyComponent();
-            StopAllCoroutines();
+            ResetVars();
         }
 
         private void OnCrashed(CrashReason reason)
         {
-            isDead = true;
-            OnLand();
-            trickDisplay.DestroyComponent();
-            pointsUIManager.DestroyComponent();
-            StopAllCoroutines();
+            isPlayerSpawned = false;
+
+            ResetVars();
+
         }
 
         private void OnQuickReset()
         {
             isPlayerSpawned = false;
-            OnLand();
-            trickDisplay.DestroyComponent();
-            pointsUIManager.DestroyComponent();
-            Plugin.Logger.LogInfo("Player quick reset");
-            StopAllCoroutines();
+
+            ResetVars();
         }
 
         private void OnQuit()
         {
             isPlayerSpawned = false;
-            OnLand();
-            trickDisplay.DestroyComponent();
-            pointsUIManager.DestroyComponent();
-            Plugin.Logger.LogInfo("Player quited");
-            StopAllCoroutines();
+
+            ResetVars();
         }
 
         private void OnPlayerSpawned()
         {
             isPlayerSpawned = true;
-            OnLand();
-            isDead = false;
+
+            ResetVars();
+
             rb = PatchGetRB.Rb;
             trickPointsManager.ResetTotalRunPoints();
-            trickDisplay.DestroyComponent();
-            pointsUIManager.DestroyComponent();
             trickDisplay.CreateDisplay();
             pointsUIManager.CreateUI();
             trickPointsManager.UpdateCurrentRunPoints(0);
@@ -241,7 +218,7 @@ namespace ZeepStyle.src.TrickManager
             trickPointsManager.ResetCurrentSessionPoints();
         }
 
-        private void HandleResults(bool hasFinished)
+        private void OnCrossedFinish(bool hasFinished)
         {
             Plugin.Logger.LogInfo("Player crossed the finish line");
             if (hasFinished)
@@ -267,11 +244,30 @@ namespace ZeepStyle.src.TrickManager
                     trickPointsManager.SaveLevelPB(trickPointsManager.currentHash);
                 }
             }
+            else
+            {
+                isPlayerSpawned = false;
+                ResetVars();
+            }
+        }
+
+        private void ResetVars()
+        {
+            isInAir = false;  // Reset state when landing
+            wasInAir = false;
+            yaw.ClearVars();
+            pitch.ClearVars();
+            roll.ClearVars();
+            trickDisplay.DestroyComponent();
+            pointsUIManager.DestroyComponent();
+            tricksList.Clear();
+            trickDisplay.displayTextList.Clear();
+            StopAllCoroutines();
         }
 
         void Update()
         {
-            if (isPlayerSpawned && !isDead)
+            if (isPlayerSpawned)
             {
                 isInAir = PatchAreAllWheelsInAir.IsInTheAir;
 
@@ -311,13 +307,12 @@ namespace ZeepStyle.src.TrickManager
             RacingApi.Quit -= OnQuit;
             RacingApi.QuickReset -= OnQuickReset;
             RacingApi.Crashed -= OnCrashed;
-            RacingApi.CrossedFinishLine -= OnCrossedFinishLine;
             MultiplayerApi.DisconnectedFromGame -= OnDisconnectedFromGame;
             RacingApi.RoundEnded -= OnRoundEnded;
             PhotoModeApi.PhotoModeEntered -= OnPhotomodeEntered;
             PhotoModeApi.PhotoModeExited -= OnPhotomodeExited;
             RacingApi.LevelLoaded -= OnLevelLoaded;
-            Patch_HeyYouHitATrigger.OnHeyYouHitATrigger -= HandleResults;
+            Patch_HeyYouHitATrigger.OnHeyYouHitATrigger -= OnCrossedFinish;
         }
     }
     public class Trick

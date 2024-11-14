@@ -14,10 +14,12 @@ namespace ZeepStyle.src.Patches
         [HarmonyPostfix]
         static void Postfix(ReadyToReset __instance, bool isFinish)
         {
-            if ((isFinish && __instance.actuallyFinished) && (__instance.master.currentLevelMode.HasThisPlayerFinishedAccountingForRacepoints(PlayerManager.Instance.currentMaster.playerResults.First())))
+
+            bool actuallyFinishedWithAllCPs = (isFinish && __instance.actuallyFinished) && (__instance.master.currentLevelMode.HasThisPlayerFinishedAccountingForRacepoints(PlayerManager.Instance.currentMaster.playerResults.First()));
+
+            if (isFinish)
             {
-                //Plugin.Logger.LogInfo("Actually finished the race!");
-                OnHeyYouHitATrigger?.Invoke(__instance.actuallyFinished);
+                OnHeyYouHitATrigger?.Invoke(actuallyFinishedWithAllCPs);
             }
         }
     }
