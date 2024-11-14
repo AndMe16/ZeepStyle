@@ -223,6 +223,13 @@ namespace ZeepStyle.src.TrickManager
             Plugin.Logger.LogInfo("Player crossed the finish line");
             if (hasFinished)
             {
+                if (tricksList != null && tricksList.Count > 0)
+                {
+                    int totalPoints = trickPointsManager.CalculateTotalJumpPoints(tricksList);
+                    int totalRunPoints = trickPointsManager.AddToTotalRunPoints(totalPoints);
+                    soundEffectManager.PlaySound("Landing_Sound");
+                }
+
                 // Update current session PB if the current run is better
                 if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbCurrentSession)
                 {
