@@ -11,10 +11,12 @@ public class Style_SoundEffectManager : MonoBehaviour
 {
     private Dictionary<string, Sound> sounds = [];
     private ChannelGroup customChannelGroup;
-    private Channel channel;
+    private Dictionary<string, FMOD.Channel> soundChannels = [];
     private float globalVolume;
     private readonly float baseVolume = 0.5f;
     private readonly float specialTrick = 0.1f;
+
+    private readonly List<string> simpleTricks = ["SimpleTrick_1_Sound", "SimpleTrick_2_Sound", "SimpleTrick_3_Sound"];
 
     void Start()
     {
@@ -25,6 +27,12 @@ public class Style_SoundEffectManager : MonoBehaviour
         ModConfig.tricks_SFX_volume.SettingChanged += OnVolumeChanged;
         PatchLoadWaarden.OnLoadWaarden += SetGlobalVolume;
     }
+
+    void Update()
+    {
+        CleanupInactiveChannels();
+    }
+
 
     private void SetGlobalVolume(GameSettingsScriptableObject @object)
     {
@@ -88,7 +96,7 @@ public class Style_SoundEffectManager : MonoBehaviour
 
     public void PlaySound(string soundName)
     {
-        if (soundName != "Landing_Sound")
+        if (simpleTricks.Contains(soundName))
         {
             if (UnityEngine.Random.value <= specialTrick)
             {
@@ -98,10 +106,14 @@ public class Style_SoundEffectManager : MonoBehaviour
         if (sounds.TryGetValue(soundName, out Sound sound))
         {
             // Play the sound in the custom channel group
-            FMOD.RESULT result = RuntimeManager.CoreSystem.playSound(sound, customChannelGroup, false, out channel);
+            FMOD.RESULT result = RuntimeManager.CoreSystem.playSound(sound, customChannelGroup, false, out FMOD.Channel channel);
             if (result != FMOD.RESULT.OK)
             {
                 Plugin.Logger.LogError($"FMOD failed to play sound {soundName}: " + result);
+            }
+            else
+            {
+                soundChannels[soundName] = channel;
             }
         }
         else
@@ -119,11 +131,64 @@ public class Style_SoundEffectManager : MonoBehaviour
         }
     }
 
-    //public void StopAllSounds()
-    //{
-    //    // Stop all sounds in the custom group
-    //    customChannelGroup.stop();
-    //}
+    public void SetSoundVolume(string soundName, float volume)
+    {
+        if (soundChannels.TryGetValue(soundName, out FMOD.Channel channel))
+        {
+            FMOD.RESULT result = channel.setVolume(volume);
+            if (result != FMOD.RESULT.OK)
+            {
+                Plugin.Logger.LogError("Failed to set volume for sound: " + soundName + ", result: " + result);
+            }
+        }
+        else
+        {
+            Plugin.Logger.LogWarning("Sound not found: " + soundName);
+        }
+    }
+
+    public void StopSound(string soundName)
+    {
+        if (soundChannels.TryGetValue(soundName, out FMOD.Channel channel))
+        {
+            FMOD.RESULT result = channel.isPlaying(out bool isPlaying);
+
+            if (result != FMOD.RESULT.OK || isPlaying)
+            {
+                result = channel.stop();
+                if (result != FMOD.RESULT.OK)
+                {
+                    Plugin.Logger.LogError($"Failed to stop {soundName}: {result}");
+                }
+                soundChannels.Remove(soundName);
+            }
+        }
+        else
+        {
+            Plugin.Logger.LogWarning("Sound not found: " + soundName);
+        }
+    }
+
+    private void CleanupInactiveChannels()
+    {
+        List<string> toRemove = [];
+
+        foreach (var entry in soundChannels)
+        {
+            FMOD.Channel channel = entry.Value;
+            FMOD.RESULT result = channel.isPlaying(out bool isPlaying);
+
+            if (result != FMOD.RESULT.OK || !isPlaying)
+            {
+                toRemove.Add(entry.Key);
+            }
+        }
+
+        foreach (string soundName in toRemove)
+        {
+            soundChannels.Remove(soundName);
+        }
+    }
 
     public void Release()
     {
