@@ -280,6 +280,7 @@ namespace ZeepStyle.src.TrickManager
             trickDisplay.displayTextList.Clear();
             StopAllCoroutines();
             soundEffectManager.StopSound("HighSpeedSpin_Sound");
+            soundEffectManager.CleanupInactiveChannels();
         }
 
         void Update()
