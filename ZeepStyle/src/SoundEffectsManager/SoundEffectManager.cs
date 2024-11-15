@@ -28,11 +28,6 @@ public class Style_SoundEffectManager : MonoBehaviour
         PatchLoadWaarden.OnLoadWaarden += SetGlobalVolume;
     }
 
-    void Update()
-    {
-        CleanupInactiveChannels();
-    }
-
 
     private void SetGlobalVolume(GameSettingsScriptableObject @object)
     {
@@ -169,7 +164,7 @@ public class Style_SoundEffectManager : MonoBehaviour
         }
     }
 
-    private void CleanupInactiveChannels()
+    public void CleanupInactiveChannels()
     {
         List<string> toRemove = [];
 
