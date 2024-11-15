@@ -103,6 +103,11 @@ namespace ZeepStyle.src.TrickManager
         {
             isPlayerSpawned = false;
 
+            if (tricksList != null && tricksList.Count > 0)
+            {
+                soundEffectManager.PlaySound("Crash_sound");
+            }
+
             ResetVars();
 
         }
@@ -226,8 +231,12 @@ namespace ZeepStyle.src.TrickManager
                 if (tricksList != null && tricksList.Count > 0)
                 {
                     int totalPoints = trickPointsManager.CalculateTotalJumpPoints(tricksList);
-                    int totalRunPoints = trickPointsManager.AddToTotalRunPoints(totalPoints);
-                    soundEffectManager.PlaySound("Landing_Sound");
+                    _ = trickPointsManager.AddToTotalRunPoints(totalPoints);
+                }
+
+                if (trickPointsManager.totalRunPoints > 0)
+                {
+                    soundEffectManager.PlaySound("Finish_Sound");
                 }
 
                 // Update current session PB if the current run is better
