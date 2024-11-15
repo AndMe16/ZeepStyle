@@ -19,11 +19,11 @@ namespace ZeepStyle.src.Tricks
         private readonly float spinAlignmentThreshold = 0.3f; // Threshold for Y-axis alignment (dot product close to 1 = upright)
         private int spinCount = 0;
         private float lastYawDelta; // To track the direction of the previous yaw delta
-        private Queue<float> spinSpeedBuffer = new();
+        private Queue<float> spinSpeedBuffer = new Queue<float>();
         private const int bufferSize = 10; // Number of frames to average
         private bool soundPlayed = false; // To ensure the sound is only triggered once
-        private const float playThreshold = 500f; // Speed at which the sound starts playing
-        private const float volumeThreshold = 500f; // Speed at which volume scaling starts
+        private const float playThreshold = 600f; // Speed at which the sound starts playing
+        private const float volumeThreshold = 600f; // Speed at which volume scaling starts
         private const float maxVolumeSpeed = 800f; // Speed at which volume reaches maximum
 
         Style_TrickDisplay trickDisplay;
@@ -110,9 +110,13 @@ namespace ZeepStyle.src.Tricks
             }
             else
             {
-                // Reset sound trigger if speed falls below the play threshold
-                soundPlayed = false;
-                soundEffectManager.StopSound("HighSpeedSpin_Sound"); // Mute sound below threshold
+                if (soundPlayed)
+                {
+                    // Reset sound trigger if speed falls below the play threshold
+                    soundPlayed = false;
+                    soundEffectManager.StopSound("HighSpeedSpin_Sound"); // Mute sound below threshold
+                }
+                
             }
 
             if (alignmentState == 0 || alignmentState == 1)
