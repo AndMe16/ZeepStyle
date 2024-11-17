@@ -183,6 +183,9 @@ namespace ZeepStyle.src.TrickManager
             tricksList.Clear();   // Clear the list of tricks
             trickDisplay.displayTextList.Clear();
 
+            soundEffectManager.StopSound("HighSpeedSpin_Sound");
+            yaw.spinSpeedBuffer.Clear();
+
             // gizmoVisualization.CleanupAxisVisuals();
             // gizmoVisualization.CleanupReferencePlanes();
         }
@@ -280,6 +283,7 @@ namespace ZeepStyle.src.TrickManager
             trickDisplay.displayTextList.Clear();
             StopAllCoroutines();
             soundEffectManager.StopSound("HighSpeedSpin_Sound");
+            yaw.spinSpeedBuffer.Clear();
             soundEffectManager.CleanupInactiveChannels();
         }
 
