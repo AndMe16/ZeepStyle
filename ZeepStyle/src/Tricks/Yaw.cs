@@ -19,7 +19,7 @@ namespace ZeepStyle.src.Tricks
         private readonly float spinAlignmentThreshold = 0.3f; // Threshold for Y-axis alignment (dot product close to 1 = upright)
         private int spinCount = 0;
         private float lastYawDelta; // To track the direction of the previous yaw delta
-        private Queue<float> spinSpeedBuffer = new Queue<float>();
+        public Queue<float> spinSpeedBuffer = new Queue<float>();
         private const int bufferSize = 10; // Number of frames to average
         private bool soundPlayed = false; // To ensure the sound is only triggered once
         private const float playThreshold = 600f; // Speed at which the sound starts playing
