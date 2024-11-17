@@ -4,3 +4,5 @@ obj/
 /.vs/
 
 /ZeepStyle/.vs/ZeepStyle/FileContentIndex
+/ZeepStyle/.vs
+*.sln
