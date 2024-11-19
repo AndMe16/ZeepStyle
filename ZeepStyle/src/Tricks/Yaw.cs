@@ -16,7 +16,7 @@ namespace ZeepStyle.src.Tricks
         private float previousYaw; // To track the Y-axis (yaw) rotation
         private float accumulatedYaw; // To accumulate yaw rotation
         private readonly float spinThreshold = 80.0f; // Detect each 90º spin
-        private readonly float spinAlignmentThreshold = 0.3f; // Threshold for Y-axis alignment (dot product close to 1 = upright)
+        private readonly float spinAlignmentThreshold = 0.4f; // Threshold for Y-axis alignment (dot product close to 1 = upright)
         private int spinCount = 0;
         private float lastYawDelta; // To track the direction of the previous yaw delta
         public Queue<float> spinSpeedBuffer = new Queue<float>();
