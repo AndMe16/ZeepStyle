@@ -88,7 +88,7 @@ namespace ZeepStyle.src.TrickDisplayManager
             Trick _trick = trick;
 
             string displayText;
-            if (_trick.trickName == "Frontflip" || _trick.trickName == "Backflip")
+            if (_trick.trickName == "Frontflip" || _trick.trickName == "Backflip" || trick.trickName == "Sideflip")
             {
                 displayText = _trick.trickName + $" x{_trick.rotation}";
             }

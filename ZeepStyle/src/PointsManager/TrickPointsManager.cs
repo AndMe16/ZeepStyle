@@ -14,7 +14,8 @@ namespace ZeepStyle.src.PointsManager
         { "Spin", 100 },
         { "Frontflip", 300 },
         { "Backflip", 400 },
-        { "Roll", 200 }
+        { "Roll", 200 },
+        { "Sideflip", 300}
     };
 
         public int totalRunPoints = 0;
@@ -42,7 +43,7 @@ namespace ZeepStyle.src.PointsManager
                 int points = basePoints;
                 float rotationMulti;
 
-                if (trick.trickName == "Frontflip" || trick.trickName == "Backflip")
+                if (trick.trickName == "Frontflip" || trick.trickName == "Backflip" || trick.trickName == "Sideflip")
                 {
                     rotationMulti = float.Parse(trick.rotation);
                 }
