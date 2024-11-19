@@ -5,7 +5,7 @@ Now you can earn style points with this mod!
 
 Currently detected tricks:
 - Spins (180s, 360s, ...)
-- Flips (Frontflips and backflips)
+- Flips (Frontflips, backflips and sideflips)
 - Rolls (180s, 360s, ...)
 
 Press 'M' to display your total awarded points and track personal best.
@@ -16,7 +16,6 @@ The easiest way is to download and install [Modkist Revamped](https://github.com
 You can also find the mod in [mod.io](https://mod.io/g/zeepkist/m/zeepstyle)
 
 ## Future tricks (Maybe)
-- Sideflip
 - Barani - A front layout with a 180 degree twist.
 - Front full - A front layout with a 360 degree twist.
 - Rudy A front - layout with a 540 degree twist.
