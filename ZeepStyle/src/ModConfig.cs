@@ -15,7 +15,7 @@ namespace ZeepStyle.src
         {
             displayPBs = config.Bind("3. UI", "3.1. Display PBs", false,
                                             "Display the points PBs");
-            displayPBsBind = config.Bind("3. UI", "3.2. Display PBs key", KeyCode.M, "Key to display the points PBs");
+            displayPBsBind = config.Bind("3. UI", "3.2. Display PBs key", KeyCode.L, "Key to display the points PBs");
 
             tricks_SFX_volume = config.Bind("2. Audio", "2.1. SFX Volume", 100, new ConfigDescription("SFX volume [0-100]", new AcceptableValueRange<int>(0, 100)));
 
