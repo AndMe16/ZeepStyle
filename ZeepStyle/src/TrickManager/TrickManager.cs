@@ -18,6 +18,7 @@ namespace ZeepStyle.src.TrickManager
         private bool isInAir = false;
         private bool wasInAir = false;
         public bool isPlayerSpawned = false;
+        public bool isInPhotomode = false;
 
         // Rigidbody
         private Rigidbody rb;
@@ -142,12 +143,16 @@ namespace ZeepStyle.src.TrickManager
 
         private void OnPhotomodeExited()
         {
+            isInPhotomode = false;
             trickDisplay.ShowText();
+            pointsUIManager.ShowText();
         }
 
         private void OnPhotomodeEntered()
         {
+            isInPhotomode = true;
             trickDisplay.HideText();
+            pointsUIManager.HideText();
         }
 
         // Method to detect if the rigidbody has landed back on the ground

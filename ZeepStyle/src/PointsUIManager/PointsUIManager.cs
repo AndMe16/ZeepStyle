@@ -55,7 +55,7 @@ namespace ZeepStyle.src.PointsUIManager
                 {
                     DestroyComponent();
                 }
-                if (Input.GetKeyDown(ModConfig.displayPBsBind.Value))
+                if (Input.GetKeyDown(ModConfig.displayPBsBind.Value) && !trickManager.isInPhotomode)
                 {
                     TogglePointsUI();
                 }
@@ -74,6 +74,38 @@ namespace ZeepStyle.src.PointsUIManager
             {
                 ModConfig.displayPBs.Value = true;
                 CreateUI();
+            }
+        }
+
+        public void HideText()
+        {
+            if (bestPbAllTimeText != null)
+            {
+                bestPbAllTimeText.enabled = false;  // Disable the text to hide it
+            }
+            if (bestPbCurrentSessionText != null)
+            {
+                bestPbCurrentSessionText.enabled = false;  // Disable the text to hide it
+            }
+            if (currentRunPointsText != null)
+            {
+                currentRunPointsText.enabled = false;  // Disable the text to hide it
+            }
+        }
+
+        public void ShowText()
+        {
+            if (bestPbAllTimeText != null)
+            {
+                bestPbAllTimeText.enabled = true;  // Enable the text to show it again
+            }
+            if (bestPbCurrentSessionText != null)
+            {
+                bestPbCurrentSessionText.enabled = true;  // Enable the text to show it again
+            }
+            if (currentRunPointsText != null)
+            {
+                currentRunPointsText.enabled = true;  // Enable the text to show it again
             }
         }
 
