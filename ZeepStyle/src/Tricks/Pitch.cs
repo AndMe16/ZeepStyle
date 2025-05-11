@@ -11,6 +11,7 @@ namespace ZeepStyle.src.Tricks
         private Vector3 initialRight; // Reference X-axis direction
         private Vector3 initialForward; // Z-axis (forward) direction at takeoff
         private Vector3 initialUp; // Y-axis (up) direction at takeoff
+        private Vector3 referencePlaneNormal; // Normal of the plane defined by initialForward and initialUp
         private float accumulatedPitch_flip = 0; // Accumulated pitch angle for normal flips
         private float accumulatedPitch_sideflip = 0; // Accumulated pitch angle for side flips
         private float previousPitch = 0;
@@ -47,6 +48,7 @@ namespace ZeepStyle.src.Tricks
             initialUp = initialUp_;
             initialForward = initialForward_;
             initialRight = initialRight_;
+            referencePlaneNormal = Vector3.Cross(initialForward, initialUp); // Normal of the plane defined by initialForward and initialUp
 
             previousPitch = 0;
             accumulatedPitch_flip = 0;
@@ -61,7 +63,7 @@ namespace ZeepStyle.src.Tricks
             // Get the current forward direction (Z-axis)
 
             // Project current forward direction onto the initial Z-Y plane
-            Vector3 forwardInZYPlane = Vector3.ProjectOnPlane(currentForward_, Vector3.Cross(initialForward, initialUp));
+            Vector3 forwardInZYPlane = Vector3.ProjectOnPlane(currentForward_, referencePlaneNormal);
 
             // Compute the angle between the projected forward direction and the initial forward direction
             float currentPitch = Vector3.SignedAngle(initialForward, forwardInZYPlane, initialRight);
