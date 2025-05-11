@@ -112,7 +112,7 @@ namespace ZeepStyle.src.Tricks
                     soundPlayed = false;
                     soundEffectManager.StopSound("HighSpeedSpin_Sound"); // Mute sound below threshold
                 }
-                
+
             }
 
             if (alignmentState == 0 || alignmentState == 1)
