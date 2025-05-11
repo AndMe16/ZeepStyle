@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using ZeepSDK.Level;
@@ -65,6 +66,7 @@ namespace ZeepStyle.src.TrickManager
             RacingApi.PlayerSpawned += OnPlayerSpawned;
             RacingApi.Quit += OnQuit;
             RacingApi.QuickReset += OnQuickReset;
+            
             RacingApi.Crashed += OnCrashed;
             MultiplayerApi.DisconnectedFromGame += OnDisconnectedFromGame;
             RacingApi.RoundEnded += OnRoundEnded;
@@ -72,6 +74,7 @@ namespace ZeepStyle.src.TrickManager
             PhotoModeApi.PhotoModeExited += OnPhotomodeExited;
             RacingApi.LevelLoaded += OnLevelLoaded;
             Patch_HeyYouHitATrigger.OnHeyYouHitATrigger += OnCrossedFinish;
+            PatchRestartLevel.OnRestart += OnRestartLevel;
 
 
             yaw = FindObjectOfType<Style_Yaw>();
@@ -87,6 +90,13 @@ namespace ZeepStyle.src.TrickManager
             soundEffectManager = FindObjectOfType<Style_SoundEffectManager>();
 
             //gizmoVisualization = FindObjectOfType<Style_GizmoVisualization>();
+        }
+
+        private void OnRestartLevel(GameMaster master)
+        {
+            isPlayerSpawned = false;
+
+            ResetVars();
         }
 
         private void OnRoundEnded()
@@ -362,6 +372,7 @@ namespace ZeepStyle.src.TrickManager
             PhotoModeApi.PhotoModeExited -= OnPhotomodeExited;
             RacingApi.LevelLoaded -= OnLevelLoaded;
             Patch_HeyYouHitATrigger.OnHeyYouHitATrigger -= OnCrossedFinish;
+            PatchRestartLevel.OnRestart -= OnRestartLevel;
         }
     }
     public class Trick
