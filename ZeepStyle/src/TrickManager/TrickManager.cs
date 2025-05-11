@@ -31,6 +31,7 @@ namespace ZeepStyle.src.TrickManager
         private Vector3 initialRight; // Reference X-axis direction
         private Vector3 initialForward; // Z-axis (forward) direction at takeoff
         private Vector3 initialUp; // Y-axis (up) direction at takeoff
+        private Vector3 initialForwardVelocity; // Initial forward velocity at takeoff
 
         // Debuging with gizmo visualization
         //Style_GizmoVisualization gizmoVisualization;
@@ -202,13 +203,25 @@ namespace ZeepStyle.src.TrickManager
 
             if (ModConfig.tricksDetectionOn.Value)
             {
+                // Calculate the initial up, forward, and right vectors
                 initialUp = Vector3.up;
+
+                // Calculate the initial forward velocity and forward direction
+                initialForwardVelocity = Vector3.ProjectOnPlane(rb.velocity,Vector3.up);
                 initialForward = Vector3.ProjectOnPlane(rb.transform.forward, initialUp);
+
+                // Check if the player is facing the opposite direction
+                float alignment = Vector3.Dot(rb.velocity.normalized, rb.transform.forward);
+                if (alignment < 0)
+                {
+                    initialForwardVelocity = -initialForwardVelocity;
+                }
+
                 initialRight = Vector3.Cross(initialUp, initialForward).normalized;
 
-                yaw.OnLeaveGround(initialUp, initialForward, initialRight);
-                pitch.OnLeaveGround(initialUp, initialForward, initialRight);
-                roll.OnLeaveGround(initialUp, initialForward, initialRight);
+                yaw.OnLeaveGround(initialUp, initialForwardVelocity, initialRight);
+                pitch.OnLeaveGround(initialUp, initialForwardVelocity, initialRight);
+                roll.OnLeaveGround(initialUp, initialForwardVelocity, initialRight);
             }
 
             trickDisplay.ResetText();
