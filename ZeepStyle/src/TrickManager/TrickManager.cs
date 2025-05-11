@@ -217,7 +217,7 @@ namespace ZeepStyle.src.TrickManager
                     initialForwardVelocity = -initialForwardVelocity;
                 }
 
-                initialRight = Vector3.Cross(initialUp, initialForward).normalized;
+                initialRight = Vector3.Cross(initialUp, initialForwardVelocity).normalized;
 
                 yaw.OnLeaveGround(initialUp, initialForwardVelocity, initialRight);
                 pitch.OnLeaveGround(initialUp, initialForwardVelocity, initialRight);
