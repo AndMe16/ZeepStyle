@@ -190,7 +190,7 @@ namespace ZeepStyle.src.Tricks
             Vector3 currentUpDirection = currentUp_; // Current Y-axis direction of the rigidbody
 
             // Compute the dot product between the current and reference Y-axis directions
-            float alignment = Vector3.Dot(currentUpDirection, initialUp);
+            float alignment = Vector3.Dot(currentUpDirection, Vector3.up);
 
             if (Mathf.Abs(alignment) < spinAlignmentThreshold)
             {
