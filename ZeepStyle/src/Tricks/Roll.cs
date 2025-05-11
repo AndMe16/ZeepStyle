@@ -11,6 +11,7 @@ namespace ZeepStyle.src.Tricks
         private Vector3 initialRight; // Reference X-axis direction
         private Vector3 initialForward; // Z-axis (forward) direction at takeoff
         private Vector3 initialUp; // Y-axis (up) direction at takeoff
+        private Vector3 referencePlaneNormal; // Normal of the plane defined by initialRight and initialUp
         private float accumulatedRoll = 0; // Accumulated roll angle
         private float previousRoll = 0;
         private readonly float rollThreshold = 80.0f; // Detect each 90º roll
@@ -41,6 +42,7 @@ namespace ZeepStyle.src.Tricks
             initialUp = initialUp_;
             initialForward = initialForward_;
             initialRight = initialRight_;
+            referencePlaneNormal = Vector3.Cross(initialRight, initialUp); // Normal of the plane defined by initialRight and initialUp
 
             previousRoll = 0;
             accumulatedRoll = 0;
@@ -54,7 +56,7 @@ namespace ZeepStyle.src.Tricks
             Vector3 currentUp = currentUp_;
 
             // Project current up direction onto the initial X-Y plane
-            Vector3 upInXYPlane = Vector3.ProjectOnPlane(currentUp, Vector3.Cross(initialRight, initialUp));
+            Vector3 upInXYPlane = Vector3.ProjectOnPlane(currentUp, referencePlaneNormal);
 
             // Compute the angle between the projected up direction and the initial up direction
             float currentRoll = Vector3.SignedAngle(initialUp, upInXYPlane, initialForward);
