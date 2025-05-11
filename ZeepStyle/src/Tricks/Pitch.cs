@@ -76,7 +76,7 @@ namespace ZeepStyle.src.Tricks
 
             float pitchDelta = Mathf.DeltaAngle(previousPitch, currentPitch);
 
-            if (flipAlignmentState == 0 || flipAlignmentState == 1 || sideflipAlignmentState == 0 || sideflipAlignmentState == 1)
+            if (flipAlignmentState == 0 || flipAlignmentState == 1)
             {
                 // Check if the spin direction has changed
                 if (Mathf.Sign(pitchDelta) != Mathf.Sign(lastPitchDelta) && Mathf.Abs(lastPitchDelta) > 0)
@@ -84,108 +84,111 @@ namespace ZeepStyle.src.Tricks
                     // Direction changed, reset flip counter
                     //Plugin.Logger.LogInfo("Flip direction changed! Resetting flip counter.");
                     accumulatedPitch_flip = 0;
-                    accumulatedPitch_sideflip = 0;
-                    flipCount = 0;
-                    sideflipCount = 0;
-                }
-
-                if (flipAlignmentState == 0 || flipAlignmentState == 1)
-                {
-                    // Accumulate the pitch rotation
-                    accumulatedPitch_flip += pitchDelta;
-
-                    // Check if we have completed a 90º increment of flip
-                    if (Mathf.Abs(accumulatedPitch_flip) >= flipThreshold)
-                    {
-                        flipCount++;
-                        accumulatedPitch_flip = 0; // Reset accumulated pitch for the next 90º increment
-
-                        if (((flipCount % 4) == 0) && (flipCount != 0))
-                        {
-                            string trickName;
-                            bool isInverse;
-                            bool isPositiveDelta;
-                            if (flipAlignmentState == 0)
-                            {
-                                isInverse = false;
-                            }
-                            else
-                            {
-                                isInverse = true;
-                            }
-                            if (pitchDelta > 0)
-                            {
-                                isPositiveDelta = true;
-                                trickName = "Frontflip";
-                            }
-                            else
-                            {
-                                isPositiveDelta = false;
-                                trickName = $"Backflip";
-                            }
-                            string rotations_str = $"{flipCount / 4}";
-                            Trick trick = new()
-                            {
-                                trickName = trickName,
-                                rotation = rotations_str,
-                                isInverse = isInverse,
-                                isPositiveDelta = isPositiveDelta
-                            };
-                            int points = trickPointsManager.CalculatePoints(trick);
-                            trickDisplay.DisplayTrick(trick, points);
-                            soundEffectManager.PlaySound("SimpleTrick_3_Sound");
-                        }
-                    }
-                }
-                else
-                {
-                    accumulatedPitch_flip = 0;
                     flipCount = 0;
                 }
 
-                if (sideflipAlignmentState == 0 || sideflipAlignmentState == 1)
+                // Accumulate the pitch rotation
+                accumulatedPitch_flip += pitchDelta;
+
+                // Check if we have completed a 90º increment of flip
+                if (Mathf.Abs(accumulatedPitch_flip) >= flipThreshold)
                 {
-                    // Accumulate the pitch rotation
-                    accumulatedPitch_sideflip += pitchDelta;
+                    flipCount++;
+                    accumulatedPitch_flip = 0; // Reset accumulated pitch for the next 90º increment
 
-                    // Check if we have completed a 90º increment of flip
-                    if (Mathf.Abs(accumulatedPitch_sideflip) >= sideflipThreshold)
+                    if (((flipCount % 4) == 0) && (flipCount != 0))
                     {
-                        sideflipCount++;
-                        accumulatedPitch_sideflip = 0; // Reset accumulated pitch for the next 90º increment
-
-                        if (((sideflipCount % 4) == 0) && (sideflipCount != 0))
+                        string trickName;
+                        bool isInverse;
+                        bool isPositiveDelta;
+                        if (flipAlignmentState == 0)
                         {
-                            string trickName = "Sideflip";
-                            bool isInverse;
-                            bool isPositiveDelta = true;
-                            if (pitchDelta > 0)
-                            {
-                                isInverse = false;
-                            }
-                            else
-                            {
-                                isInverse = true;
-                            }
-                            string rotations_str = $"{sideflipCount / 4}";
-                            Trick trick = new()
-                            {
-                                trickName = trickName,
-                                rotation = rotations_str,
-                                isInverse = isInverse,
-                                isPositiveDelta = isPositiveDelta
-                            };
-                            int points = trickPointsManager.CalculatePoints(trick);
-                            trickDisplay.DisplayTrick(trick, points);
-                            soundEffectManager.PlaySound("SimpleTrick_3_Sound");
+                            isInverse = false;
                         }
+                        else
+                        {
+                            isInverse = true;
+                        }
+                        if (pitchDelta > 0)
+                        {
+                            isPositiveDelta = true;
+                            trickName = "Frontflip";
+                        }
+                        else
+                        {
+                            isPositiveDelta = false;
+                            trickName = $"Backflip";
+                        }
+                        string rotations_str = $"{flipCount / 4}";
+                        Trick trick = new()
+                        {
+                            trickName = trickName,
+                            rotation = rotations_str,
+                            isInverse = isInverse,
+                            isPositiveDelta = isPositiveDelta
+                        };
+                        int points = trickPointsManager.CalculatePoints(trick);
+                        trickDisplay.DisplayTrick(trick, points);
+                        soundEffectManager.PlaySound("SimpleTrick_3_Sound");
                     }
                 }
-                else
+            }
+            else
+            {
+                accumulatedPitch_flip = 0;
+                flipCount = 0;
+            }
+
+            if (sideflipAlignmentState == 0 || sideflipAlignmentState == 1)
+            {
+                // Check if the spin direction has changed
+                if (Mathf.Sign(pitchDelta) != Mathf.Sign(lastPitchDelta) && Mathf.Abs(lastPitchDelta) > 0)
                 {
+                    // Direction changed, reset flip counter
+                    //Plugin.Logger.LogInfo("Flip direction changed! Resetting flip counter.");
                     accumulatedPitch_sideflip = 0;
                     sideflipCount = 0;
                 }
+                // Accumulate the pitch rotation
+                accumulatedPitch_sideflip += pitchDelta;
+
+                // Check if we have completed a 90º increment of flip
+                if (Mathf.Abs(accumulatedPitch_sideflip) >= sideflipThreshold)
+                {
+                    sideflipCount++;
+                    accumulatedPitch_sideflip = 0; // Reset accumulated pitch for the next 90º increment
+
+                    if (((sideflipCount % 4) == 0) && (sideflipCount != 0))
+                    {
+                        string trickName = "Sideflip";
+                        bool isInverse;
+                        bool isPositiveDelta = true;
+                        if (pitchDelta > 0)
+                        {
+                            isInverse = false;
+                        }
+                        else
+                        {
+                            isInverse = true;
+                        }
+                        string rotations_str = $"{sideflipCount / 4}";
+                        Trick trick = new()
+                        {
+                            trickName = trickName,
+                            rotation = rotations_str,
+                            isInverse = isInverse,
+                            isPositiveDelta = isPositiveDelta
+                        };
+                        int points = trickPointsManager.CalculatePoints(trick);
+                        trickDisplay.DisplayTrick(trick, points);
+                        soundEffectManager.PlaySound("SimpleTrick_3_Sound");
+                    }
+                }
+            }
+            else
+            {
+                accumulatedPitch_sideflip = 0;
+                sideflipCount = 0;
             }
 
             // Update the previous pitch and last pitch delta for the next frame
