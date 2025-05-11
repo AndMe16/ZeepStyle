@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using ZeepkistClient;
 using ZeepSDK.Storage;
+using ZeepStyle.src.Patches;
 using ZeepStyle.src.PointsUIManager;
 using ZeepStyle.src.TrickManager;
 
@@ -112,6 +114,13 @@ namespace ZeepStyle.src.PointsManager
                 Plugin.Logger.LogError("SaveLevelPB: Current level hash is null");
                 return;
             }
+
+            if (!ZeepkistNetwork.IsConnected && PatchLoadOfflineLevel.isTestLevel)
+            {
+                Plugin.Logger.LogInfo("SaveLevelPB: Current level is a test level, not saving PB");
+                return;
+            }
+
             pointsPBsStorage.SaveToJson($"{levelHash}_PB", bestPbAllTime);
         }
 

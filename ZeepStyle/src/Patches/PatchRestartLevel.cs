@@ -11,7 +11,7 @@ namespace ZeepStyle.src.Patches
         static void Postfix(GameMaster __instance)
         {
             OnRestart?.Invoke(__instance);
-            Plugin.Logger.LogInfo($"PatchRestartLevel: Restarting level");
+            //Plugin.Logger.LogInfo($"PatchRestartLevel: Restarting level");
         }
     }
 }

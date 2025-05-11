@@ -151,7 +151,7 @@ namespace ZeepStyle.src.TrickManager
             trickDisplay.CreateDisplay();
             pointsUIManager.CreateUI();
             trickPointsManager.UpdateCurrentRunPoints(0);
-            Plugin.Logger.LogInfo("Player spawned");
+            // Plugin.Logger.LogInfo("Player spawned");
         }
 
         private void OnPhotomodeExited()
@@ -257,7 +257,7 @@ namespace ZeepStyle.src.TrickManager
 
         private void OnCrossedFinish(bool hasFinished)
         {
-            Plugin.Logger.LogInfo("Player crossed the finish line");
+            // Plugin.Logger.LogInfo("Player crossed the finish line");
             if (hasFinished)
             {
                 if (tricksList != null && tricksList.Count > 0)
@@ -284,6 +284,7 @@ namespace ZeepStyle.src.TrickManager
                 // Update all-time PB if necessary
                 if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbAllTime)
                 {
+                    Plugin.Logger.LogInfo($"New PB: {trickPointsManager.totalRunPoints} > {trickPointsManager.bestPbAllTime}");
                     trickPointsManager.bestPbAllTime = trickPointsManager.totalRunPoints;
                     if (pointsUIManager.bestPbAllTimeText != null)
                     {
