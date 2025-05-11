@@ -68,11 +68,6 @@ namespace ZeepStyle.src.Tricks
             // Compute the angle between the projected forward direction and the initial forward direction
             float currentYaw = Vector3.SignedAngle(initialForward, forwardInXZPlane, initialUp);
 
-            if (currentYaw < 0)
-            {
-                currentYaw = 360 + currentYaw;
-            }
-
             int alignmentState = CheckSpinAlignment(currentUp_);
 
             float yawDelta = Mathf.DeltaAngle(previousYaw, currentYaw);
