@@ -15,8 +15,9 @@ namespace ZeepStyle.src.Tricks
         private Vector3 initialUp; // Y-axis (up) direction at takeoff
         private float previousYaw; // To track the Y-axis (yaw) rotation
         private float accumulatedYaw; // To accumulate yaw rotation
-        private readonly float spinThreshold = 80.0f; // Detect each 90º spin
+        private readonly float spinThreshold = 80.0f; // Detect each 90º spin after the first spinThreshold degrees
         private readonly float spinAlignmentThreshold = 0.4f; // Threshold for Y-axis alignment (dot product close to 1 = upright)
+        private readonly float changeDirectionTolerance = 1.0f;
         private int spinCount = 0;
         private float lastYawDelta; // To track the direction of the previous yaw delta
         public Queue<float> spinSpeedBuffer = new Queue<float>();
@@ -122,7 +123,7 @@ namespace ZeepStyle.src.Tricks
             if (alignmentState == 0 || alignmentState == 1)
             {
                 // Check if the spin direction has changed
-                if (Mathf.Sign(yawDelta) != Mathf.Sign(lastYawDelta) && Mathf.Abs(lastYawDelta) > 0)
+                if (Mathf.Sign(yawDelta) != Mathf.Sign(lastYawDelta) && Mathf.Abs(lastYawDelta) > changeDirectionTolerance && Mathf.Abs(yawDelta) > 1f)
                 {
                     // Direction changed, reset spin counter
                     // Plugin.Logger.LogInfo("Spin direction changed! Resetting spin counter.");
