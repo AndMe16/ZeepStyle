@@ -17,6 +17,8 @@ namespace ZeepStyle.src.TrickManager
         // States
         private bool isInAir = false;
         private bool wasInAir = false;
+        private bool isInParaglider = false;
+        private bool wasInParaglider = false;
         public bool isPlayerSpawned = false;
         public bool isInPhotomode = false;
 
@@ -199,7 +201,6 @@ namespace ZeepStyle.src.TrickManager
         // Method to detect if the rigidbody has left the ground
         void OnLeaveGround()
         {
-            isInAir = true;
 
             if (ModConfig.tricksDetectionOn.Value)
             {
@@ -292,6 +293,8 @@ namespace ZeepStyle.src.TrickManager
         {
             isInAir = false;  // Reset state when landing
             wasInAir = false;
+            isInParaglider = false;
+            wasInParaglider = false;
             yaw.ClearVars();
             pitch.ClearVars();
             roll.ClearVars();
@@ -310,6 +313,11 @@ namespace ZeepStyle.src.TrickManager
             if (isPlayerSpawned)
             {
                 isInAir = PatchAreAllWheelsInAir.IsInTheAir;
+
+                // Check if the player is in the paraglider
+                isInParaglider = PatchSetZeepkistState.currentState == 3;
+
+                isInAir = !isInParaglider && isInAir;
 
                 if (isInAir && ModConfig.tricksDetectionOn.Value)
                 {
@@ -338,6 +346,7 @@ namespace ZeepStyle.src.TrickManager
                     //Plugin.Logger.LogInfo("Player is no longer Airborne!");
                 }
                 wasInAir = isInAir;
+                wasInParaglider = isInParaglider;
             }
         }
 
