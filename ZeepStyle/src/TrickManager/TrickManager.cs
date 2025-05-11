@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using ZeepSDK.Level;
@@ -66,7 +65,7 @@ namespace ZeepStyle.src.TrickManager
             RacingApi.PlayerSpawned += OnPlayerSpawned;
             RacingApi.Quit += OnQuit;
             RacingApi.QuickReset += OnQuickReset;
-            
+
             RacingApi.Crashed += OnCrashed;
             MultiplayerApi.DisconnectedFromGame += OnDisconnectedFromGame;
             RacingApi.RoundEnded += OnRoundEnded;
@@ -218,7 +217,7 @@ namespace ZeepStyle.src.TrickManager
                 initialUp = Vector3.up;
 
                 // Calculate the initial forward velocity and forward direction
-                initialForwardVelocity = Vector3.ProjectOnPlane(rb.velocity,Vector3.up);
+                initialForwardVelocity = Vector3.ProjectOnPlane(rb.velocity, Vector3.up);
                 initialForward = Vector3.ProjectOnPlane(rb.transform.forward, initialUp);
 
                 // Check if the player is facing the opposite direction
