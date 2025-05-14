@@ -133,6 +133,7 @@ namespace ZeepStyle.src.PointsManager
             }
             if (pointsPBsStorage.JsonFileExists($"{levelHash}_PB"))
             {
+                Plugin.Logger.LogInfo($"Loading PB points from {levelHash}_PB");
                 bestPbAllTime = pointsPBsStorage.LoadFromJson<int>($"{levelHash}_PB");
             }
             else

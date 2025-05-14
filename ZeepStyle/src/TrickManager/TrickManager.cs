@@ -121,6 +121,7 @@ namespace ZeepStyle.src.TrickManager
 
             if (tricksList != null && tricksList.Count > 0)
             {
+                Plugin.Logger.LogInfo("Player crashed with tricks");
                 soundEffectManager.PlaySound("Crash_sound");
             }
 
@@ -153,11 +154,12 @@ namespace ZeepStyle.src.TrickManager
             trickDisplay.CreateDisplay();
             pointsUIManager.CreateUI();
             trickPointsManager.UpdateCurrentRunPoints(0);
-            // Plugin.Logger.LogInfo("Player spawned");
+            Plugin.Logger.LogInfo("Player spawned");
         }
 
         private void OnPhotomodeExited()
         {
+            Plugin.Logger.LogInfo("Photomode exited");
             isInPhotomode = false;
             trickDisplay.ShowText();
             pointsUIManager.ShowText();
@@ -165,6 +167,7 @@ namespace ZeepStyle.src.TrickManager
 
         private void OnPhotomodeEntered()
         {
+            Plugin.Logger.LogInfo("Photomode entered");
             isInPhotomode = true;
             trickDisplay.HideText();
             pointsUIManager.HideText();
@@ -173,6 +176,8 @@ namespace ZeepStyle.src.TrickManager
         // Method to detect if the rigidbody has landed back on the ground
         void OnLand()
         {
+            Plugin.Logger.LogInfo("OnLand: Player has landed!");
+
             isInAir = false;  // Reset state when landing
             wasInAir = false;
 
@@ -218,6 +223,7 @@ namespace ZeepStyle.src.TrickManager
 
             if (ModConfig.tricksDetectionOn.Value)
             {
+                Plugin.Logger.LogInfo("OnLeaveGround: Player is airborne!");
                 // Calculate the initial up, forward, and right vectors
                 initialUp = Vector3.up;
 
@@ -229,6 +235,7 @@ namespace ZeepStyle.src.TrickManager
                 float alignment = Vector3.Dot(rb.velocity.normalized, initialForward);
                 if (alignment < 0)
                 {
+                    Plugin.Logger.LogInfo("OnLeaveGround: Player is facing the opposite direction!");
                     initialForwardVelocity = -initialForwardVelocity;
                 }
 
@@ -241,12 +248,12 @@ namespace ZeepStyle.src.TrickManager
 
             if (timeSinceLanding > landingSuppressionTime)
             {
-            trickDisplay.ResetText();
-            if (hideTextOnLandCoroutine != null)
-            {
-                //Plugin.Logger.LogInfo($"OnLeaveGround: Stoping hideTextOnLandCoroutine {hideTextOnLandCoroutine.ToString()}");
-                StopCoroutine(hideTextOnLandCoroutine);
-            }
+                trickDisplay.ResetText();
+                if (hideTextOnLandCoroutine != null)
+                {
+                    //Plugin.Logger.LogInfo($"OnLeaveGround: Stoping hideTextOnLandCoroutine {hideTextOnLandCoroutine.ToString()}");
+                    StopCoroutine(hideTextOnLandCoroutine);
+                }
             }
 
             // gizmoVisualization.CreateAxisVisuals(rb);
@@ -268,6 +275,7 @@ namespace ZeepStyle.src.TrickManager
             {
                 if (tricksList != null && tricksList.Count > 0)
                 {
+                    Plugin.Logger.LogInfo("Player finished with tricks");
                     int totalPoints = trickPointsManager.CalculateTotalJumpPoints(tricksList);
                     _ = trickPointsManager.AddToTotalRunPoints(totalPoints);
                 }
@@ -280,6 +288,7 @@ namespace ZeepStyle.src.TrickManager
                 // Update current session PB if the current run is better
                 if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbCurrentSession)
                 {
+                    Plugin.Logger.LogInfo($"New PB (Current Session): {trickPointsManager.totalRunPoints} > {trickPointsManager.bestPbCurrentSession}");
                     trickPointsManager.bestPbCurrentSession = trickPointsManager.totalRunPoints;
                     if (pointsUIManager.bestPbCurrentSessionText != null)
                     {
@@ -290,7 +299,7 @@ namespace ZeepStyle.src.TrickManager
                 // Update all-time PB if necessary
                 if (trickPointsManager.totalRunPoints > trickPointsManager.bestPbAllTime)
                 {
-                    Plugin.Logger.LogInfo($"New PB: {trickPointsManager.totalRunPoints} > {trickPointsManager.bestPbAllTime}");
+                    Plugin.Logger.LogInfo($"New PB (All Sessions): {trickPointsManager.totalRunPoints} > {trickPointsManager.bestPbAllTime}");
                     trickPointsManager.bestPbAllTime = trickPointsManager.totalRunPoints;
                     if (pointsUIManager.bestPbAllTimeText != null)
                     {
