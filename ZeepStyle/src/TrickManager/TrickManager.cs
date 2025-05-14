@@ -37,6 +37,10 @@ namespace ZeepStyle.src.TrickManager
         // Debuging with gizmo visualization
         //Style_GizmoVisualization gizmoVisualization;
 
+        // Post Landing
+        private float timeSinceLanding = Mathf.Infinity;
+        const float landingSuppressionTime = 0.25f; // Quarter second
+
         // Trick Points
         Style_TrickPointsManager trickPointsManager;
 
@@ -172,6 +176,8 @@ namespace ZeepStyle.src.TrickManager
             isInAir = false;  // Reset state when landing
             wasInAir = false;
 
+            timeSinceLanding = 0f;
+
             yaw.ClearVars();
             pitch.ClearVars();
             roll.ClearVars();
@@ -220,7 +226,7 @@ namespace ZeepStyle.src.TrickManager
                 initialForward = Vector3.ProjectOnPlane(rb.transform.forward, initialUp);
 
                 // Check if the player is facing the opposite direction
-                float alignment = Vector3.Dot(rb.velocity.normalized, rb.transform.forward);
+                float alignment = Vector3.Dot(rb.velocity.normalized, initialForward);
                 if (alignment < 0)
                 {
                     initialForwardVelocity = -initialForwardVelocity;
@@ -233,12 +239,14 @@ namespace ZeepStyle.src.TrickManager
                 roll.OnLeaveGround(initialUp, initialForwardVelocity, initialRight);
             }
 
+            if (timeSinceLanding > landingSuppressionTime)
+            {
             trickDisplay.ResetText();
-
             if (hideTextOnLandCoroutine != null)
             {
                 //Plugin.Logger.LogInfo($"OnLeaveGround: Stoping hideTextOnLandCoroutine {hideTextOnLandCoroutine.ToString()}");
                 StopCoroutine(hideTextOnLandCoroutine);
+            }
             }
 
             // gizmoVisualization.CreateAxisVisuals(rb);
@@ -316,7 +324,7 @@ namespace ZeepStyle.src.TrickManager
             soundEffectManager.CleanupInactiveChannels();
         }
 
-        void Update()
+        void FixedUpdate()
         {
             if (isPlayerSpawned)
             {
@@ -329,6 +337,14 @@ namespace ZeepStyle.src.TrickManager
 
                 if (isInAir && ModConfig.tricksDetectionOn.Value)
                 {
+                    timeSinceLanding += Time.deltaTime;
+
+                    if (timeSinceLanding < landingSuppressionTime)
+                    {
+                        return;
+                    }
+
+
                     rb = PatchGetRB.Rb;
                     currentRight = rb.transform.right;
                     currentForward = rb.transform.forward;
