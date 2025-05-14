@@ -29,6 +29,7 @@ public class Style_SoundEffectManager : MonoBehaviour
     }
 
 
+
     private void SetGlobalVolume(GameSettingsScriptableObject @object)
     {
         SetVolumeWithGlobal(@object.audio_master);
@@ -80,7 +81,7 @@ public class Style_SoundEffectManager : MonoBehaviour
             if (result == FMOD.RESULT.OK)
             {
                 sounds[fileName] = sound;
-                Plugin.Logger.LogInfo($"Loaded sound: {fileName}");
+                // Plugin.Logger.LogInfo($"Loaded sound: {fileName}");
             }
             else
             {
@@ -109,6 +110,7 @@ public class Style_SoundEffectManager : MonoBehaviour
             else
             {
                 soundChannels[soundName] = channel;
+                //Plugin.Logger.LogInfo($"Playing sound: {soundName}");
             }
         }
         else
@@ -124,6 +126,10 @@ public class Style_SoundEffectManager : MonoBehaviour
         {
             Plugin.Logger.LogError("Failed to set volume for custom channel group: " + result);
         }
+        //else
+        //{
+        //    Plugin.Logger.LogInfo($"Set volume for custom channel group: {volume}");
+        //}
     }
 
     public void SetSoundVolume(string soundName, float volume)
@@ -155,12 +161,12 @@ public class Style_SoundEffectManager : MonoBehaviour
                 {
                     Plugin.Logger.LogError($"Failed to stop {soundName}: {result}");
                 }
+                //else
+                //{
+                //    Plugin.Logger.LogInfo($"Stopped sound: {soundName}.");
+                //}
                 soundChannels.Remove(soundName);
             }
-        }
-        else
-        {
-            //Plugin.Logger.LogWarning("Sound not found: " + soundName);
         }
     }
 
