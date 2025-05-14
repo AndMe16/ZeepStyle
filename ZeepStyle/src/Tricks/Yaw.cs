@@ -25,7 +25,8 @@ namespace ZeepStyle.src.Tricks
         private bool soundPlayed = false; // To ensure the sound is only triggered once
         private const float playThreshold = 600f; // Speed at which the sound starts playing
         private const float volumeThreshold = 600f; // Speed at which volume scaling starts
-        private const float maxVolumeSpeed = 800f; // Speed at which volume reaches maximum
+        private const float maxVolumeSpeed = 700f; // Speed at which volume reaches maximum
+        private const float maxReasonableSpinSpeed = 720f; // Maximum reasonable spin speed (degrees per second)
 
         Style_TrickDisplay trickDisplay;
         Style_TrickPointsManager trickPointsManager;
@@ -72,51 +73,26 @@ namespace ZeepStyle.src.Tricks
 
             float yawDelta = Mathf.DeltaAngle(previousYaw, currentYaw);
 
-            // Calculate spin speed (degrees per second)
-            float spinSpeed = Mathf.Abs(yawDelta / Time.deltaTime);
-
-            // Add spin speed to the buffer
-            spinSpeedBuffer.Enqueue(spinSpeed);
-
-            // Remove the oldest speed if buffer exceeds the size
-            if (spinSpeedBuffer.Count > bufferSize)
-            {
-                spinSpeedBuffer.Dequeue();
-            }
-
-            // Calculate the moving average speed
-            float averageSpinSpeed = spinSpeedBuffer.Average();
-
-            // Check if average spin speed exceeds the play threshold
-            if (averageSpinSpeed > playThreshold)
-            {
-                if (!soundPlayed)
-                {
-                    soundEffectManager.PlaySound("HighSpeedSpin_Sound");
-                    soundPlayed = true; // Mark sound as played
-                }
-
-                // Adjust volume based on speed
-                if (averageSpinSpeed > volumeThreshold)
-                {
-                    float normalizedSpeed = Mathf.Clamp(averageSpinSpeed, volumeThreshold, maxVolumeSpeed);
-                    float volume = (normalizedSpeed - volumeThreshold) / (maxVolumeSpeed - volumeThreshold);
-                    soundEffectManager.SetSoundVolume("HighSpeedSpin_Sound", volume);
-                }
-            }
-            else
-            {
-                if (soundPlayed)
-                {
-                    // Reset sound trigger if speed falls below the play threshold
-                    soundPlayed = false;
-                    soundEffectManager.StopSound("HighSpeedSpin_Sound"); // Mute sound below threshold
-                }
-
-            }
-
             if (alignmentState == 0 || alignmentState == 1)
             {
+                // Calculate the spin speed based on the yaw delta and time since last frame
+                float spinSpeed = 0f;
+                if (Time.deltaTime > Mathf.Epsilon)
+                {
+                    float rawSpinSpeed = Mathf.Abs(yawDelta / Time.deltaTime);
+
+                    if (rawSpinSpeed < maxReasonableSpinSpeed)
+                    {
+                        spinSpeed = rawSpinSpeed;
+                    }
+                    else
+                    {
+                        spinSpeed = 0f; // Ignore unreasonable spin speeds
+                    }
+                }
+                // HandleSpinSound(spinSpeed); // Call the sound effect manager to handle spin sound
+                HandleSpinSound(spinSpeed);
+
                 // Check if the spin direction has changed
                 if (Mathf.Sign(yawDelta) != Mathf.Sign(lastYawDelta) && Mathf.Abs(lastYawDelta) > 0)
                 {
@@ -202,5 +178,50 @@ namespace ZeepStyle.src.Tricks
             }
             return 0; // Spining normally
         }
+
+        private void HandleSpinSound(float spinSpeed)
+        {
+            // Add spin speed to the buffer
+            spinSpeedBuffer.Enqueue(spinSpeed);
+
+            // Remove the oldest speed if buffer exceeds the size
+            if (spinSpeedBuffer.Count > bufferSize)
+            {
+                spinSpeedBuffer.Dequeue();
+            }
+
+            // Calculate the moving average speed
+            float averageSpinSpeed = spinSpeedBuffer.Average();
+
+            // Check if average spin speed exceeds the play threshold
+            if (averageSpinSpeed > playThreshold)
+            {
+                if (!soundPlayed)
+                {
+                    //Plugin.Logger.LogInfo($"Playing sound at speed: {averageSpinSpeed}");
+                    soundEffectManager.PlaySound("HighSpeedSpin_Sound");
+                    soundPlayed = true;
+                }
+
+                // Adjust volume based on speed
+                if (averageSpinSpeed > volumeThreshold)
+                {
+                    //Plugin.Logger.LogInfo($"Setting volume at speed: {averageSpinSpeed}");
+                    float normalizedSpeed = Mathf.Clamp(averageSpinSpeed, volumeThreshold, maxVolumeSpeed);
+                    float volume = (normalizedSpeed - volumeThreshold) / (maxVolumeSpeed - volumeThreshold);
+                    soundEffectManager.SetSoundVolume("HighSpeedSpin_Sound", volume);
+                }
+            }
+            else
+            {
+                if (soundPlayed)
+                {
+                    //Plugin.Logger.LogInfo($"Stopping sound at speed: {averageSpinSpeed}");
+                    soundPlayed = false;
+                    soundEffectManager.StopSound("HighSpeedSpin_Sound");
+                }
+            }
+        }
+
     }
 }
