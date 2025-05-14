@@ -18,7 +18,6 @@ namespace ZeepStyle.src.TrickManager
         private bool isInAir = false;
         private bool wasInAir = false;
         private bool isInParaglider = false;
-        private bool wasInParaglider = false;
         public bool isPlayerSpawned = false;
         public bool isInPhotomode = false;
 
@@ -304,7 +303,6 @@ namespace ZeepStyle.src.TrickManager
             isInAir = false;  // Reset state when landing
             wasInAir = false;
             isInParaglider = false;
-            wasInParaglider = false;
             yaw.ClearVars();
             pitch.ClearVars();
             roll.ClearVars();
@@ -356,7 +354,6 @@ namespace ZeepStyle.src.TrickManager
                     //Plugin.Logger.LogInfo("Player is no longer Airborne!");
                 }
                 wasInAir = isInAir;
-                wasInParaglider = isInParaglider;
             }
         }
 
