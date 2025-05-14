@@ -8,7 +8,7 @@ Currently detected tricks:
 - Flips (Frontflips, backflips and sideflips)
 - Rolls (180s, 360s, ...)
 
-Press 'M' to display your total awarded points and track personal best.
+Press 'L' to display your total awarded points and track personal best.
 
 ## Install
 The easiest way is to download and install [Modkist Revamped](https://github.com/donderjoekel/ModkistRevamped?tab=readme-ov-file). There you can subscribe to this mod, it will automatically install the mod in the correct folder.
