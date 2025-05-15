@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using ZeepSDK.Level;
 using ZeepSDK.Multiplayer;
 using ZeepSDK.PhotoMode;
@@ -335,7 +336,7 @@ namespace ZeepStyle.src.TrickManager
 
         void FixedUpdate()
         {
-            if (isPlayerSpawned)
+            if (isPlayerSpawned && SceneManager.GetActiveScene().name == "GameScene")
             {
                 isInAir = PatchAreAllWheelsInAir.IsInTheAir;
 
