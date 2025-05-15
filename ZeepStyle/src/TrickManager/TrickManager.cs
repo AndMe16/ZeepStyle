@@ -355,6 +355,10 @@ namespace ZeepStyle.src.TrickManager
 
 
                     rb = PatchGetRB.Rb;
+                    if (rb == null)
+                    {
+                        return;
+                    }
                     currentRight = rb.transform.right;
                     currentForward = rb.transform.forward;
                     currentUp = rb.transform.up;
