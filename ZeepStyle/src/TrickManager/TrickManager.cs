@@ -41,6 +41,7 @@ namespace ZeepStyle.src.TrickManager
         // Post Landing
         private float timeSinceLanding = Mathf.Infinity;
         const float landingSuppressionTime = 0.25f; // Quarter second
+        const float landingUISuppressionTime = 2f;
 
         // Trick Points
         Style_TrickPointsManager trickPointsManager;
@@ -247,7 +248,7 @@ namespace ZeepStyle.src.TrickManager
                 roll.OnLeaveGround(initialUp, initialForwardVelocity, initialRight);
             }
 
-            if (timeSinceLanding > landingSuppressionTime)
+            if (timeSinceLanding > landingUISuppressionTime)
             {
                 trickDisplay.ResetText();
                 if (hideTextOnLandCoroutine != null)
