@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -79,6 +80,7 @@ namespace ZeepStyle.src.TrickManager
             RacingApi.LevelLoaded += OnLevelLoaded;
             Patch_HeyYouHitATrigger.OnHeyYouHitATrigger += OnCrossedFinish;
             PatchRestartLevel.OnRestart += OnRestartLevel;
+            PatchPauseHandler_Pause.OnPause += PatchPauseHandler_OnPause_OnUnpause;
 
 
             yaw = FindObjectOfType<Style_Yaw>();
@@ -94,6 +96,14 @@ namespace ZeepStyle.src.TrickManager
             soundEffectManager = FindObjectOfType<Style_SoundEffectManager>();
 
             //gizmoVisualization = FindObjectOfType<Style_GizmoVisualization>();
+        }
+
+        private void PatchPauseHandler_OnPause_OnUnpause(PauseHandler handler)
+        {
+            if (handler.IsPaused)
+            {
+                soundEffectManager.StopSound("HighSpeedSpin_Sound");
+            }
         }
 
         private void OnRestartLevel(GameMaster master)
@@ -332,7 +342,6 @@ namespace ZeepStyle.src.TrickManager
             StopAllCoroutines();
             soundEffectManager.StopSound("HighSpeedSpin_Sound");
             yaw.spinSpeedBuffer.Clear();
-            soundEffectManager.CleanupInactiveChannels();
         }
 
         void FixedUpdate()
@@ -401,6 +410,7 @@ namespace ZeepStyle.src.TrickManager
             RacingApi.LevelLoaded -= OnLevelLoaded;
             Patch_HeyYouHitATrigger.OnHeyYouHitATrigger -= OnCrossedFinish;
             PatchRestartLevel.OnRestart -= OnRestartLevel;
+            PatchPauseHandler_Pause.OnPause -= PatchPauseHandler_OnPause_OnUnpause;
         }
     }
     public class Trick
