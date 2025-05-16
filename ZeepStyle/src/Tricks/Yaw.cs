@@ -52,7 +52,7 @@ namespace ZeepStyle.src.Tricks
             initialUp = initialUp_;
             initialForward = initialForward_;
             initialRight = initialRight_;
-            referencePlaneNormal = Vector3.Cross(initialRight, initialForward); // Normal of the plane defined by initialRight and initialForward
+            referencePlaneNormal = Vector3.Cross(initialRight, initialForward).normalized; // Normal of the plane defined by initialRight and initialForward
 
             previousYaw = 0; // Capture the initial yaw (Y-axis) rotation
             accumulatedYaw = 0;
@@ -64,7 +64,7 @@ namespace ZeepStyle.src.Tricks
         {
             // Get the current forward direction (Z-axis)
             // Project current forward direction onto the initial X-Z plane
-            Vector3 forwardInXZPlane = Vector3.ProjectOnPlane(currentForward_, referencePlaneNormal);
+            Vector3 forwardInXZPlane = Vector3.ProjectOnPlane(currentForward_, referencePlaneNormal).normalized;
 
             // Compute the angle between the projected forward direction and the initial forward direction
             float currentYaw = Vector3.SignedAngle(initialForward, forwardInXZPlane, initialUp);
