@@ -388,7 +388,7 @@ namespace ZeepStyle.src.TrickManager
                     // gizmoVisualization.UpdateAllAxisVisuals(rb);
                     // gizmoVisualization.UpdatePlanePositions(rb);
                 }
-                else if (wasInAir)
+                else if (wasInAir && !isInAir)
                 {
                     OnLand();
                     //Plugin.Logger.LogInfo("Player is no longer Airborne!");
