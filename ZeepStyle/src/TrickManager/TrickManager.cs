@@ -240,11 +240,11 @@ namespace ZeepStyle.src.TrickManager
                 initialUp = Vector3.up;
 
                 // Calculate the initial forward velocity and forward direction
-                initialForwardVelocity = Vector3.ProjectOnPlane(rb.velocity, Vector3.up);
-                initialForward = Vector3.ProjectOnPlane(rb.transform.forward, initialUp);
+                initialForwardVelocity = Vector3.ProjectOnPlane(rb.velocity, initialUp).normalized;
+                initialForward = Vector3.ProjectOnPlane(rb.transform.forward, initialUp).normalized;
 
                 // Check if the player is facing the opposite direction
-                float alignment = Vector3.Dot(rb.velocity.normalized, initialForward);
+                float alignment = Vector3.Dot(initialForwardVelocity, initialForward);
                 if (alignment < 0)
                 {
                     Plugin.Logger.LogInfo("OnLeaveGround: Player is facing the opposite direction!");

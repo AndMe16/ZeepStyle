@@ -48,7 +48,7 @@ namespace ZeepStyle.src.Tricks
             initialUp = initialUp_;
             initialForward = initialForward_;
             initialRight = initialRight_;
-            referencePlaneNormal = Vector3.Cross(initialForward, initialUp); // Normal of the plane defined by initialForward and initialUp
+            referencePlaneNormal = Vector3.Cross(initialForward, initialUp).normalized; // Normal of the plane defined by initialForward and initialUp
 
             previousPitch = 0;
             accumulatedPitch_flip = 0;
@@ -63,7 +63,7 @@ namespace ZeepStyle.src.Tricks
             // Get the current forward direction (Z-axis)
 
             // Project current forward direction onto the initial Z-Y plane
-            Vector3 forwardInZYPlane = Vector3.ProjectOnPlane(currentForward_, referencePlaneNormal);
+            Vector3 forwardInZYPlane = Vector3.ProjectOnPlane(currentForward_, referencePlaneNormal).normalized;
 
             // Compute the angle between the projected forward direction and the initial forward direction
             float currentPitch = Vector3.SignedAngle(initialForward, forwardInZYPlane, initialRight);

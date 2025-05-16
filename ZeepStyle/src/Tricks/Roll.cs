@@ -42,7 +42,7 @@ namespace ZeepStyle.src.Tricks
             initialUp = initialUp_;
             initialForward = initialForward_;
             initialRight = initialRight_;
-            referencePlaneNormal = Vector3.Cross(initialRight, initialUp); // Normal of the plane defined by initialRight and initialUp
+            referencePlaneNormal = Vector3.Cross(initialRight, initialUp).normalized; // Normal of the plane defined by initialRight and initialUp
 
             previousRoll = 0;
             accumulatedRoll = 0;
@@ -56,7 +56,7 @@ namespace ZeepStyle.src.Tricks
             Vector3 currentUp = currentUp_;
 
             // Project current up direction onto the initial X-Y plane
-            Vector3 upInXYPlane = Vector3.ProjectOnPlane(currentUp, referencePlaneNormal);
+            Vector3 upInXYPlane = Vector3.ProjectOnPlane(currentUp, referencePlaneNormal).normalized;
 
             // Compute the angle between the projected up direction and the initial up direction
             float currentRoll = Vector3.SignedAngle(initialUp, upInXYPlane, initialForward);
