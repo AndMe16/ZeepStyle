@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using ZeepStyle.src.Patches;
 using ZeepStyle.src.PointsManager;
 using ZeepStyle.src.TrickManager;
+using ZeepSDK.UI;
 
 namespace ZeepStyle.src.PointsUIManager
 {
@@ -14,6 +16,8 @@ namespace ZeepStyle.src.PointsUIManager
         public TextMeshProUGUI bestPbAllTimeText;
         public TextMeshProUGUI bestPbCurrentSessionText;
         public TextMeshProUGUI currentRunPointsText;
+
+        private readonly List<RectTransform> _uiRectTransforms = new();
 
         GameObject canvasObject;
         GameObject textObject;
@@ -134,6 +138,9 @@ namespace ZeepStyle.src.PointsUIManager
 
                 // Create Current Run Points Text
                 currentRunPointsText = CreateTextElement($"Current Run Points: {trickPointsManager.totalRunPoints}", new Vector2(0, 460));
+
+                // ---------- Register with UI Configurator ----------
+                UIApi.AddToConfigurator(_uiRectTransforms);
             }
         }
 
@@ -146,6 +153,9 @@ namespace ZeepStyle.src.PointsUIManager
             RectTransform rectTransform = textObject.AddComponent<RectTransform>();
             rectTransform.anchoredPosition = position;
             rectTransform.sizeDelta = new Vector2(600, 100);
+
+            // Keep the rect so the player can move/scale it
+            _uiRectTransforms.Add(rectTransform);
 
             TextMeshProUGUI textMesh = textObject.AddComponent<TextMeshProUGUI>();
             textMesh.text = textContent;
@@ -179,8 +189,21 @@ namespace ZeepStyle.src.PointsUIManager
 
         public void DestroyComponent()
         {
-            Destroy(canvasObject);
-            Destroy(textObject);
+            // Unregister from UI Configurator
+            foreach (var rect in _uiRectTransforms)
+            {
+                UIApi.RemoveFromConfigurator(rect);
+            }
+
+            _uiRectTransforms.Clear();
+
+            // Destroy the entire canvas and its children
+            if (canvasObject != null)
+            {
+                GameObject.Destroy(canvasObject);
+                canvasObject = null;
+                canvas = null;
+            }
         }
 
         private void OnDestroy()
