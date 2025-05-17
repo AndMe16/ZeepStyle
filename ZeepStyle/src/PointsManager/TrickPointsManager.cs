@@ -101,11 +101,12 @@ namespace ZeepStyle.src.PointsManager
         public void UpdateCurrentRunPoints(int points)
         {
             totalRunPoints = points;
-            if (pointsUIManager.currentRunPointsText != null)
+            if (pointsUIManager.pointsInfoText != null)
             {
-                pointsUIManager.currentRunPointsText.text = $"Current Run Points: {totalRunPoints}";
+                pointsUIManager.UpdatePointsInfoText();
             }
         }
+
 
         public void SaveLevelPB(string levelHash)
         {
