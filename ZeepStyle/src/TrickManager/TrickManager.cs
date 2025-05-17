@@ -302,9 +302,9 @@ namespace ZeepStyle.src.TrickManager
                 {
                     Plugin.Logger.LogInfo($"New PB (Current Session): {trickPointsManager.totalRunPoints} > {trickPointsManager.bestPbCurrentSession}");
                     trickPointsManager.bestPbCurrentSession = trickPointsManager.totalRunPoints;
-                    if (pointsUIManager.bestPbCurrentSessionText != null)
+                    if (pointsUIManager.pointsInfoText != null)
                     {
-                        pointsUIManager.bestPbCurrentSessionText.text = $"Best PB (Current Session): {trickPointsManager.bestPbCurrentSession}";
+                        pointsUIManager.UpdatePointsInfoText();
                     }
                 }
 
@@ -313,9 +313,9 @@ namespace ZeepStyle.src.TrickManager
                 {
                     Plugin.Logger.LogInfo($"New PB (All Sessions): {trickPointsManager.totalRunPoints} > {trickPointsManager.bestPbAllTime}");
                     trickPointsManager.bestPbAllTime = trickPointsManager.totalRunPoints;
-                    if (pointsUIManager.bestPbAllTimeText != null)
+                    if (pointsUIManager.pointsInfoText != null)
                     {
-                        pointsUIManager.bestPbAllTimeText.text = $"Best PB (All Sessions): {trickPointsManager.bestPbAllTime}";
+                        pointsUIManager.UpdatePointsInfoText();
                     }
                     trickPointsManager.SaveLevelPB(trickPointsManager.currentHash);
                 }
