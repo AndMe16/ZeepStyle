@@ -109,7 +109,7 @@ namespace ZeepStyle.src.TrickDisplayManager
             {
                 displayTextList.RemoveRange(0, displayTextList.Count - maxDisplayTricks);
             }
-            
+
             UpdateTrickDisplay();
             if (trickManager.hideTextOnAirCoroutine != null)
             {

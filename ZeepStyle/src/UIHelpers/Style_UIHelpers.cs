@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using ZeepSDK.External.Cysharp.Threading.Tasks.Triggers;
 
 namespace ZeepStyle.src.UIHelpers
 {
