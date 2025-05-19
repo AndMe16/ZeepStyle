@@ -1,23 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using ZeepSDK.UI;
 using ZeepStyle.src.TrickManager;
+using ZeepStyle.src.UIHelpers;
 
 namespace ZeepStyle.src.TrickDisplayManager
 {
     public class Style_TrickDisplay : MonoBehaviour
     {
+
+        private Canvas canvas;
         private TextMeshProUGUI trickText;
+
+        private RectTransform _uiRectTransform;
+
         private GameObject canvasObject;
-        private GameObject textObject;
 
         Style_TrickManager trickManager;
 
-        private readonly int baseTextSize = 30;
+        private readonly int baseTextSize = 25;
+        private const int maxDisplayTricks = 5;
 
         // List to store the tricks text
         public List<string> displayTextList = [];
@@ -29,56 +34,30 @@ namespace ZeepStyle.src.TrickDisplayManager
 
         public void CreateDisplay()
         {
-            // Create a Canvas to hold the TextMeshPro element
-            canvasObject = new GameObject("Style_TrickCanvas");
-            Canvas canvas = canvasObject.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = -1;  // Higher values render above others
+            // Clone the existing main Canvas
+            canvasObject = Style_UIHelpers.CloneMainCanvas("Style_TricksDisplayCanvas");
 
-
-            // Optionally, add a CanvasScaler to handle different resolutions
-            CanvasScaler canvasScaler = canvasObject.AddComponent<CanvasScaler>();
-            canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            canvasScaler.referenceResolution = new Vector2(1920, 1080);
-
-            // Create a TextMeshProUGUI object
-            textObject = new GameObject("TrickText");
-            textObject.transform.SetParent(canvasObject.transform);
-
-            // Add TextMeshProUGUI component to the text object
-            trickText = textObject.AddComponent<TextMeshProUGUI>();
-
-            // Set text properties
-            trickText.fontSize = baseTextSize;
-            trickText.alignment = TextAlignmentOptions.Center;
-            trickText.color = Color.white;
-
-            // Try to assign one of the available fonts
-            TMP_FontAsset font = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().FirstOrDefault(f => f.name == "Code New Roman b SDF");
-
-            if (font != null)
+            if (canvasObject == null)
             {
-                trickText.font = font;
-                trickText.fontMaterial = new Material(trickText.fontMaterial);
-            }
-            else
-            {
-                Plugin.Logger.LogError("Font not found in loaded resources!");
+                return;
             }
 
-            trickText.fontSharedMaterial.EnableKeyword("OUTLINE_ON");
-            trickText.fontMaterial.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.05f); // Set outline width
-            trickText.fontMaterial.SetColor(ShaderUtilities.ID_OutlineColor, Color.black); // Set outline color
+            canvas = canvasObject.GetComponent<Canvas>();
 
-            trickText.fontSharedMaterial.EnableKeyword("UNDERLAY_ON");
-            trickText.fontMaterial.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, 0.7f);
-            trickText.fontMaterial.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -0.3f);
-            trickText.fontMaterial.SetColor(ShaderUtilities.ID_UnderlayColor, Color.black); // Shadow color
+            (trickText, _uiRectTransform) = Style_UIHelpers.CreateTextElement(
+                canvas,
+                "Style_TricksDisplay",
+                "",
+                new Vector2(0, -150),
+                new Vector2(400, 150),
+                baseTextSize,
+                TextAlignmentOptions.Bottom,
+                false
+            );
 
-            // Set the position and size of the text object
-            RectTransform textRectTransform = trickText.GetComponent<RectTransform>();
-            textRectTransform.sizeDelta = new Vector2(600, 200);
-            textRectTransform.anchoredPosition = new Vector2(0, 300); // Position near the middle-top of the screen
+            // ---------- Register with UI Configurator ----------
+            if (_uiRectTransform != null)
+                UIApi.AddToConfigurator(_uiRectTransform);
         }
 
         // Method to update the displayed trick name
@@ -123,8 +102,14 @@ namespace ZeepStyle.src.TrickDisplayManager
                 {
                     displayTextList.Add(displayText);
                 }
-
             }
+
+            // Limit the displayTextList to the last maxDisplayTricks items
+            if (displayTextList.Count > maxDisplayTricks)
+            {
+                displayTextList.RemoveRange(0, displayTextList.Count - maxDisplayTricks);
+            }
+            
             UpdateTrickDisplay();
             if (trickManager.hideTextOnAirCoroutine != null)
             {
@@ -180,7 +165,7 @@ namespace ZeepStyle.src.TrickDisplayManager
             UpdateTrickDisplay();
             if (trickText != null)
             {
-                trickText.text += $"<color=#f7e520><b>+{totalPoints}</b>";
+                trickText.text += $"<color=#f7e520><b><size={baseTextSize}>+{totalPoints}</b>";
             }
         }
 
@@ -198,8 +183,27 @@ namespace ZeepStyle.src.TrickDisplayManager
 
         public void DestroyComponent()
         {
-            Destroy(canvasObject);
-            Destroy(textObject);
+            // Unregister from UI Configurator
+            if (_uiRectTransform != null)
+            {
+                UIApi.RemoveFromConfigurator(_uiRectTransform);
+                _uiRectTransform = null;
+            }
+
+            // Destroy only your own UI elements, not the canvas
+            if (trickText != null)
+            {
+                GameObject.Destroy(trickText.gameObject);
+                trickText = null;
+            }
+
+            if (canvasObject != null)
+            {
+                GameObject.Destroy(canvasObject);
+                canvasObject = null;
+            }
+
+            canvas = null;
         }
 
         public void HideText()
