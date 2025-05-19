@@ -1,9 +1,9 @@
 ﻿using TMPro;
 using UnityEngine;
+using ZeepSDK.UI;
 using ZeepStyle.src.Patches;
 using ZeepStyle.src.PointsManager;
 using ZeepStyle.src.TrickManager;
-using ZeepSDK.UI;
 using ZeepStyle.src.UIHelpers;
 
 namespace ZeepStyle.src.PointsUIManager
@@ -22,7 +22,7 @@ namespace ZeepStyle.src.PointsUIManager
         Style_TrickManager trickManager;
 
         bool isPaused = false;
-        
+
         void Awake()
         {
             //PatchOnlineChatUI_OnOpen.OnOpenChat += PatchOnlineChatUI_OnOpen_OnClose;
@@ -139,8 +139,8 @@ namespace ZeepStyle.src.PointsUIManager
         public void DestroyComponent()
         {
             // Unregister from UI Configurator
-            if(_uiRectTransform != null)
-{
+            if (_uiRectTransform != null)
+            {
                 UIApi.RemoveFromConfigurator(_uiRectTransform);
                 _uiRectTransform = null;
             }
