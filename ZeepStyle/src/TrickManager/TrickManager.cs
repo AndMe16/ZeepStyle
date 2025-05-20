@@ -380,9 +380,9 @@ namespace ZeepStyle.src.TrickManager
                     }
 
                     // Tricks
-                    yaw.DetectSpinTrick(currentForward, currentUp);
-                    pitch.DetectFlipTrick(currentForward, currentRight, currentUp);
-                    roll.DetectRollTrick(currentUp, currentForward);
+                    bool detectedSpin = yaw.DetectSpinTrick(currentForward, currentUp);
+                    bool detectedFlip = pitch.DetectFlipTrick(currentForward, currentRight, currentUp);
+                    bool detectedRoll = roll.DetectRollTrick(currentUp, currentForward);
 
                     // gizmoVisualization.UpdateAllAxisVisuals(rb);
                     // gizmoVisualization.UpdatePlanePositions(rb);

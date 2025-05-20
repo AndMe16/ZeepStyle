@@ -58,7 +58,7 @@ namespace ZeepStyle.src.Tricks
             lastPitchDelta = 0;
         }
 
-        public void DetectFlipTrick(Vector3 currentForward_, Vector3 currentRight_, Vector3 currentUp_)
+        public bool DetectFlipTrick(Vector3 currentForward_, Vector3 currentRight_, Vector3 currentUp_)
         {
             // Get the current forward direction (Z-axis)
 
@@ -132,6 +132,7 @@ namespace ZeepStyle.src.Tricks
                         int points = trickPointsManager.CalculatePoints(trick);
                         trickDisplay.DisplayTrick(trick, points);
                         soundEffectManager.PlaySound("SimpleTrick_3_Sound");
+                        return true; // Return true to indicate a flip trick was detected
                     }
                 }
             }
@@ -184,6 +185,7 @@ namespace ZeepStyle.src.Tricks
                         int points = trickPointsManager.CalculatePoints(trick);
                         trickDisplay.DisplayTrick(trick, points);
                         soundEffectManager.PlaySound("SimpleTrick_3_Sound");
+                        return true; // Return true to indicate a flip trick was detected
                     }
                 }
             }
@@ -196,6 +198,8 @@ namespace ZeepStyle.src.Tricks
             // Update the previous pitch and last pitch delta for the next frame
             previousPitch = currentPitch;
             lastPitchDelta = pitchDelta; // Store current pitch delta to detect direction change
+
+            return false; // No flip trick detected
         }
 
         private int CheckFlipAlignment(Vector3 currentRight_)

@@ -50,7 +50,7 @@ namespace ZeepStyle.src.Tricks
             lastRollDelta = 0;
         }
 
-        public void DetectRollTrick(Vector3 currentUp_, Vector3 currentForward_)
+        public bool DetectRollTrick(Vector3 currentUp_, Vector3 currentForward_)
         {
             // Get the current up direction (Y-axis)
             Vector3 currentUp = currentUp_;
@@ -123,6 +123,7 @@ namespace ZeepStyle.src.Tricks
                         int points = trickPointsManager.CalculatePoints(trick);
                         trickDisplay.DisplayTrick(trick, points);
                         soundEffectManager.PlaySound("SimpleTrick_2_Sound");
+                        return true; // Roll trick detected
                     }
                 }
             }
@@ -135,6 +136,7 @@ namespace ZeepStyle.src.Tricks
             // Update the previous roll and last roll delta for the next frame
             previousRoll = currentRoll;
             lastRollDelta = rollDelta; // Store current roll delta to detect direction change
+            return false; // No roll trick detected
         }
 
         private int CheckrollAlignment(Vector3 currentForward_)

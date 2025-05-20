@@ -60,7 +60,7 @@ namespace ZeepStyle.src.Tricks
             lastYawDelta = 0; // Initialize the yaw delta
         }
 
-        public void DetectSpinTrick(Vector3 currentForward_, Vector3 currentUp_)
+        public bool DetectSpinTrick(Vector3 currentForward_, Vector3 currentUp_)
         {
             // Get the current forward direction (Z-axis)
             // Project current forward direction onto the initial X-Z plane
@@ -146,6 +146,7 @@ namespace ZeepStyle.src.Tricks
                         int points = trickPointsManager.CalculatePoints(trick);
                         trickDisplay.DisplayTrick(trick, points);
                         soundEffectManager.PlaySound("SimpleTrick_1_Sound");
+                        return true; // Spin detected
                     }
                 }
             }
@@ -158,6 +159,7 @@ namespace ZeepStyle.src.Tricks
             // Update the previous yaw and last yaw delta for the next frame
             previousYaw = currentYaw;
             lastYawDelta = yawDelta; // Store current yaw delta to detect direction change
+            return false; // No spin detected
         }
 
         private int CheckSpinAlignment(Vector3 currentUp_)
