@@ -31,7 +31,7 @@
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
 	    <!-- Define the target directory for the mod files -->
 	    <PropertyGroup>
-		    <ModDirectory>D:\SteamLibrary\steamapps\common\Zeepkist\BepInEx\plugins\Sideloaded\Plugins\$(ProjectName)</ModDirectory>
+		    <ModDirectory>/home/andme/.steam/debian-installation/steamapps/common/Zeepkist/BepInEx/plugins/Sideload/$(ProjectName)</ModDirectory>
 	    </PropertyGroup>
 
 	    <!-- Remove existing directory (optional) -->
@@ -41,16 +41,16 @@
 	    <MakeDir Directories="$(ModDirectory)" />
 
 	    <!-- Copy the DLL file to the mod directory -->
-	    <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(ModDirectory)\$(ProjectName)-$(Version).dll&quot;" />
-		
+        <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFiles="$(ModDirectory)/$(ProjectName)-$(Version).dll"/>
 
 
 		<!-- Copy the Resources folder to the mod directory -->
 	    <ItemGroup>
-		    <ResourceFiles Include="$(ProjectDir)Resources\**\*.*" />
+		    <ResourceFiles Include="$(ProjectDir)Resources/**/*.*" />
 	    </ItemGroup>
 
-	    <Copy SourceFiles="@(ResourceFiles)" DestinationFolder="$(ModDirectory)\Resources\%(RecursiveDir)" />
+	    <Copy SourceFiles="@(ResourceFiles)" DestinationFolder="$(ModDirectory)/Resources/%(RecursiveDir)" />
+        
     </Target>
 
 </Project>
