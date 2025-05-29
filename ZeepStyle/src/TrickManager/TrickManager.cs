@@ -130,6 +130,11 @@ public class StyleTrickManager : MonoBehaviour
             var detectedFlip = pitch.DetectFlipTrick(currentForward, currentRight, currentUp);
             var detectedRoll = roll.DetectRollTrick(currentUp, currentForward);
 
+            if (detectedSpin || detectedFlip || detectedRoll)
+            {
+                if (hideTextOnLandCoroutine != null) StopCoroutine(hideTextOnLandCoroutine);
+            }
+
             // gizmoVisualization.UpdateAllAxisVisuals(rb);
             // gizmoVisualization.UpdatePlanePositions(rb);
         }
