@@ -1,150 +1,130 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using ZeepkistClient;
 using ZeepSDK.Storage;
-using ZeepStyle.src.Patches;
-using ZeepStyle.src.PointsUIManager;
-using ZeepStyle.src.TrickManager;
+using ZeepStyle.Patches;
+using ZeepStyle.PointsUIManager;
+using ZeepStyle.TrickManager;
 
-namespace ZeepStyle.src.PointsManager
+namespace ZeepStyle.PointsManager;
+
+public class StyleTrickPointsManager : MonoBehaviour
 {
-    public class Style_TrickPointsManager : MonoBehaviour
-    {
-        // Assign base points for each trick name
-        private readonly Dictionary<string, int> basePointsByTrick = new()
+    public int totalRunPoints;
+    public int bestPbAllTime;
+    public int bestPbCurrentSession;
+
+    public string currentHash = string.Empty;
+
+    // Assign base points for each trick name
+    private readonly Dictionary<string, int> basePointsByTrick = new()
     {
         { "Spin", 100 },
         { "Frontflip", 300 },
         { "Backflip", 400 },
         { "Roll", 200 },
-        { "Sideflip", 300}
+        { "Sideflip", 300 }
     };
 
-        public int totalRunPoints = 0;
-        public int bestPbAllTime = 0;
-        public int bestPbCurrentSession = 0;
+    private IModStorage pointsPBsStorage;
 
-        public string currentHash = string.Empty;
+    private StylePointsUIManager pointsUIManager;
 
-        Style_PointsUIManager pointsUIManager;
+    private void Start()
+    {
+        pointsUIManager = FindObjectOfType<StylePointsUIManager>();
+        pointsPBsStorage = StorageApi.CreateModStorage(Plugin.Instance);
+    }
 
-        IModStorage pointsPBsStorage;
+    // Method to calculate points for each trick
+    public int CalculatePoints(Trick trick)
+    {
+        if (!basePointsByTrick.TryGetValue(trick.TrickName, out var basePoints)) return 0;
+        // Base points based on trick name
+        var points = basePoints;
+        float rotationMulti;
 
-        void Start()
+        if (trick.TrickName is "Frontflip" or "Backflip" or "Sideflip")
+            rotationMulti = float.Parse(trick.Rotation);
+        else
+            rotationMulti = float.Parse(trick.Rotation) / 360;
+
+        points = (int)(points * rotationMulti); // Add rotation value as points
+
+
+        // Apply multipliers or penalties for inverse tricks
+        if (trick.IsInverse) points = (int)(points * 1.5); // 50% bonus for inverse tricks
+
+        return points;
+
+        // Default points if trick name is not found
+    }
+
+    public int CalculateTotalJumpPoints(List<Trick> tricksList)
+    {
+        return tricksList.Sum(CalculatePoints);
+    }
+
+    public int AddToTotalRunPoints(int extraPoints)
+    {
+        totalRunPoints += extraPoints;
+        Plugin.logger.LogInfo($"Adding total run points: {totalRunPoints}  (+{extraPoints}) ");
+        return totalRunPoints;
+    }
+
+    public void ResetTotalRunPoints()
+    {
+        totalRunPoints = 0;
+    }
+
+    public void ResetCurrentSessionPoints()
+    {
+        bestPbCurrentSession = 0;
+    }
+
+    // Call this method to update the current run points
+    public void UpdateCurrentRunPoints(int points)
+    {
+        totalRunPoints = points;
+        if (pointsUIManager.pointsInfoText) pointsUIManager.UpdatePointsInfoText();
+    }
+
+
+    public void SaveLevelPb(string levelHash)
+    {
+        if (levelHash == null)
         {
-            pointsUIManager = FindObjectOfType<Style_PointsUIManager>();
-            pointsPBsStorage = StorageApi.CreateModStorage(Plugin.Instance);
+            Plugin.logger.LogError("SaveLevelPB: Current level hash is null");
+            return;
         }
 
-        // Method to calculate points for each trick
-        public int CalculatePoints(Trick trick)
+        if (!ZeepkistNetwork.IsConnected && PatchLoadOfflineLevel.isTestLevel)
         {
-            if (basePointsByTrick.TryGetValue(trick.trickName, out int basePoints))
-            {
-                // Base points based on trick name
-                int points = basePoints;
-                float rotationMulti;
-
-                if (trick.trickName == "Frontflip" || trick.trickName == "Backflip" || trick.trickName == "Sideflip")
-                {
-                    rotationMulti = float.Parse(trick.rotation);
-                }
-                else
-                {
-                    rotationMulti = float.Parse(trick.rotation) / 360;
-                }
-
-                points = (int)(points * rotationMulti); // Add rotation value as points
-
-
-                // Apply multipliers or penalties for inverse tricks
-                if (trick.isInverse)
-                {
-                    points = (int)(points * 1.5); // 50% bonus for inverse tricks
-                }
-
-                return points;
-            }
-
-            // Default points if trick name is not found
-            return 0;
+            Plugin.logger.LogInfo("SaveLevelPB: Current level is a test level, not saving PB");
+            return;
         }
 
-        public int CalculateTotalJumpPoints(List<Trick> tricksList)
+        pointsPBsStorage.SaveToJson($"{levelHash}_PB", bestPbAllTime);
+    }
+
+    public void LoadLevelPb(string levelHash)
+    {
+        if (levelHash == null)
         {
-            int totalPoints = 0;
-            foreach (Trick trick in tricksList)
-            {
-                totalPoints += CalculatePoints(trick);
-            }
-            return totalPoints;
+            Plugin.logger.LogError("LoadLevelPB: Current level hash is null");
+            return;
         }
 
-        public int AddToTotalRunPoints(int extraPoints)
+        if (pointsPBsStorage.JsonFileExists($"{levelHash}_PB"))
         {
-            totalRunPoints += extraPoints;
-            Plugin.Logger.LogInfo($"Adding total run points: {totalRunPoints}  (+{extraPoints}) ");
-            return totalRunPoints;
+            Plugin.logger.LogInfo($"Loading PB points from {levelHash}_PB");
+            bestPbAllTime = pointsPBsStorage.LoadFromJson<int>($"{levelHash}_PB");
         }
-
-        public void ResetTotalRunPoints()
+        else
         {
-            totalRunPoints = 0;
+            Plugin.logger.LogInfo($"{levelHash}_PB was not found, unable to load PB points");
+            bestPbAllTime = 0;
         }
-
-        public void ResetCurrentSessionPoints()
-        {
-            bestPbCurrentSession = 0;
-        }
-
-        // Call this method to update the current run points
-        public void UpdateCurrentRunPoints(int points)
-        {
-            totalRunPoints = points;
-            if (pointsUIManager.pointsInfoText != null)
-            {
-                pointsUIManager.UpdatePointsInfoText();
-            }
-        }
-
-
-        public void SaveLevelPB(string levelHash)
-        {
-            if (levelHash == null)
-            {
-                Plugin.Logger.LogError("SaveLevelPB: Current level hash is null");
-                return;
-            }
-
-            if (!ZeepkistNetwork.IsConnected && PatchLoadOfflineLevel.isTestLevel)
-            {
-                Plugin.Logger.LogInfo("SaveLevelPB: Current level is a test level, not saving PB");
-                return;
-            }
-
-            pointsPBsStorage.SaveToJson($"{levelHash}_PB", bestPbAllTime);
-        }
-
-        public void LoadLevelPB(string levelHash)
-        {
-            if (levelHash == null)
-            {
-                Plugin.Logger.LogError("LoadLevelPB: Current level hash is null");
-                return;
-            }
-            if (pointsPBsStorage.JsonFileExists($"{levelHash}_PB"))
-            {
-                Plugin.Logger.LogInfo($"Loading PB points from {levelHash}_PB");
-                bestPbAllTime = pointsPBsStorage.LoadFromJson<int>($"{levelHash}_PB");
-            }
-            else
-            {
-                Plugin.Logger.LogInfo($"{levelHash}_PB was not found, unable to load PB points");
-                bestPbAllTime = 0;
-            }
-        }
-
     }
 }
-
-

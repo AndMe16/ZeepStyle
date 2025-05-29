@@ -1,170 +1,153 @@
 ﻿using TMPro;
 using UnityEngine;
 using ZeepSDK.UI;
-using ZeepStyle.src.Patches;
-using ZeepStyle.src.PointsManager;
-using ZeepStyle.src.TrickManager;
-using ZeepStyle.src.UIHelpers;
+using ZeepStyle.Patches;
+using ZeepStyle.PointsManager;
+using ZeepStyle.TrickManager;
+using ZeepStyle.UIHelpers;
 
-namespace ZeepStyle.src.PointsUIManager
+namespace ZeepStyle.PointsUIManager;
+
+public class StylePointsUIManager : MonoBehaviour
 {
-    public class Style_PointsUIManager : MonoBehaviour
+    public TextMeshProUGUI pointsInfoText;
+    private Canvas canvas;
+
+    private GameObject canvasObject;
+
+    private bool isPaused;
+    private StyleTrickManager trickManager;
+
+    // Trick Points
+    private StyleTrickPointsManager trickPointsManager;
+
+    private RectTransform uiRectTransform;
+
+    private void Awake()
     {
-        private Canvas canvas;
-        public TextMeshProUGUI pointsInfoText;
+        //PatchOnlineChatUI_OnOpen.OnOpenChat += PatchOnlineChatUI_OnOpen_OnClose;
+        PatchPauseHandlerPause.OnPause += PatchPauseHandler_OnPause_OnUnpause;
+        PatchPauseHandlerUnpause.OnUnpause += PatchPauseHandler_OnPause_OnUnpause;
+    }
 
-        private RectTransform _uiRectTransform;
+    private void Start()
+    {
+        trickPointsManager = FindObjectOfType<StyleTrickPointsManager>();
+        trickManager = FindObjectOfType<StyleTrickManager>();
+    }
 
-        GameObject canvasObject;
-
-        // Trick Points
-        Style_TrickPointsManager trickPointsManager;
-        Style_TrickManager trickManager;
-
-        bool isPaused = false;
-
-        void Awake()
+    private void Update()
+    {
+        if (!trickManager.isPlayerSpawned || isPaused) return;
+        switch (ModConfig.displayPBs.Value)
         {
-            //PatchOnlineChatUI_OnOpen.OnOpenChat += PatchOnlineChatUI_OnOpen_OnClose;
-            PatchPauseHandler_Pause.OnPause += PatchPauseHandler_OnPause_OnUnpause;
-            PatchPauseHandler_Unpause.OnUnpause += PatchPauseHandler_OnPause_OnUnpause;
-        }
-
-        void Start()
-        {
-            trickPointsManager = FindObjectOfType<Style_TrickPointsManager>();
-            trickManager = FindObjectOfType<Style_TrickManager>();
-        }
-
-        private void PatchPauseHandler_OnPause_OnUnpause(PauseHandler obj)
-        {
-            isPaused = obj.IsPaused;
-
-            if (isPaused)
-                HideText();
-            else
-                ShowText();
-        }
-
-        void Update()
-        {
-            if (trickManager.isPlayerSpawned && !isPaused)
-            {
-                if (ModConfig.displayPBs.Value && canvasObject == null)
-                {
-                    CreateUI();
-                }
-                else if (!ModConfig.displayPBs.Value && canvasObject != null)
-                {
-                    DestroyComponent();
-                }
-                if (Input.GetKeyDown(ModConfig.displayPBsBind.Value) && !trickManager.isInPhotomode)
-                {
-                    TogglePointsUI();
-                }
-            }
-
-        }
-
-        public void TogglePointsUI()
-        {
-            if (ModConfig.displayPBs.Value)
-            {
-                ModConfig.displayPBs.Value = false;
-                DestroyComponent();
-            }
-            else
-            {
-                ModConfig.displayPBs.Value = true;
+            case true when !canvasObject:
                 CreateUI();
-            }
+                break;
+            case false when canvasObject:
+                DestroyComponent();
+                break;
         }
+        if (Input.GetKeyDown(ModConfig.displayPBsBind.Value) && !trickManager.isInPhotomode) TogglePointsUI();
+    }
 
-        public void HideText()
+    private void OnDestroy()
+    {
+        PatchPauseHandlerPause.OnPause -= PatchPauseHandler_OnPause_OnUnpause;
+        PatchPauseHandlerUnpause.OnUnpause -= PatchPauseHandler_OnPause_OnUnpause;
+    }
+
+    private void PatchPauseHandler_OnPause_OnUnpause(PauseHandler obj)
+    {
+        isPaused = obj.IsPaused;
+
+        if (isPaused)
+            HideText();
+        else
+            ShowText();
+    }
+
+    public void TogglePointsUI()
+    {
+        if (ModConfig.displayPBs.Value)
         {
-            if (pointsInfoText != null)
-            {
-                pointsInfoText.text = "";  // Clear the text to hide it
-            }
+            ModConfig.displayPBs.Value = false;
+            DestroyComponent();
         }
-
-        public void ShowText()
+        else
         {
-            if (pointsInfoText != null)
-            {
-                UpdatePointsInfoText();
-            }
+            ModConfig.displayPBs.Value = true;
+            CreateUI();
         }
+    }
 
-        public void CreateUI()
+    public void HideText()
+    {
+        if (pointsInfoText) pointsInfoText.text = ""; // Clear the text to hide it
+    }
+
+    public void ShowText()
+    {
+        if (pointsInfoText) UpdatePointsInfoText();
+    }
+
+    public void CreateUI()
+    {
+        if (!ModConfig.displayPBs.Value || !trickManager.isPlayerSpawned) return;
+        // Clone the existing main Canvas
+        canvasObject = StyleUIHelpers.CloneMainCanvas("Style_PBPointsCanvas");
+
+        if (!canvasObject) return;
+        canvas = canvasObject.GetComponent<Canvas>();
+
+        (pointsInfoText, uiRectTransform) = StyleUIHelpers.CreateTextElement(
+            canvas,
+            "Style_PointsPBsText",
+            "",
+            new Vector2(0, -40),
+            new Vector2(400, 75)
+        );
+        UpdatePointsInfoText();
+
+        // ---------- Register with UI Configurator ----------
+        if (uiRectTransform)
+            UIApi.AddToConfigurator(uiRectTransform);
+    }
+
+    public void UpdatePointsInfoText()
+    {
+        if (!pointsInfoText || !trickPointsManager)
+            return;
+
+        pointsInfoText.text =
+            "<#daed4a><b>Stylepoints PBs</b></color>\n" +
+            $"All Time: {trickPointsManager.bestPbAllTime}\n" +
+            $"Current Session: {trickPointsManager.bestPbCurrentSession}\n" +
+            $"Current Run: {trickPointsManager.totalRunPoints}";
+    }
+
+    public void DestroyComponent()
+    {
+        // Unregister from UI Configurator
+        if (uiRectTransform)
         {
-            if (ModConfig.displayPBs.Value && trickManager.isPlayerSpawned)
-            {
-                // Clone the existing main Canvas
-                canvasObject = Style_UIHelpers.CloneMainCanvas("Style_PBPointsCanvas");
-
-                if (canvasObject == null)
-                {
-                    return;
-                }
-                canvas = canvasObject.GetComponent<Canvas>();
-
-                (pointsInfoText, _uiRectTransform) = Style_UIHelpers.CreateTextElement(
-                    canvas,
-                    "Style_PointsPBsText",
-                    "",
-                    new Vector2(0, -40),
-                    new Vector2(400, 75)
-                );
-                UpdatePointsInfoText();
-
-                // ---------- Register with UI Configurator ----------
-                if (_uiRectTransform != null)
-                    UIApi.AddToConfigurator(_uiRectTransform);
-            }
+            UIApi.RemoveFromConfigurator(uiRectTransform);
+            uiRectTransform = null;
         }
 
-        public void UpdatePointsInfoText()
+        // Destroy only your own UI elements, not the canvas
+        if (pointsInfoText)
         {
-            if (pointsInfoText == null || trickPointsManager == null)
-                return;
-
-            pointsInfoText.text =
-                "<#daed4a><b>Stylepoints PBs</b></color>\n" +
-                $"All Time: {trickPointsManager.bestPbAllTime}\n" +
-                $"Current Session: {trickPointsManager.bestPbCurrentSession}\n" +
-                $"Current Run: {trickPointsManager.totalRunPoints}";
+            Destroy(pointsInfoText.gameObject);
+            pointsInfoText = null;
         }
 
-        public void DestroyComponent()
+        if (canvasObject)
         {
-            // Unregister from UI Configurator
-            if (_uiRectTransform != null)
-            {
-                UIApi.RemoveFromConfigurator(_uiRectTransform);
-                _uiRectTransform = null;
-            }
-
-            // Destroy only your own UI elements, not the canvas
-            if (pointsInfoText != null)
-            {
-                GameObject.Destroy(pointsInfoText.gameObject);
-                pointsInfoText = null;
-            }
-
-            if (canvasObject != null)
-            {
-                GameObject.Destroy(canvasObject);
-                canvasObject = null;
-            }
-
-            canvas = null;
+            Destroy(canvasObject);
+            canvasObject = null;
         }
 
-        private void OnDestroy()
-        {
-            PatchPauseHandler_Pause.OnPause -= PatchPauseHandler_OnPause_OnUnpause;
-            PatchPauseHandler_Unpause.OnUnpause -= PatchPauseHandler_OnPause_OnUnpause;
-        }
+        canvas = null;
     }
 }

@@ -1,16 +1,18 @@
 ﻿using HarmonyLib;
 
-namespace ZeepStyle.src.Patches
+namespace ZeepStyle.Patches;
+
+[HarmonyPatch(typeof(SetupGame), "LoadOfflineLevel")]
+public class PatchLoadOfflineLevel
 {
-    [HarmonyPatch(typeof(SetupGame), "LoadOfflineLevel")]
-    public class PatchLoadOfflineLevel
+    public static bool isTestLevel;
+
+    [HarmonyPostfix]
+    // ReSharper disable once UnusedMember.Local
+    // ReSharper disable once InconsistentNaming
+    private static void Postfix(SetupGame __instance)
     {
-        public static bool isTestLevel;
-        [HarmonyPostfix]
-        static void Postfix(SetupGame __instance)
-        {
-            isTestLevel = __instance.GlobalLevel.IsTestLevel;
-            Plugin.Logger.LogInfo($"PatchLoadOfflineLevel: Is test level: {isTestLevel}");
-        }
+        isTestLevel = __instance.GlobalLevel.IsTestLevel;
+        Plugin.logger.LogInfo($"PatchLoadOfflineLevel: Is test level: {isTestLevel}");
     }
 }

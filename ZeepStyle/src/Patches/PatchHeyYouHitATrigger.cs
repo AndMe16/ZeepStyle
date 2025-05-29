@@ -2,25 +2,25 @@
 using System.Linq;
 using HarmonyLib;
 
-namespace ZeepStyle.src.Patches
+namespace ZeepStyle.Patches;
+
+[HarmonyPatch(typeof(ReadyToReset), "HeyYouHitATrigger")]
+public class PatchHeyYouHitATrigger
 {
-    [HarmonyPatch(typeof(ReadyToReset), "HeyYouHitATrigger")]
-    public class Patch_HeyYouHitATrigger
+    // Event to notify when entering the method and checking the condition
+    public static event Action<bool> OnHeyYouHitATrigger;
+
+    // Harmony Postfix: Executes after the original method
+    [HarmonyPostfix]
+    // ReSharper disable once UnusedMember.Local
+    // ReSharper disable once InconsistentNaming
+    private static void Postfix(ReadyToReset __instance, bool isFinish)
     {
-        // Event to notify when entering the method and checking the condition
-        public static event Action<bool> OnHeyYouHitATrigger;
+        var actuallyFinishedWithAllCPs = isFinish && __instance.actuallyFinished &&
+                                         __instance.master.currentLevelMode
+                                             .HasThisPlayerFinishedAccountingForRacepoints(PlayerManager.Instance
+                                                 .currentMaster.playerResults.First());
 
-        // Harmony Postfix: Executes after the original method
-        [HarmonyPostfix]
-        static void Postfix(ReadyToReset __instance, bool isFinish)
-        {
-
-            bool actuallyFinishedWithAllCPs = (isFinish && __instance.actuallyFinished) && (__instance.master.currentLevelMode.HasThisPlayerFinishedAccountingForRacepoints(PlayerManager.Instance.currentMaster.playerResults.First()));
-
-            if (isFinish)
-            {
-                OnHeyYouHitATrigger?.Invoke(actuallyFinishedWithAllCPs);
-            }
-        }
+        if (isFinish) OnHeyYouHitATrigger?.Invoke(actuallyFinishedWithAllCPs);
     }
 }

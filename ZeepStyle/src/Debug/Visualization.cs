@@ -1,12 +1,16 @@
 using UnityEngine;
 
-public class Style_GizmoVisualization : MonoBehaviour
+namespace ZeepStyle.Debug;
+
+public class StyleGizmoVisualization : MonoBehaviour
 {
+    private const float AxisLength = 3.0f; // Length of the visualized axes
+
+    private const float PlaneSize = 3.0f; // Size of the reference planes
+
     // Visualization
     private GameObject xAxisVisual, yAxisVisual, zAxisVisual;
-    private const float axisLength = 3.0f;  // Length of the visualized axes
     private GameObject xyPlane, yzPlane, zxPlane;
-    private const float planeSize = 3.0f;  // Size of the reference planes
 
 
     // Visualization
@@ -20,18 +24,23 @@ public class Style_GizmoVisualization : MonoBehaviour
         zAxisVisual = CreateAxisVisual(Vector3.forward, Color.blue, rb);
     }
 
-    GameObject CreateAxisVisual(Vector3 axisDirection, Color color, Rigidbody rb)
+    private static GameObject CreateAxisVisual(Vector3 axisDirection, Color color, Rigidbody rb)
     {
-        GameObject axisVisual = new GameObject($"AxisVisual_{axisDirection}");
-        axisVisual.transform.position = rb.position; // Set initial position to the rigidbody position
+        var axisVisual = new GameObject($"AxisVisual_{axisDirection}")
+        {
+            transform =
+            {
+                position = rb.position // Set initial position to the rigidbody position
+            }
+        };
 
         // Add a LineRenderer to visualize the axis
-        LineRenderer lineRenderer = axisVisual.AddComponent<LineRenderer>();
+        var lineRenderer = axisVisual.AddComponent<LineRenderer>();
         lineRenderer.startWidth = 0.1f;
         lineRenderer.endWidth = 0.1f;
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, rb.position); // Start point
-        lineRenderer.SetPosition(1, rb.position + axisDirection * axisLength); // End point in the axis direction
+        lineRenderer.SetPosition(1, rb.position + axisDirection * AxisLength); // End point in the axis direction
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.startColor = color;
         lineRenderer.endColor = color;
@@ -41,20 +50,19 @@ public class Style_GizmoVisualization : MonoBehaviour
 
     public void CleanupAxisVisuals()
     {
-        if (xAxisVisual != null) Destroy(xAxisVisual);
-        if (yAxisVisual != null) Destroy(yAxisVisual);
-        if (zAxisVisual != null) Destroy(zAxisVisual);
+        if (xAxisVisual) Destroy(xAxisVisual);
+        if (yAxisVisual) Destroy(yAxisVisual);
+        if (zAxisVisual) Destroy(zAxisVisual);
     }
 
-    private void UpdateAxisVisual(GameObject axisVisual, Vector3 axisDirection, Rigidbody rb)
+    private static void UpdateAxisVisual(GameObject axisVisual, Vector3 axisDirection, Rigidbody rb)
     {
-        if (axisVisual != null)
-        {
-            axisVisual.transform.position = rb.position; // Keep the position at the rigidbody
-            LineRenderer lineRenderer = axisVisual.GetComponent<LineRenderer>();
-            lineRenderer.SetPosition(0, rb.position);
-            lineRenderer.SetPosition(1, rb.position + axisDirection * axisLength); // Update end point based on axis direction
-        }
+        if (!axisVisual) return;
+        axisVisual.transform.position = rb.position; // Keep the position at the rigidbody
+        var lineRenderer = axisVisual.GetComponent<LineRenderer>();
+        lineRenderer.SetPosition(0, rb.position);
+        lineRenderer.SetPosition(1,
+            rb.position + axisDirection * AxisLength); // Update end point based on an axis direction
     }
 
     public void CreateReferencePlanes(Quaternion initialRotation, Rigidbody rb)
@@ -65,46 +73,50 @@ public class Style_GizmoVisualization : MonoBehaviour
         zxPlane = CreateCircularPlane(initialRotation * Vector3.forward, Color.blue, "ZX Plane", rb);
     }
 
-    GameObject CreateCircularPlane(Vector3 normal, Color color, string planeName, Rigidbody rb)
+    private static GameObject CreateCircularPlane(Vector3 normal, Color color, string planeName, Rigidbody rb)
     {
-        GameObject plane = new GameObject(planeName);
-        plane.transform.position = rb.position; // Set the plane's initial position
-        plane.transform.up = normal; // Align the plane's normal to the calculated normal
+        var plane = new GameObject(planeName)
+        {
+            transform =
+            {
+                position = rb.position, // Set the plane's initial position
+                up = normal // Align the plane's normal to the calculated normal
+            }
+        };
         plane.AddComponent<MeshFilter>().mesh = CreateCircularMesh(); // Assign circular mesh
         plane.AddComponent<MeshRenderer>();
 
         // Set the plane's material and color
-        Renderer planeRenderer = plane.GetComponent<Renderer>();
-        planeRenderer.material = new Material(Shader.Find("Standard"));
-        planeRenderer.material.color = color;
+        var planeRenderer = plane.GetComponent<Renderer>();
+        planeRenderer.material = new Material(Shader.Find("Standard"))
+        {
+            color = color
+        };
 
         // Disable the collider for non-collidable behavior
-        Collider collider = plane.GetComponent<Collider>();
-        if (collider != null)
-        {
-            collider.enabled = false; // Disable the collider
-        }
+        var collider = plane.GetComponent<Collider>();
+        if (collider) collider.enabled = false; // Disable the collider
 
         return plane;
     }
 
     // Generate a circular mesh for the planes
-    Mesh CreateCircularMesh()
+    private static Mesh CreateCircularMesh()
     {
-        Mesh mesh = new Mesh();
+        var mesh = new Mesh();
 
-        int segments = 50;  // Number of segments in the circle
-        float angleStep = 360f / segments;
+        const int segments = 50; // Number of segments in the circle
+        const float angleStep = 360f / segments;
 
-        Vector3[] vertices = new Vector3[segments + 1];
-        int[] triangles = new int[segments * 3];
+        var vertices = new Vector3[segments + 1];
+        var triangles = new int[segments * 3];
 
         vertices[0] = Vector3.zero; // Center of the circle
 
-        for (int i = 0; i < segments; i++)
+        for (var i = 0; i < segments; i++)
         {
-            float angle = Mathf.Deg2Rad * (i * angleStep);
-            vertices[i + 1] = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * planeSize;
+            var angle = Mathf.Deg2Rad * (i * angleStep);
+            vertices[i + 1] = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * PlaneSize;
 
             // Define the triangles (three points per triangle)
             if (i < segments - 1)
@@ -131,18 +143,18 @@ public class Style_GizmoVisualization : MonoBehaviour
 
     public void UpdatePlanePositions(Rigidbody rb)
     {
-        if (xyPlane != null) xyPlane.transform.position = rb.position;
-        if (yzPlane != null) yzPlane.transform.position = rb.position;
-        if (zxPlane != null) zxPlane.transform.position = rb.position;
+        if (xyPlane) xyPlane.transform.position = rb.position;
+        if (yzPlane) yzPlane.transform.position = rb.position;
+        if (zxPlane) zxPlane.transform.position = rb.position;
     }
 
     public void CleanupReferencePlanes()
     {
-        if (xyPlane != null)
+        if (xyPlane)
             Destroy(xyPlane);
-        if (yzPlane != null)
+        if (yzPlane)
             Destroy(yzPlane);
-        if (zxPlane != null)
+        if (zxPlane)
             Destroy(zxPlane);
     }
 

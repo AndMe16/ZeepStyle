@@ -1,47 +1,47 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using ZeepStyle.src.PointsManager;
-using ZeepStyle.src.PointsUIManager;
-using ZeepStyle.src.TrickDisplayManager;
-using ZeepStyle.src.TrickManager;
-using ZeepStyle.src.Tricks;
+using ZeepStyle.PointsManager;
+using ZeepStyle.PointsUIManager;
+using ZeepStyle.SoundEffectsManager;
+using ZeepStyle.TrickDisplayManager;
+using ZeepStyle.TrickManager;
+using ZeepStyle.Tricks;
 
-namespace ZeepStyle.src
+namespace ZeepStyle;
+
+[BepInPlugin("andme123.zeepstyle", MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+[BepInDependency("ZeepSDK")]
+public class Plugin : BaseUnityPlugin
 {
-    [BepInPlugin("andme123.zeepstyle", MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-    [BepInDependency("ZeepSDK")]
-    public class Plugin : BaseUnityPlugin
+    internal static ManualLogSource logger;
+    private Harmony harmony;
+
+    public static Plugin Instance { get; private set; }
+
+    private void Awake()
     {
-        private Harmony harmony;
-        internal static new ManualLogSource Logger;
+        // Plugin startup logic
+        Instance = this; // Assign the static instance
+        logger = Logger;
+        harmony = new Harmony("andme123.zeepstyle");
+        harmony.PatchAll();
+        logger.LogInfo("Plugin andme123.zeepstyle is loaded!");
+        ModConfig.Initialize(Config);
+        gameObject.AddComponent<StyleTrickManager>();
+        gameObject.AddComponent<StyleYaw>();
+        gameObject.AddComponent<StylePitch>();
+        gameObject.AddComponent<StyleRoll>();
+        //gameObject.AddComponent<Style_GizmoVisualization>();
+        gameObject.AddComponent<StyleTrickDisplay>();
+        gameObject.AddComponent<StyleTrickPointsManager>();
+        gameObject.AddComponent<StylePointsUIManager>();
+        gameObject.AddComponent<StyleSoundEffectManager>();
+    }
 
-        public static Plugin Instance { get; private set; }
-
-        private void Awake()
-        {
-            // Plugin startup logic
-            Instance = this; // Assign the static instance
-            Logger = base.Logger;
-            harmony = new Harmony("andme123.zeepstyle");
-            harmony.PatchAll();
-            Logger.LogInfo($"Plugin {"andme123.zeepstyle"} is loaded!");
-            ModConfig.Initialize(Config);
-            gameObject.AddComponent<Style_TrickManager>();
-            gameObject.AddComponent<Style_Yaw>();
-            gameObject.AddComponent<Style_Pitch>();
-            gameObject.AddComponent<Style_Roll>();
-            //gameObject.AddComponent<Style_GizmoVisualization>();
-            gameObject.AddComponent<Style_TrickDisplay>();
-            gameObject.AddComponent<Style_TrickPointsManager>();
-            gameObject.AddComponent<Style_PointsUIManager>();
-            gameObject.AddComponent<Style_SoundEffectManager>();
-        }
-
-        private void OnDestroy()
-        {
-            harmony?.UnpatchSelf();
-            harmony = null;
-        }
+    private void OnDestroy()
+    {
+        harmony?.UnpatchSelf();
+        harmony = null;
     }
 }

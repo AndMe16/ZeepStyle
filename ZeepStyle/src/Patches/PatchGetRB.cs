@@ -1,19 +1,19 @@
 using HarmonyLib;
 using UnityEngine;
 
-namespace ZeepStyle.src.Patches
+namespace ZeepStyle.Patches;
+
+[HarmonyPatch(typeof(New_ControlCar), "GetRB")]
+public class PatchGetRb
 {
-    [HarmonyPatch(typeof(New_ControlCar), "GetRB")]
-    public class PatchGetRB
+    public static Rigidbody rb;
+
+    [HarmonyPostfix]
+    // ReSharper disable once UnusedMember.Local
+    // ReSharper disable once InconsistentNaming
+    private static void Postfix(ref Rigidbody __result)
     {
-        public static Rigidbody Rb;
-        [HarmonyPostfix]
-        static void Postfix(ref Rigidbody __result)
-        {
-            Rb = __result;
-            //Plugin.Logger.LogInfo("Getting RB");
-        }
+        rb = __result;
+        //Plugin.Logger.LogInfo("Getting RB");
     }
 }
-
-

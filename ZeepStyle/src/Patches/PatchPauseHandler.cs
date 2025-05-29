@@ -1,31 +1,34 @@
 ﻿using System;
 using HarmonyLib;
 
-namespace ZeepStyle.src.Patches
+namespace ZeepStyle.Patches;
+
+[HarmonyPatch(typeof(PauseHandler), "Pause")]
+public class PatchPauseHandlerPause
 {
-    [HarmonyPatch(typeof(PauseHandler), "Pause")]
-    public class PatchPauseHandler_Pause
-    {
-        public static event Action<PauseHandler> OnPause;
+    public static event Action<PauseHandler> OnPause;
 
-        [HarmonyPostfix]
-        static void Postfix(PauseHandler __instance)
-        {
-            OnPause?.Invoke(__instance);
-            //Plugin.Logger.LogInfo($"PatchPauseHandler: IsPaused = {__instance.IsPaused}");
-        }
+    [HarmonyPostfix]
+    // ReSharper disable once UnusedMember.Local
+    // ReSharper disable once InconsistentNaming
+    private static void Postfix(PauseHandler __instance)
+    {
+        OnPause?.Invoke(__instance);
+        //Plugin.Logger.LogInfo($"PatchPauseHandler: IsPaused = {__instance.IsPaused}");
     }
+}
 
-    [HarmonyPatch(typeof(PauseHandler), "Unpause")]
-    public class PatchPauseHandler_Unpause
+[HarmonyPatch(typeof(PauseHandler), "Unpause")]
+public class PatchPauseHandlerUnpause
+{
+    public static event Action<PauseHandler> OnUnpause;
+
+    [HarmonyPostfix]
+    // ReSharper disable once UnusedMember.Local
+    // ReSharper disable once InconsistentNaming
+    private static void Postfix(PauseHandler __instance)
     {
-        public static event Action<PauseHandler> OnUnpause;
-
-        [HarmonyPostfix]
-        static void Postfix(PauseHandler __instance)
-        {
-            OnUnpause?.Invoke(__instance);
-            //Plugin.Logger.LogInfo($"PatchPauseHandler: IsPaused = {__instance.IsPaused}");
-        }
+        OnUnpause?.Invoke(__instance);
+        //Plugin.Logger.LogInfo($"PatchPauseHandler: IsPaused = {__instance.IsPaused}");
     }
 }

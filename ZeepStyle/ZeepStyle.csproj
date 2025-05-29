@@ -1,56 +1,56 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net472</TargetFramework>
-		<AssemblyName>ZeepStyle</AssemblyName>
-		<Product>ZeepStyle</Product>
-		<Version>1.0.13</Version>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<LangVersion>latest</LangVersion>
-		<RestoreAdditionalProjectSources>
-			https://api.nuget.org/v3/index.json;
-			https://nuget.bepinex.dev/v3/index.json;
-			https://nuget.samboy.dev/v3/index.json
-		</RestoreAdditionalProjectSources>
-		<RootNamespace>ZeepStyle</RootNamespace>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <AssemblyName>ZeepStyle</AssemblyName>
+        <Product>ZeepStyle</Product>
+        <Version>1.0.13</Version>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+        <RestoreAdditionalProjectSources>
+            https://api.nuget.org/v3/index.json;
+            https://nuget.bepinex.dev/v3/index.json;
+            https://nuget.samboy.dev/v3/index.json
+        </RestoreAdditionalProjectSources>
+        <RootNamespace>ZeepStyle</RootNamespace>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-		<PackageReference Include="BepInEx.Core" Version="5.*" />
-		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-		<PackageReference Include="UnityEngine.Modules" Version="2021.3.45" IncludeAssets="compile" />
-		<PackageReference Include="Zeepkist.GameLibs" Version="*" />
-		<PackageReference Include="ZeepSDK" Version="1.*" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all"/>
+        <PackageReference Include="BepInEx.Core" Version="5.*"/>
+        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
+        <PackageReference Include="UnityEngine.Modules" Version="2021.3.45" IncludeAssets="compile"/>
+        <PackageReference Include="Zeepkist.GameLibs" Version="*"/>
+        <PackageReference Include="ZeepSDK" Version="1.*"/>
+    </ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-	</ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all"/>
+    </ItemGroup>
 
-	<!-- Define ModDirectory based on OS -->
-	<PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-		<ModDirectory>C:\Program Files (x86)\Steam\steamapps\common\Zeepkist\BepInEx\plugins\Sideloaded\plugins\$(ProjectName)</ModDirectory>
-	</PropertyGroup>
+    <!-- Define ModDirectory based on OS -->
+    <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+        <ModDirectory>C:\Program Files (x86)\Steam\steamapps\common\Zeepkist\BepInEx\plugins\Sideloaded\plugins\$(ProjectName)</ModDirectory>
+    </PropertyGroup>
 
-	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-		<ModDirectory>$(HOME)/.steam/debian-installation/steamapps/common/Zeepkist/BepInEx/plugins/Sideload/$(ProjectName)</ModDirectory>
-	</PropertyGroup>
+    <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+        <ModDirectory>$(HOME)/.steam/debian-installation/steamapps/common/Zeepkist/BepInEx/plugins/Sideload/$(ProjectName)</ModDirectory>
+    </PropertyGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<!-- Clean existing mod directory -->
-		<RemoveDir Directories="$(ModDirectory)" />
-		<MakeDir Directories="$(ModDirectory)" />
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <!-- Clean existing mod directory -->
+        <RemoveDir Directories="$(ModDirectory)"/>
+        <MakeDir Directories="$(ModDirectory)"/>
 
-		<!-- Copy main DLL + PDB -->
-		<Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFiles="$(ModDirectory)/$(ProjectName)-$(Version).dll" />
-		<Copy SourceFiles="$(TargetDir)$(ProjectName).pdb" DestinationFiles="$(ModDirectory)/$(ProjectName)-$(Version).pdb" />
+        <!-- Copy main DLL + PDB -->
+        <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFiles="$(ModDirectory)/$(ProjectName)-$(Version).dll"/>
+        <Copy SourceFiles="$(TargetDir)$(ProjectName).pdb" DestinationFiles="$(ModDirectory)/$(ProjectName)-$(Version).pdb"/>
 
-		<!-- Copy Resources -->
-		<ItemGroup>
-			<ResourceFiles Include="$(ProjectDir)Resources/**/*.*" />
-		</ItemGroup>
-		<Copy SourceFiles="@(ResourceFiles)" DestinationFolder="$(ModDirectory)/Resources/%(RecursiveDir)" />
-	</Target>
+        <!-- Copy Resources -->
+        <ItemGroup>
+            <ResourceFiles Include="$(ProjectDir)Resources/**/*.*"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(ResourceFiles)" DestinationFolder="$(ModDirectory)/Resources/%(RecursiveDir)"/>
+    </Target>
 
 </Project>
