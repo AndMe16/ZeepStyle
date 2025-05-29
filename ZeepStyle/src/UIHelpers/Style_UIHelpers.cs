@@ -8,6 +8,7 @@ namespace ZeepStyle.UIHelpers;
 
 public static class StyleUIHelpers
 {
+    // ReSharper disable Unity.PerformanceAnalysis
     public static GameObject CloneMainCanvas(string newName)
     {
         var canvasTransform = PlayerManager.Instance.gameObject.transform.Find("Canvas");
