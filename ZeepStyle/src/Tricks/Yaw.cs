@@ -14,7 +14,7 @@ public class StyleYaw : MonoBehaviour
     private const float PlayThreshold = 600f; // Speed at which the sound starts playing
     private const float VolumeThreshold = 600f; // Speed at which volume scaling starts
     private const float MaxVolumeSpeed = 700f; // Speed at which volume reaches maximum
-    private const float MaxReasonableSpinSpeed = 720f; // Maximum reasonable spin speed (degrees per second)
+    private const float MaxReasonableSpinSpeed = 800f; // Maximum reasonable spin speed (degrees per second)
 
     private const float
         SpinAlignmentThreshold = 0.4f; // Threshold for Y-axis alignment (dot product close to 1 = upright)
@@ -50,6 +50,8 @@ public class StyleYaw : MonoBehaviour
         accumulatedYaw = 0;
         spinCount = 0;
         lastYawDelta = 0;
+        soundPlayed = false; // Reset sound state
+        SpinSpeedBuffer.Clear(); // Clear the spin speed buffer
     }
 
 
@@ -165,13 +167,17 @@ public class StyleYaw : MonoBehaviour
 
     private void HandleSpinSound(float spinSpeed)
     {
-        // Add spin speed to the buffer
-        SpinSpeedBuffer.Enqueue(spinSpeed);
+        if (spinSpeed != 0)
+        {
+            // Add spin speed to the buffer
+            SpinSpeedBuffer.Enqueue(spinSpeed);
 
-        // Remove the oldest speed if buffer exceeds the size
-        if (SpinSpeedBuffer.Count > BufferSize) SpinSpeedBuffer.Dequeue();
+            // Remove the oldest speed if buffer exceeds the size
+            if (SpinSpeedBuffer.Count > BufferSize) SpinSpeedBuffer.Dequeue();
+        }
 
         // Calculate the moving average speed
+        if (SpinSpeedBuffer.Count == 0) return; // No speeds to average
         var averageSpinSpeed = SpinSpeedBuffer.Average();
 
         // Check if the average spin speed exceeds the play threshold
