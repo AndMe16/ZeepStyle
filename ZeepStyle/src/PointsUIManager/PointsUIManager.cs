@@ -91,6 +91,7 @@ public class StylePointsUIManager : MonoBehaviour
         if (pointsInfoText) UpdatePointsInfoText();
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public void CreateUI()
     {
         if (!ModConfig.displayPBs.Value || !trickManager.isPlayerSpawned) return;
