@@ -103,21 +103,21 @@ public class StyleTrickManager : MonoBehaviour
     private void FixedUpdate()
     {
         if (!isPlayerSpawned || SceneManager.GetActiveScene().name != "GameScene") return;
-        isInAir = PatchAreAllWheelsInAir.isInTheAir;
+        isInAir = PatchAreAllWheelsInAir.IsInTheAir;
 
         // Check if the player is in the paraglider
-        isInParaglider = PatchSetZeepkistState.currentState == 3;
+        isInParaglider = PatchSetZeepkistState.CurrentState == 3;
 
         isInAir = !isInParaglider && isInAir;
 
-        if (isInAir && ModConfig.tricksDetectionOn.Value)
+        if (isInAir && ModConfig.TricksDetectionOn.Value)
         {
             timeSinceLanding += Time.deltaTime;
 
             if (timeSinceLanding < LandingSuppressionTime) return;
 
 
-            rb = PatchGetRb.rb;
+            rb = PatchGetRb.Rb;
             if (!rb) return;
             currentRight = rb.transform.right;
             currentForward = rb.transform.forward;
@@ -222,7 +222,7 @@ public class StyleTrickManager : MonoBehaviour
 
         ResetVars();
 
-        rb = PatchGetRb.rb;
+        rb = PatchGetRb.Rb;
         trickPointsManager.ResetTotalRunPoints();
         trickDisplay.CreateDisplay();
         pointsUIManager.CreateUI();
@@ -289,7 +289,7 @@ public class StyleTrickManager : MonoBehaviour
     // Method to detect if the rigidbody has left the ground
     private void OnLeaveGround()
     {
-        if (ModConfig.tricksDetectionOn.Value)
+        if (ModConfig.TricksDetectionOn.Value)
         {
             Plugin.logger.LogInfo("OnLeaveGround: Player is airborne!");
             // Calculate the initial up, forward, and right vectors

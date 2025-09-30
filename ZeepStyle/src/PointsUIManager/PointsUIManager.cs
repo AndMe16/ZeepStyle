@@ -39,7 +39,7 @@ public class StylePointsUIManager : MonoBehaviour
     private void Update()
     {
         if (!trickManager.isPlayerSpawned || isPaused) return;
-        switch (ModConfig.displayPBs.Value)
+        switch (ModConfig.DisplayPBs.Value)
         {
             case true when !canvasObject:
                 CreateUI();
@@ -48,7 +48,7 @@ public class StylePointsUIManager : MonoBehaviour
                 DestroyComponent();
                 break;
         }
-        if (Input.GetKeyDown(ModConfig.displayPBsBind.Value) && !trickManager.isInPhotomode) TogglePointsUI();
+        if (Input.GetKeyDown(ModConfig.DisplayPBsBind.Value) && !trickManager.isInPhotomode) TogglePointsUI();
     }
 
     private void OnDestroy()
@@ -69,14 +69,14 @@ public class StylePointsUIManager : MonoBehaviour
 
     public void TogglePointsUI()
     {
-        if (ModConfig.displayPBs.Value)
+        if (ModConfig.DisplayPBs.Value)
         {
-            ModConfig.displayPBs.Value = false;
+            ModConfig.DisplayPBs.Value = false;
             DestroyComponent();
         }
         else
         {
-            ModConfig.displayPBs.Value = true;
+            ModConfig.DisplayPBs.Value = true;
             CreateUI();
         }
     }
@@ -94,7 +94,7 @@ public class StylePointsUIManager : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     public void CreateUI()
     {
-        if (!ModConfig.displayPBs.Value || !trickManager.isPlayerSpawned) return;
+        if (!ModConfig.DisplayPBs.Value || !trickManager.isPlayerSpawned) return;
         // Clone the existing main Canvas
         canvasObject = StyleUIHelpers.CloneMainCanvas("Style_PBPointsCanvas");
 

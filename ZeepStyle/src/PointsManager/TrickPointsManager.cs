@@ -99,7 +99,7 @@ public class StyleTrickPointsManager : MonoBehaviour
             return;
         }
 
-        if (!ZeepkistNetwork.IsConnected && PatchLoadOfflineLevel.isTestLevel)
+        if (!ZeepkistNetwork.IsConnected && PatchLoadOfflineLevel.IsTestLevel)
         {
             Plugin.logger.LogInfo("SaveLevelPB: Current level is a test level, not saving PB");
             return;

@@ -30,7 +30,7 @@ public class StyleSoundEffectManager : MonoBehaviour
         Create_CustomChannel();
         LoadSounds();
         PatchSetVolumeFromSettings.OnSettVolumeFromSettings += SetVolumeWithGlobal;
-        ModConfig.tricksSfxVolume.SettingChanged += OnVolumeChanged;
+        ModConfig.TricksSfxVolume.SettingChanged += OnVolumeChanged;
         PatchLoadWaarden.OnLoadWaarden += SetGlobalVolume;
     }
 
@@ -50,12 +50,12 @@ public class StyleSoundEffectManager : MonoBehaviour
     private void SetVolumeWithGlobal(float obj)
     {
         globalVolume = obj;
-        SetGroupVolume((float)((float)ModConfig.tricksSfxVolume.Value / 100 * globalVolume * 0.01 * BaseVolume));
+        SetGroupVolume((float)((float)ModConfig.TricksSfxVolume.Value / 100 * globalVolume * 0.01 * BaseVolume));
     }
 
     private void OnVolumeChanged(object sender, EventArgs e)
     {
-        SetGroupVolume((float)((float)ModConfig.tricksSfxVolume.Value / 100 * globalVolume * 0.01 * BaseVolume));
+        SetGroupVolume((float)((float)ModConfig.TricksSfxVolume.Value / 100 * globalVolume * 0.01 * BaseVolume));
     }
 
     private void Create_CustomChannel()

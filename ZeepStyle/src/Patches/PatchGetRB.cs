@@ -6,14 +6,14 @@ namespace ZeepStyle.Patches;
 [HarmonyPatch(typeof(New_ControlCar), "GetRB")]
 public class PatchGetRb
 {
-    public static Rigidbody rb;
+    public static Rigidbody Rb;
 
     [HarmonyPostfix]
     // ReSharper disable once UnusedMember.Local
     // ReSharper disable once InconsistentNaming
     private static void Postfix(ref Rigidbody __result)
     {
-        rb = __result;
+        Rb = __result;
         //Plugin.Logger.LogInfo("Getting RB");
     }
 }
