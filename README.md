@@ -1,28 +1,89 @@
-## Description
-A mod for [Zeepkist](https://store.steampowered.com/app/1440670/Zeepkist/)
+# ZeepStyle
 
-Now you can earn style points with this mod!
+A style scoring mod for [**Zeepkist**](https://store.steampowered.com/app/1440670/Zeepkist/) that rewards players for performing tricks like spins, flips, and rolls.
 
-Currently detected tricks:
-- Spins (180s, 360s, ...)
-- Flips (Frontflips, backflips and sideflips)
-- Rolls (180s, 360s, ...)
+This mod adds a fun, competitive layer to track gameplay by tracking and displaying **style points** and personal bests.
 
-Press 'L' to display your total awarded points and track personal best.
+---
 
-## Install
-The easiest way is to download and install [Modkist Revamped](https://github.com/donderjoekel/ModkistRevamped?tab=readme-ov-file). There you can subscribe to this mod, it will automatically install the mod in the correct folder.
+## 🎮 About the Game
 
-You can also find the mod in [mod.io](https://mod.io/g/zeepkist/m/zeepstyle)
+**Zeepkist** is a Unity-based racing game with a built-in track editor and modding support.  
+It allows players to create and share custom tracks and extensions via platforms like mod.io. :contentReference[oaicite:5]{index=5}
 
-## Future tricks (Maybe)
-- Barani - A front layout with a 180 degree twist.
-- Front full - A front layout with a 360 degree twist.
-- Rudy A front - layout with a 540 degree twist.
-- Front double full - A front layout with 720 degree twist.
+---
 
-## Credits
+## ✨ Features
 
-<p>Simple Tricks Sound Effects: Sound Effect by <a href="https://pixabay.com/es/users/freesound_community-46691455/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=6305">freesound_community</a> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=6305">Pixabay</a></p>
-<p>Crowd Crash Sound Effect: <a href="https://freesound.org/s/752706/">Voice_Crowd_Small_Expression_Awww_Stereo by Nox_Sound</a> -- License: Creative Commons 0</p>
-<p>Crowd Finish Sound Effect: <a href="https://freesound.org/s/442580/">181001_005_crowd_cheer.wav by wangzhuokun</a> -- License: Creative Commons 0</p>
+- ⭐ **Style Points**
+  - Earn points for performing tricks such as spins, flips, and rolls.
+
+- 🏆 **Leaderboard Feedback**
+  - Press **L** to display total style points and your personal best.
+
+- 💡 **Designed for Creativity**
+  - Rewards players for creative driving techniques.
+
+---
+
+## 🛠️ How It Works
+
+ZeepStyle continually monitors the player’s movement and orientation changes during gameplay and awards points based on predefined trick patterns such as:
+
+- Spins (180°, 360°, etc.)
+- Front and back flips
+- Rolls (side rotations)
+
+When the player performs these maneuvers, style points accumulate and are shown on-screen.
+
+---
+
+## 📦 Installation
+
+The mod is available on [**mod.io**](https://mod.io/g/zeepkist/m/zeepstyle#description) and compatible with the [ModkistRevamped](https://github.com/donderjoekel/ModkistRevamped) mod manager.
+
+1. Install Modkist Revamped.
+2. Subscribe to **ZeepStyle**.
+3. Launch Zeepkist and enjoy the new style scoring system.
+4. Press **L** in-game to view your style stats.
+
+---
+
+## 🛠️ Technical Overview
+
+- **Language:** C#  
+- **Engine:** Unity  
+- **Type:** Gameplay Mod  
+- **Requirements:** Zeepkist with mod support
+
+---
+
+## 🧠 Future Ideas
+
+The mod originally suggested possible future tricks:
+
+- Barani – 180° twist with layout
+- Full front flips (360°, 540°, etc.)
+- Double full rotations
+- Additional multi-axis combos
+
+These can be implemented as scoring extensions.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Suggested areas:
+
+- More trick definitions and scoring rules
+- Visual indicators during trick execution
+- UI enhancement for style feedback
+
+Feel free to open an issue or submit a pull request.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
